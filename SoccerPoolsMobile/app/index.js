@@ -8,13 +8,13 @@ import CustomInputSign from '../components/CustomInputSign';
 import CustomButton from '../components/CustomButton';
 
 export default function App() {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const toast = useToast()
 
   const logIn = async () => {
     try {
-      const {access, refresh} = await login(email, password)
+      const {access, refresh} = await login(username, password)
       toast.show('Logged in successfully!', {type: 'success'})
     } catch (error) {
       toast.show(JSON.stringify(error), {type: 'danger'})
@@ -33,10 +33,10 @@ export default function App() {
         />
   
         <CustomInputSign
-            inputMode='email'
-            value={email}
-            setValue={setEmail}
-            placeholder='E-mail'
+            inputMode='username'
+            value={username}
+            setValue={setUsername}
+            placeholder='Username'
         />
 
         <CustomInputSign

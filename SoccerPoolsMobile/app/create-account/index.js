@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
 import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
+import { register } from "../../services/authService";
 
 export default function CreateAccount({}) {
     const [firstName, setFirstName] = useState('')
@@ -11,11 +12,15 @@ export default function CreateAccount({}) {
     const [email, setEmail] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [retypePassword, setRetypePassword] = useState('')
     const toast = useToast()
 
-    const createAccount = () => {
-
+    const createAccount = async () => {
+        try {
+            const data = await register(firstName, lastName, username, email, password)
+            toast.show('Logged in successfully!', {type: 'success'})
+        } catch (error) {
+            toast.show(JSON.stringify(error), {type: 'danger'})
+        }
     }
 
     const googleLogIn = () => {
@@ -76,13 +81,6 @@ export default function CreateAccount({}) {
                     placeholder='Password'
                     value={password}
                     setValue={setPassword}
-                    isSecureTextEntry={true}
-                />
-
-                <CustomInputSign
-                    placeholder='Retype Password'
-                    value={retypePassword}
-                    setValue={setRetypePassword}
                     isSecureTextEntry={true}
                 />
 

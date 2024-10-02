@@ -1,12 +1,13 @@
 import api from "./api";
-import axios from "axios";
 
-export const register = async(email, password, re_password) => {
+export const register = async(name, last_name, username, email, password) => {
     try {
         const response = await api.post('/auth/users/', {
-            email, 
-            password, 
-            re_password
+            username: username,
+            email: email, 
+            name: name,
+            last_name: last_name,
+            password: password, 
         })
         return response.data
     } catch (error) {
@@ -14,10 +15,10 @@ export const register = async(email, password, re_password) => {
     }
 }
 
-export const login = async(email, password) => {
+export const login = async(username, password) => {
     try {
         const response = await api.post('/auth/jwt/create/', {
-            username: email, 
+            username: username, 
             password: password
         })
         const {access, refresh} = response.data
