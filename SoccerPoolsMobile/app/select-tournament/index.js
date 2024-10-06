@@ -1,5 +1,5 @@
 import { View, StyleSheet, Pressable, Text, ScrollView, Image } from "react-native"
-import Tournament from "./components/Tournament"
+import TournamentCard from "./components/TournamentCard"
 
 export default function SelectTournament({}) {
 
@@ -7,15 +7,15 @@ export default function SelectTournament({}) {
         <ScrollView style={styles.container}>
             <Text style={styles.selectTournamentTxt}>Select a Tournament</Text>
             <View style={styles.tournamentsContainer}>
-                <Tournament
+                <TournamentCard
                     tournamentImgUrl={require('../../assets/img/Logo_River_Plate.png')}
                     tournamentTitle='Superliga de Fútbol Argentino'
                 />
-                <Tournament
+                <TournamentCard
                     tournamentImgUrl={require('../../assets/img/Logo_River_Plate.png')}
                     tournamentTitle='Superliga de Fútbol Argentino'
                 />
-                <Tournament
+                <TournamentCard
                     tournamentImgUrl={require('../../assets/img/Logo_River_Plate.png')}
                     tournamentTitle='Superliga de Fútbol Argentino'
                 />

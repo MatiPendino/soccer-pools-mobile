@@ -1,14 +1,14 @@
 import { StyleSheet, Pressable, Text, Image, View } from "react-native"
 import { Link } from "expo-router"
 
-export default function Tournament({tournamentTitle, tournamentImgUrl}) {
+export default function TournamentCard({tournamentTitle, tournamentImgUrl}) {
 
     const selectTournament = () => {
         console.log('clicked')
     }
 
     return (
-        <Link style={styles.tournamentContainer} href='/results'>
+        <Link style={styles.tournamentContainer} href='/home'>
             <View style={styles.tournamentImgContainer}>
                 <Image
                     source={tournamentImgUrl}
