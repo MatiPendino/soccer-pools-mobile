@@ -4,101 +4,65 @@ import { useState } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
+import Entypo from '@expo/vector-icons/Entypo';
 import { Menu, Divider } from "react-native-paper";
 import Tournament from "./pages/Tournament";
 import HowToPlay from "./pages/HowToPlay";
 import Settings from "./pages/Settings";
+import styles from "./styles"
 
 const Drawer = createDrawerNavigator()
 
 export default function Home({}) {
-  const [modalVisible, setModalVisible] = useState(true);  
-
-  const handleDropdownToggle = () => {
-    setModalVisible(!modalVisible);  
-  };
-
-    return (
-        <>
-        <Drawer.Navigator 
-          initialRouteName="Tournament Name"
-          screenOptions={({navigation}) => ({
-            drawerStyle: {
-              backgroundColor: '#6860A1',
-              color: '#fff'
-            },
-            headerShown: true,
-            headerLeft: () => (
-              <Ionicons
-                name="arrow-back"
-                size={24}
-                color="black"
-                style={{ marginLeft: 10 }}
-                onPress={() => handleDropdownToggle()}
-              />
-            ),
-            headerRight: () => (
-              <Ionicons
-                name="menu"
-                size={24}
-                color="black"
-                style={{ marginRight: 10 }}
-                onPress={() => navigation.toggleDrawer()}
-              />
-            ),
-          })}
-          drawerContent={(props) => <CustomDrawerContent {...props} />}
-        >
-            <Drawer.Screen name="Tournament Name" component={Tournament} />
-            <Drawer.Screen name="How To Play" component={HowToPlay} />
-            <Drawer.Screen name="Settings" component={Settings} />
-        </Drawer.Navigator>  
-        <DropdownModal
-          visible={modalVisible}
-          onClose={handleDropdownToggle}
-        />
-        </>
-        
-    )
-}
-
-function DropdownModal({ visible, onClose }) {
   return (
-    <Modal
-      transparent={true}
-      animationType="fade"
-      visible={visible}
-      onRequestClose={onClose}  
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Choose an Option</Text>
-          <Button title="Option 1" onPress={onClose} />
-          <Button title="Option 2" onPress={onClose} />
-          <Button title="Option 3" onPress={onClose} />
-          <Pressable onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>Cancel</Text>
-          </Pressable>
-        </View>
-      </View>
-    </Modal>
-  );
+    <>
+      <Drawer.Navigator 
+        initialRouteName="Tournament Name"
+        screenOptions={({navigation}) => ({
+          drawerStyle: {
+            backgroundColor: '#fff',
+            color: '#fff'
+          },
+          headerShown: true,
+          /*headerRight: () => (
+            <Ionicons
+              name="menu"
+              size={24}
+              color="black"
+              style={{ marginRight: 10 }}
+              onPress={() => navigation.toggleDrawer()}
+            />
+          ),*/
+        })}
+        drawerContent={(props) => <CustomDrawerContent {...props} />}
+      >
+        <Drawer.Screen name="Home" component={Tournament} />
+        <Drawer.Screen name="How To Play" component={HowToPlay} />
+        <Drawer.Screen name="Settings" component={Settings} />
+      </Drawer.Navigator>  
+    </>
+  )
 }
 
 function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
-      <View style={{ padding: 20, alignItems: 'center' }}>
-        <Text style={{ marginTop: 10, fontSize: 18 }}>John Doe</Text>
+      <View style={styles.drawerNavbar}>
+        <Text style={styles.nameTxt}>Matías Pendino</Text>
+        <Text style={styles.emailTxt}>matiaspendino76@gmail.com</Text>
+
+        <Pressable styles={styles.editBtn} onPress={() => {}}>
+          <Text style={styles.editTxt}>EDIT ACCOUNT</Text>
+        </Pressable>
       </View>
       <DrawerItemList {...props} />
+      <View style={styles.instaContainer}>
+        <Entypo name="instagram" size={45} color="black" />
+      </View>
+      <Pressable onPress={() => {}} style={styles.logoutBtn}>
+        <Entypo name="log-out" size={24} color="white" />
+        <Text style={styles.logoutTxt}>LOGOUT</Text>
+      </Pressable>
     </DrawerContentScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#6860A1',
-        height: '100%'
-    }
-})
