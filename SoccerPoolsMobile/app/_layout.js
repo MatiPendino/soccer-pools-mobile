@@ -1,4 +1,4 @@
-import { Slot, Stack } from "expo-router";
+import {  Stack } from "expo-router";
 import { ToastProvider } from "react-native-toast-notifications";
 import { StatusBar } from "expo-status-bar";
 

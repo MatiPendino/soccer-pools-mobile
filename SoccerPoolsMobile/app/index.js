@@ -1,69 +1,62 @@
-import { useState } from 'react';
-import { Text, View, Image, Pressable } from 'react-native';
-import { Link } from 'expo-router';
+import { useState, useEffect } from 'react';
+import { ActivityIndicator } from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
-import { login } from '../services/authService'
-import styles from './styles';
-import CustomInputSign from '../components/CustomInputSign';
-import CustomButton from '../components/CustomButton';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Login from '../screens/Login';
+import { getUserInLeague } from '../services/authService';
 
 export default function App() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const toast = useToast()
+  const router = useRouter()
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState(null)
+  const [checkingLeague, setCheckingLeague] = useState(true);
 
-  const logIn = async () => {
-    try {
-      const {access, refresh} = await login(username, password)
-      toast.show('Logged in successfully!', {type: 'success'})
-    } catch (error) {
-      toast.show(JSON.stringify(error), {type: 'danger'})
-    }
+  const getToken = async () => {
+    const token = await AsyncStorage.getItem('accessToken');
+    return token
   }
 
-  const forgotPassword = () => {}
-  const createAccount = () => {}
-  const googleLogIn = () => {}
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = await getToken()
+      setIsAuthenticated(!!token);
+      if (!!token) {
+        setToken(token)
+      }
+    };
+    checkAuth();
+  }, []);
 
-  return (
-    <View style={styles.container}>
-        <Image 
-            source={require("../assets/img/pools-logo2.png")}
-            style={styles.image}
-        />
-  
-        <CustomInputSign
-            inputMode='username'
-            value={username}
-            setValue={setUsername}
-            placeholder='Username'
-        />
+  useEffect(() => {
+    const checkUserLeagueStatus = async () => {
+      if (isAuthenticated) {
+        try {
+          console.log(token)
+          const inLeague = await getUserInLeague(token)
+          if (inLeague) {
+            router.replace('/home')
+          } else {
+            router.replace('/select-tournament')
+          }
+        } catch (error) {
+          toast.show('Error checking league status', { type: 'danger' });
+        } finally {
+          setCheckingLeague(false)
+        }
+      }
+    }
+    checkUserLeagueStatus()
+  }, [isAuthenticated])
 
-        <CustomInputSign
-            value={password}
-            setValue={setPassword}
-            placeholder='Password'
-            isSecureTextEntry={true}
-        />
-        
-        <CustomButton callable={logIn} btnText='LOG IN' />
+  if (!isAuthenticated) {
+    return <Login />
+  }
 
-        <Pressable
-            style={styles.forgotBtn}
-            onPress={() => forgotPassword()}
-        >
-            <Text style={styles.forgotCreateText}>Forgot Your Password?</Text>
-        </Pressable>
-        <Link href='/create-account' style={styles.forgotCreateText}>Create Account</Link>
+  if (checkingLeague) {
+    return <ActivityIndicator size="large" color="#0000ff" />
+  }
 
-        <Pressable
-            onPress={() => googleLogIn()}
-        >
-            <Image
-                source={require('../assets/img/google-icon.webp')}
-                style={styles.googleImg}
-            />
-        </Pressable>
-    </View>      
-  );
+  return null
 }
