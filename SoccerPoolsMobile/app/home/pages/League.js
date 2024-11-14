@@ -8,7 +8,7 @@ import Results from "./components/Results";
 
 const Tab = createBottomTabNavigator()
 
-export default function Tournament({}) {
+export default function League({}) {
     return (
         <NavigationContainer independent={true}>
             <Tab.Navigator
@@ -22,12 +22,11 @@ export default function Tournament({}) {
                         return <MaterialIcons name="leaderboard" size={40} color="black" />
                       }                      
                     },
-                    headerShown: false
+                    headerShown: false,
+                    tabBarActiveTintColor: 'tomato',
+                    tabBarInactiveTintColor: 'gray',
+                    tabBarStyle: { display: 'flex' },
                 })}
-                tabBarOptions={{
-                    activeTintColor: 'tomato',
-                    inactiveTintColor: 'gray',
-                }}
             >
                 <Tab.Screen name="Leaderboard" component={Leaderboard} />
                 <Tab.Screen name="Results" component={Results} />

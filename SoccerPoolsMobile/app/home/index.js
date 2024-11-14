@@ -6,7 +6,7 @@ import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawe
 import { Ionicons } from "@expo/vector-icons";
 import Entypo from '@expo/vector-icons/Entypo';
 import { Menu, Divider } from "react-native-paper";
-import Tournament from "./pages/Tournament";
+import League from "./pages/League";
 import HowToPlay from "./pages/HowToPlay";
 import Settings from "./pages/Settings";
 import styles from "./styles"
@@ -17,7 +17,7 @@ export default function Home({}) {
   return (
     <>
       <Drawer.Navigator 
-        initialRouteName="Tournament Name"
+        initialRouteName="League Name"
         screenOptions={({navigation}) => ({
           drawerStyle: {
             backgroundColor: '#fff',
@@ -36,7 +36,7 @@ export default function Home({}) {
         })}
         drawerContent={(props) => <CustomDrawerContent {...props} />}
       >
-        <Drawer.Screen name="Home" component={Tournament} />
+        <Drawer.Screen name="Home" component={League} />
         <Drawer.Screen name="How To Play" component={HowToPlay} />
         <Drawer.Screen name="Settings" component={Settings} />
       </Drawer.Navigator>  

@@ -88,7 +88,7 @@ export default function CreateAccount({}) {
                 <CustomButton callable={createAccount} btnText='CREATE ACCOUNT' />
 
                 <Link href='/' style={styles.alreadyTxt}>Already Have An Account? Login Here</Link>
-                <Link href='/select-tournament' style={styles.alreadyTxt}>Select Tournament</Link>
+                <Link href='/select-league' style={styles.alreadyTxt}>Select League</Link>
             </ScrollView>    
         </View>
     )
