@@ -4,7 +4,7 @@ import { useToast } from 'react-native-toast-notifications';
 import { useRouter } from 'expo-router';
 import Login from '../screens/Login';
 import { getUserInLeague } from '../services/authService';
-import getToken from '../utils/getToken';
+import { getToken } from '../utils/storeToken';
 
 export default function App() {
   const toast = useToast()

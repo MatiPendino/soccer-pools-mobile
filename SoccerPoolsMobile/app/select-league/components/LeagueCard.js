@@ -3,7 +3,7 @@ import { StyleSheet, Pressable, Text, Image, View } from "react-native"
 import { useToast } from "react-native-toast-notifications"
 import { useRouter } from "expo-router"
 import { betsRegister } from "../../../services/betService"
-import getToken from "../../../utils/getToken"
+import { getToken } from "../../../utils/storeToken"
 
 export default function LeagueCard({leagueTitle, leagueImgUrl, leagueSlug}) {
     const toast = useToast()
@@ -16,7 +16,6 @@ export default function LeagueCard({leagueTitle, leagueImgUrl, leagueSlug}) {
             toast.show(`You have joined ${leagueTitle} league successfully!`, { type: 'success' });
             router.replace('/home')
         } catch (error) {
-            console.log(error)
             toast.show('There is been an error joining the league. Please try later', { type: 'danger' });
         }
         

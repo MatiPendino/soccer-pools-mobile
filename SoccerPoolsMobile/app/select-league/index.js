@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useToast } from "react-native-toast-notifications"
 import { View, StyleSheet, Text, ScrollView, ActivityIndicator } from "react-native"
 import { leagueList } from "../../services/leagueService"
-import getToken from "../../utils/getToken"
+import { getToken } from "../../utils/storeToken"
 import LeagueCard from "./components/LeagueCard"
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 
@@ -17,7 +17,6 @@ export default function SelectLeague({}) {
                 const token = await getToken()
                 const leagues = await leagueList(token)
                 setLeagues(leagues)
-                console.log(leagues)  
             } catch (error) {
                 toast.error('Error authenticating user')
                 console.log(error)
