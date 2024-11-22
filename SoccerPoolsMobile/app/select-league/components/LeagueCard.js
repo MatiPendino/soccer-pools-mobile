@@ -40,9 +40,10 @@ export default function LeagueCard({leagueTitle, leagueImgUrl, leagueSlug}) {
 
 const styles = StyleSheet.create({
     leagueContainer: {
-        width: '100%',
+        width: 180,
         textAlign: 'center',
-        marginTop: 25
+        marginTop: 25,
+        marginHorizontal: 5
     },
     leagueImgContainer: {
         width: '100%',
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: '#d9d9d9',
         borderWidth: 1,
-        paddingVertical: 10
+        padding: 10
     },
     leagueImg: {
         width: 160,

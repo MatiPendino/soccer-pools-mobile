@@ -44,6 +44,7 @@ export default function SelectLeague({}) {
                         leagueSlug={item.slug}
                     />
                 )}
+                numColumns={2}
                 keyExtractor={(item, index) => index.toString()}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.leaguesContainer}
@@ -68,6 +69,6 @@ const styles = StyleSheet.create({
     leaguesContainer: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-evenly',
     }
 })

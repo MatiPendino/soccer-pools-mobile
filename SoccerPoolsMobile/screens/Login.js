@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { useToast } from "react-native-toast-notifications"
 import { Text, View, Image, Pressable, StyleSheet } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { login } from '../services/authService'
+import { getUserInLeague } from "../services/authService";
 import CustomInputSign from '../components/CustomInputSign';
 import CustomButton from '../components/CustomButton';
 
@@ -10,12 +11,23 @@ import CustomButton from '../components/CustomButton';
 export default function Login({}) {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const router = useRouter()
     const toast = useToast()
+
+    const userInLeague = async (token) => {
+        const inLeague = await getUserInLeague(token)
+        if (inLeague.in_league) {
+            router.replace('/home')
+        } else {
+            router.replace('/select-league')
+        }
+    }
 
     const logIn = async () => {
         try {
             const {access, refresh} = await login(username, password)
             toast.show('Logged in successfully!', {type: 'success'})
+            await userInLeague(access)
         } catch (error) {
             toast.show(JSON.stringify(error), {type: 'danger'})
         }
