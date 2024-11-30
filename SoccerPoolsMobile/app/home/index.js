@@ -1,14 +1,11 @@
-import { ScrollView, View, StyleSheet, Text, Image, Pressable, Modal, Button } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import 'react-native-gesture-handler'
-import { useState } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
-import { Ionicons } from "@expo/vector-icons";
 import Entypo from '@expo/vector-icons/Entypo';
-import { Menu, Divider } from "react-native-paper";
-import League from "./pages/League";
-import HowToPlay from "./pages/HowToPlay";
-import Settings from "./pages/Settings";
+import League from "./screens/League";
+import HowToPlay from "./screens/HowToPlay";
+import Settings from "./screens/Settings";
 import styles from "./styles"
 
 const Drawer = createDrawerNavigator()
@@ -17,7 +14,7 @@ export default function Home({}) {
   return (
     <>
       <Drawer.Navigator 
-        initialRouteName="League Name"
+        initialRouteName="Home"
         screenOptions={({navigation}) => ({
           drawerStyle: {
             backgroundColor: '#fff',
