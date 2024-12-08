@@ -46,8 +46,9 @@ api.interceptors.response.use(
                 axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
                 return api(originalRequest);
             } catch (refreshError) {
-                // TODO: Handle logout or re-login if refresh fails
                 console.error("Token refresh failed", refreshError);
+                await AsyncStorage.removeItem('accessToken');
+                await AsyncStorage.removeItem('refreshToken');
             }
         }
         return Promise.reject(error);
