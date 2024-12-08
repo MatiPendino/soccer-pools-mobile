@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
-import { View, Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
+import { Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { useToast } from "react-native-toast-notifications";
 import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
 import MatchResult from "./MatchResult";
+import { MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
 
+interface LeaderboardProps {
+    rounds: RoundProps[]
+    setRoundsState: React.Dispatch<React.SetStateAction<RoundsStateProps>>
+    roundsState: RoundsStateProps
+}
 
-export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
-    const [matchResults, setMatchResults] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+export default function Leaderboard ({rounds, setRoundsState, roundsState}: LeaderboardProps) {
+    const [matchResults, setMatchResults] = useState<MatchResultProps[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast = useToast()
 
-    const getMatchResults = async (token, roundId) => {
+    const getMatchResults = async (token: string, roundId: number): Promise<void> => {
         try {
             const matchResults = await matchResultsList(token, roundId)
             setMatchResults(matchResults)
@@ -21,16 +27,16 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
         }
     }
 
-    const updateActiveRound = (roundSlug) => {
-        const newRoundsState = Object.keys(roundsState).reduce((acc, key) => {
-            acc[key] = key === roundSlug
-            return acc
-        }, {})
+    const updateActiveRound = (roundSlug: Slug): void => {
+        const newRoundsState = Object.keys(roundsState).reduce((updatedRoundsState: RoundsStateProps, key) => {
+            updatedRoundsState[key] = key === roundSlug
+            return updatedRoundsState
+        }, {} as RoundsStateProps)
     
         setRoundsState(newRoundsState)
     }
 
-    const savePredictions = async () => {
+    const savePredictions = async (): Promise<void> => {
         try {
             const token = await getToken()
             const response = await matchResultsUpdate(token, matchResults)
@@ -39,7 +45,7 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
         }
     }
 
-    const swapRoundMatchResults = async (roundId, roundSlug) => {
+    const swapRoundMatchResults = async (roundId: number, roundSlug: Slug): Promise<void> => {
         try {
             const token = await getToken()
             getMatchResults(token, roundId)  
@@ -50,7 +56,7 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
     }
 
     useEffect(() => {
-        const getFirstMatchResults = async () => {
+        const getFirstMatchResults = async (): Promise<void> => {
             try {
                 const token = await getToken()
                 getMatchResults(token, rounds[0].id)  
@@ -82,7 +88,7 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
                     </Pressable>
                 )}
                 horizontal={true}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item) => item.slug}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.leaguesContainer}
             />
@@ -95,7 +101,7 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
                         setMatchResults={setMatchResults} 
                     />
                 )}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={styles.matchResultsContainer}
                 horizontal={false} 
                 showsVerticalScrollIndicator={true}

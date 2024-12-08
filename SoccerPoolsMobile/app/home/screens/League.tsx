@@ -7,27 +7,28 @@ import { getToken } from "../../../utils/storeToken";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Leaderboard from "../components/Leaderboard";
 import Results from "../components/Results";
+import { LeagueProps, RoundProps, RoundsStateProps } from "../../../types";
 
 const Tab = createBottomTabNavigator()
 
 export default function League({}) {
-  const [league, setLeague] = useState(null)
-  const [rounds, setRounds] = useState([])
-  const [roundsState, setRoundsState] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
+  const [league, setLeague] = useState<LeagueProps>(null)
+  const [rounds, setRounds] = useState<RoundProps[]>([])
+  const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    const getLeague = async () => {
-      const token = await getToken()
-      const temp_league = await userLeague(token)
+    const getLeague = async (): Promise<void> => {
+      const token: string = await getToken()
+      const temp_league: LeagueProps = await userLeague(token)
       setLeague(temp_league)
       getRounds(token, temp_league)
     }
 
-    const getRounds = async (token, leag) => { 
+    const getRounds = async (token: string, leag: LeagueProps) => { 
       try {
         if (leag) {
-          const roundsByLeague = await roundsListByLeague(token, leag.id)
+          const roundsByLeague: RoundProps[] = await roundsListByLeague(token, leag.id)
           setRounds(roundsByLeague)  
 
           /* 
@@ -35,16 +36,13 @@ export default function League({}) {
             in the format roundSlug: boolean.
             Initially, the first round will be true, and the rest false
           */
-          /*const roundsStateList = roundsByLeague.map((round, index) => {
-            return { [round.slug]: index === 0 }; 
-          })
-          setRoundsState(roundsStateList)*/
-
-          const roundsStateObject = roundsByLeague.reduce((acc, round, index) => {
-            acc[round.slug] = index === 0; 
-            return acc;
-          }, {});
-          setRoundsState(roundsStateObject);
+          const roundsStateObject = roundsByLeague.reduce((
+            activeRoundsState: RoundsStateProps, round: RoundProps, index: number
+          ) => {
+            activeRoundsState[round.slug] = index === 0; 
+            return activeRoundsState
+          }, {} as RoundsStateProps)
+          setRoundsState(roundsStateObject)
         }
       } catch (error) {
         throw error.response.data
@@ -64,6 +62,7 @@ export default function League({}) {
     <NavigationIndependentTree>
       <NavigationContainer>
           <Tab.Navigator
+              id={undefined}
               screenOptions={({ route }) => ({
                   tabBarIcon: ({ focused, color, size }) => {
                     let iconName;

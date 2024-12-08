@@ -5,20 +5,21 @@ import { leagueList } from "../../services/leagueService"
 import { getToken } from "../../utils/storeToken"
 import LeagueCard from "./components/LeagueCard"
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
+import { LeagueProps } from "../../types"
 
 export default function SelectLeague({}) {
     const toast = useToast()
-    const [leagues, setLeagues] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [leagues, setLeagues] = useState<LeagueProps[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
-        const getLeagueList = async () => {
+        const getLeagueList = async (): Promise<void> => {
             try {
                 const token = await getToken()
                 const leagues = await leagueList(token)
                 setLeagues(leagues)
             } catch (error) {
-                toast.error('Error authenticating user')
+                toast.show('Error authenticating user', {type: 'danger'})
                 console.log(error)
             } finally {
                 setIsLoading(false)
@@ -45,7 +46,7 @@ export default function SelectLeague({}) {
                     />
                 )}
                 numColumns={2}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item) => item.slug}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.leaguesContainer}
             />

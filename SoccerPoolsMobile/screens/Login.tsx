@@ -9,12 +9,12 @@ import CustomButton from '../components/CustomButton';
 
 
 export default function Login({}) {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+    const [username, setUsername] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
     const router = useRouter()
     const toast = useToast()
 
-    const userInLeague = async (token) => {
+    const userInLeague = async (token: string): Promise<void> => {
         const inLeague = await getUserInLeague(token)
         if (inLeague.in_league) {
             router.replace('/home')
@@ -23,7 +23,7 @@ export default function Login({}) {
         }
     }
 
-    const logIn = async () => {
+    const logIn = async (): Promise<void> => {
         try {
             const {access, refresh} = await login(username, password)
             toast.show('Logged in successfully!', {type: 'success'})
@@ -61,7 +61,6 @@ export default function Login({}) {
             <CustomButton callable={logIn} btnText='LOG IN' />
 
             <Pressable
-                style={styles.forgotBtn}
                 onPress={() => forgotPassword()}
             >
                 <Text style={styles.forgotCreateText}>Forgot Your Password?</Text>

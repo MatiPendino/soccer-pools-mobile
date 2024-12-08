@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react"
 import { View, Pressable, Text, StyleSheet } from "react-native"
-
-
-interface MatchResult {
-    id: number
-    goals_team_1: number
-    goals_team_2: number
-}
+import { MatchResultProps } from "../../../types"
 
 interface TeamScoreProps {
-    currentMatchResult: MatchResult
+    currentMatchResult: MatchResultProps
     teamNum: 1 | 2
-    matchResults: MatchResult[]
-    setMatchResults: React.Dispatch<React.SetStateAction<MatchResult[]>>
+    matchResults: MatchResultProps[]
+    setMatchResults: React.Dispatch<React.SetStateAction<MatchResultProps[]>>
 }
 
 export default function TeamScore({

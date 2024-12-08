@@ -9,12 +9,12 @@ import { getToken } from '../utils/storeToken';
 export default function App() {
   const toast = useToast()
   const router = useRouter()
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState(null)
-  const [checkingLeague, setCheckingLeague] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [token, setToken] = useState<string>(null)
+  const [checkingLeague, setCheckingLeague] = useState<boolean>(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = async (): Promise<void> => {
       const token = await getToken()
       setIsAuthenticated(!!token);
       if (!!token) {
@@ -25,7 +25,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const checkUserLeagueStatus = async () => {
+    const checkUserLeagueStatus = async (): Promise<void> => {
       if (isAuthenticated) {
         try {
           const inLeague = await getUserInLeague(token)

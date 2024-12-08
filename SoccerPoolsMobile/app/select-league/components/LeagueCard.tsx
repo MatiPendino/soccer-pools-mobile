@@ -1,15 +1,21 @@
-import { useEffect, useState } from "react"
 import { StyleSheet, Pressable, Text, Image, View } from "react-native"
 import { useToast } from "react-native-toast-notifications"
 import { useRouter } from "expo-router"
 import { betsRegister } from "../../../services/betService"
 import { getToken } from "../../../utils/storeToken"
+import { Slug } from "../../../types"
 
-export default function LeagueCard({leagueTitle, leagueImgUrl, leagueSlug}) {
+interface LeagueCardProps {
+    leagueTitle: string
+    leagueImgUrl: string
+    leagueSlug: Slug
+}
+
+export default function LeagueCard({leagueTitle, leagueImgUrl, leagueSlug}: LeagueCardProps) {
     const toast = useToast()
     const router = useRouter()
 
-    const selectLeague = async () => {
+    const selectLeague = async (): Promise<void> => {
         try {
             const token = await getToken()
             const response = await betsRegister(token, leagueSlug)

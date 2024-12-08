@@ -1,7 +1,12 @@
 import { View, Image, StyleSheet, Text } from "react-native"
 import { API_URL } from "../../../services/api"
 
-export default function TeamLogo({teamBadge, teamName}) {
+interface TeamLogoProps {
+    teamBadge: string
+    teamName: string
+}
+
+export default function TeamLogo({teamBadge, teamName}: TeamLogoProps) {
 
     return (
         <View style={styles.teamContainer}>

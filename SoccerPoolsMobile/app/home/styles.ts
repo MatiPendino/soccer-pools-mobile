@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
         fontSize: 15
     },
     editBtn: {
-        fontWeight: '500'
     },
     editTxt: {
         color: 'white',

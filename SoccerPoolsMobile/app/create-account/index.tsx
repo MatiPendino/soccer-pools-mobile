@@ -6,16 +6,17 @@ import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
 import { register } from "../../services/authService";
 import styles from "./styles";
+import { Email } from "../../types";
 
 export default function CreateAccount({}) {
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [email, setEmail] = useState('')
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+    const [firstName, setFirstName] = useState<string>('')
+    const [lastName, setLastName] = useState<string>('')
+    const [email, setEmail] = useState<Email>('')
+    const [username, setUsername] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
     const toast = useToast()
 
-    const createAccount = async () => {
+    const createAccount = async (): Promise<void> => {
         try {
             const data = await register(firstName, lastName, username, email, password)
             toast.show('Logged in successfully!', {type: 'success'})

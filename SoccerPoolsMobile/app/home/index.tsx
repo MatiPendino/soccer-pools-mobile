@@ -14,6 +14,7 @@ export default function Home({}) {
   return (
     <>
       <Drawer.Navigator 
+        id={undefined}
         initialRouteName="Home"
         screenOptions={({navigation}) => ({
           drawerStyle: {
@@ -21,15 +22,6 @@ export default function Home({}) {
             color: '#fff'
           },
           headerShown: true,
-          /*headerRight: () => (
-            <Ionicons
-              name="menu"
-              size={24}
-              color="black"
-              style={{ marginRight: 10 }}
-              onPress={() => navigation.toggleDrawer()}
-            />
-          ),*/
         })}
         drawerContent={(props) => <CustomDrawerContent {...props} />}
       >
@@ -48,7 +40,7 @@ function CustomDrawerContent(props) {
         <Text style={styles.nameTxt}>Matías Pendino</Text>
         <Text style={styles.emailTxt}>matiaspendino76@gmail.com</Text>
 
-        <Pressable styles={styles.editBtn} onPress={() => {}}>
+        <Pressable style={styles.editBtn} onPress={() => {}}>
           <Text style={styles.editTxt}>EDIT ACCOUNT</Text>
         </Pressable>
       </View>

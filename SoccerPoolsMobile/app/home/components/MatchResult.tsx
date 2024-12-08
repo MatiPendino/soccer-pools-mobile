@@ -1,8 +1,18 @@
 import { View, StyleSheet } from "react-native"
+import { MatchResultProps } from "../../../types"
 import TeamLogo from "./TeamLogo"
 import TeamScore from "./TeamScore"
 
-export default function MatchResult ({currentMatchResult, matchResults, setMatchResults}) {
+
+interface Props {
+    currentMatchResult: MatchResultProps
+    matchResults: MatchResultProps[]
+    setMatchResults: React.Dispatch<React.SetStateAction<MatchResultProps[]>>
+}
+
+export default function MatchResult ({
+    currentMatchResult, matchResults, setMatchResults
+}: Props) {
 
     return (
         <View style={styles.container}>
