@@ -1,27 +1,31 @@
-import { useState } from "react"
-import { API_URL } from "../../../services/api"
-import { View, Text, StyleSheet, Pressable, Image } from "react-native"
+import { View, StyleSheet } from "react-native"
 import TeamLogo from "./TeamLogo"
 import TeamScore from "./TeamScore"
 
-export default function MatchResult ({matchResult}) {
+export default function MatchResult ({currentMatchResult, matchResults, setMatchResults}) {
 
     return (
         <View style={styles.container}>
             <TeamLogo
-                teamName={matchResult.team_1}
-                teamBadge={matchResult.badge_team_1}
+                teamName={currentMatchResult.team_1}
+                teamBadge={currentMatchResult.badge_team_1}
             />
             <TeamScore
-                goals={matchResult.goals_team_1}
+                currentMatchResult={currentMatchResult}
+                teamNum={1}
+                matchResults={matchResults}
+                setMatchResults={setMatchResults}
             />
 
             <TeamScore
-                goals={matchResult.goals_team_2}
+                currentMatchResult={currentMatchResult}
+                teamNum={2}
+                matchResults={matchResults}
+                setMatchResults={setMatchResults}
             />
             <TeamLogo
-                teamName={matchResult.team_2}
-                teamBadge={matchResult.badge_team_2}
+                teamName={currentMatchResult.team_2}
+                teamBadge={currentMatchResult.badge_team_2}
             />
         </View>
     )

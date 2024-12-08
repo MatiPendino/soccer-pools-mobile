@@ -33,7 +33,7 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
     const savePredictions = async () => {
         try {
             const token = await getToken()
-            //matchResultsUpdate(token, )
+            const response = await matchResultsUpdate(token, matchResults)
         } catch (error) {
             toast.show('There´s been an error saving the matches', {type: 'danger'})
         }
@@ -43,7 +43,6 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
         try {
             const token = await getToken()
             getMatchResults(token, roundId)  
-
             updateActiveRound(roundSlug)
         } catch (error) {
             toast.show('There´s been an error getting the matches', {type: 'danger'})
@@ -90,7 +89,11 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
             <FlatList
                 data={matchResults}
                 renderItem={({item}) => (
-                    <MatchResult matchResult={item} />
+                    <MatchResult 
+                        currentMatchResult={item} 
+                        matchResults={matchResults} 
+                        setMatchResults={setMatchResults} 
+                    />
                 )}
                 keyExtractor={(item, index) => index.toString()}
                 contentContainerStyle={styles.matchResultsContainer}
@@ -100,7 +103,7 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}) {
 
             <Pressable
                 style={styles.saveBtn}
-                onPress={() => {console.log('SAVE')}}
+                onPress={() => savePredictions()}
             >
                 <Text style={styles.saveTxt}>SAVE PREDICTIONS</Text>
             </Pressable>
@@ -117,17 +120,19 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        width: '100%',
+        flex: 1,
         paddingTop: 7,
         backgroundColor: '#d9d9d9',
+        height: 50,
         marginBottom: 15
     },
     roundBtn: {
-        paddingBottom: 5
+        marginHorizontal: 15,
+        marginVertical: 0
     },
     roundTxt: {
         fontWeight: '700',
-        fontSize: 19
+        fontSize: 17
     },
     activeRoundBtn: {
         borderBottomColor: '#6860A1',
