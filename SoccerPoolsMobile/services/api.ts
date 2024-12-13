@@ -1,14 +1,14 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const API_URL = 'http://192.168.20.28:8000'
+export const API_URL: string = 'http://192.168.20.30:8000'
 
 const api = axios.create({
     baseURL: API_URL
 })
 
-const refreshToken = async () => {
-    const refrToken = await AsyncStorage.getItem('refreshToken')
+const refreshToken = async (): Promise<void> => {
+    const refrToken: string = await AsyncStorage.getItem('refreshToken')
     if (!refrToken) throw new Error('No refresh token available')
 
     try {
@@ -24,7 +24,7 @@ const refreshToken = async () => {
 
 api.interceptors.request.use(
     async (config) => {
-        const token = await AsyncStorage.getItem('accessToken');
+        const token: string = await AsyncStorage.getItem('accessToken');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
