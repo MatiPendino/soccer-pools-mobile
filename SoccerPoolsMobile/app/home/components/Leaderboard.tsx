@@ -40,6 +40,7 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}: Lead
         try {
             const token = await getToken()
             const response = await matchResultsUpdate(token, matchResults)
+            toast.show('Matches saved successfully!', {type: 'success'})
         } catch (error) {
             toast.show('There´s been an error saving the matches', {type: 'danger'})
         }
@@ -90,6 +91,7 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}: Lead
                 horizontal={true}
                 keyExtractor={(item) => item.slug}
                 showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.leaguesContainer}
             />
             <FlatList
@@ -126,7 +128,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        flex: 1,
         paddingTop: 7,
         backgroundColor: '#d9d9d9',
         height: 50,
