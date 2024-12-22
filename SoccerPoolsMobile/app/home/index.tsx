@@ -12,24 +12,22 @@ const Drawer = createDrawerNavigator()
 
 export default function Home({}) {
   return (
-    <>
-      <Drawer.Navigator 
-        id={undefined}
-        initialRouteName="Home"
-        screenOptions={({navigation}) => ({
-          drawerStyle: {
-            backgroundColor: '#fff',
-            color: '#fff'
-          },
-          headerShown: true,
-        })}
-        drawerContent={(props) => <CustomDrawerContent {...props} />}
-      >
-        <Drawer.Screen name="Home" component={League} />
-        <Drawer.Screen name="How To Play" component={HowToPlay} />
-        <Drawer.Screen name="Settings" component={Settings} />
-      </Drawer.Navigator>  
-    </>
+    <Drawer.Navigator 
+      id={undefined}
+      initialRouteName="Home"
+      screenOptions={({navigation}) => ({
+        drawerStyle: {
+          backgroundColor: '#fff',
+          color: '#fff'
+        },
+        headerShown: true,
+      })}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+    >
+      <Drawer.Screen name="Home" component={League} />
+      <Drawer.Screen name="How To Play" component={HowToPlay} />
+      <Drawer.Screen name="Settings" component={Settings} />
+    </Drawer.Navigator>  
   )
 }
 

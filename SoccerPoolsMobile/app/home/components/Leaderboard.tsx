@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
-import { Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
-import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
+import { View, Text, StyleSheet, Pressable, ActivityIndicator } from "react-native";
 import { useToast } from "react-native-toast-notifications";
+import { GestureHandlerRootView, FlatList } from "react-native-gesture-handler";
+import { RoundProps, RoundsStateProps, BetProps, Slug } from "../../../types";
 import { getToken } from "../../../utils/storeToken";
-import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
-import MatchResult from "./MatchResult";
-import { MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
+import { betsLeaders } from "../../../services/betService";
+import RankedPlayer from "./RankedPlayer";
 
 interface LeaderboardProps {
     rounds: RoundProps[]
+    setRounds: React.Dispatch<React.SetStateAction<RoundProps[]>>
     setRoundsState: React.Dispatch<React.SetStateAction<RoundsStateProps>>
     roundsState: RoundsStateProps
 }
 
-export default function Leaderboard ({rounds, setRoundsState, roundsState}: LeaderboardProps) {
-    const [matchResults, setMatchResults] = useState<MatchResultProps[]>([])
+export default function Leaderboard ({rounds, setRounds, setRoundsState, roundsState}: LeaderboardProps) {
+    const [bets, setBets] = useState<BetProps[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast = useToast()
 
-    const getMatchResults = async (token: string, roundId: number): Promise<void> => {
+    const getBetLeaders = async (token: string, roundSlug: Slug): Promise<void> => {
         try {
-            const matchResults = await matchResultsList(token, roundId)
-            setMatchResults(matchResults)
+            const betLeaders = await betsLeaders(token, roundSlug)
+            setBets(betLeaders)
         } catch (error) {
-            toast.show('There´s been an error getting the matches', {type: 'danger'})
+            toast.show('There´s been an error getting the bets', {type: 'danger'})
         }
     }
 
@@ -36,38 +37,62 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}: Lead
         setRoundsState(newRoundsState)
     }
 
-    const savePredictions = async (): Promise<void> => {
+    const swapRoundBetLeaders = async (roundSlug: Slug): Promise<void> => {
         try {
             const token = await getToken()
-            const response = await matchResultsUpdate(token, matchResults)
-            toast.show('Matches saved successfully!', {type: 'success'})
-        } catch (error) {
-            toast.show('There´s been an error saving the matches', {type: 'danger'})
-        }
-    }
-
-    const swapRoundMatchResults = async (roundId: number, roundSlug: Slug): Promise<void> => {
-        try {
-            const token = await getToken()
-            getMatchResults(token, roundId)  
+            getBetLeaders(token, roundSlug)  
             updateActiveRound(roundSlug)
         } catch (error) {
-            toast.show('There´s been an error getting the matches', {type: 'danger'})
+            toast.show('There´s been an error getting the bets', {type: 'danger'})
         } 
     }
 
     useEffect(() => {
-        const getFirstMatchResults = async (): Promise<void> => {
+        const getFirstBetLeaders = async (): Promise<void> => {
             try {
                 const token = await getToken()
-                getMatchResults(token, rounds[0].id)  
+                getBetLeaders(token, rounds[0].slug)  
             } catch (error) {
                 toast.show('There´s been an error getting the matches', {type: 'danger'})
             } finally {
                 setIsLoading(false)
             }
         }
-        getFirstMatchResults()
+        getFirstBetLeaders()
+        // TODO idea to add General option https://github.com/MatiPendino/soccer-pools-mobile/issues/1
+        /* 
+            For the results tab, we need a "General" round to display the points accumulated
+            throughout the whole league
+            Creation of General round and appended to the rounds list
+        */
+        /* 
+            The slug for the general round equals to the slug of the first round of the list
+            and general-no-repeat
+        */
+        /* const generalRoundSlug = `${rounds[0].slug}-general-no-repeat`
+        const generalRound: RoundProps = {
+            id: 0,
+            league: rounds[0].league,
+            name: 'General',
+            number_round: 0,
+            round_state: 0,
+            slug: generalRoundSlug,
+            start_date: '2020-07-10 15:00:00.000',
+            end_date: '2020-07-10 15:00:00.000'
+        }
+        setRounds([generalRound, ...rounds])
+
+        const getGeneralBetResults = async (): Promise<void> => {
+            try {
+                const token = await getToken()
+                getBetResults(token, generalRoundSlug)  
+            } catch (error) {
+                toast.show('There´s been an error getting the bets', {type: 'danger'})
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        getGeneralBetResults()*/
     }, [])
 
     if (isLoading) {
@@ -80,7 +105,7 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}: Lead
                 data={rounds}
                 renderItem={({item}) => (
                     <Pressable 
-                        onPress={() => swapRoundMatchResults(item.id, item.slug)}
+                        onPress={() => swapRoundBetLeaders(item.slug)}
                         style={[styles.roundBtn, roundsState[item.slug] ? styles.activeRoundBtn : '' ]}
                     >
                         <Text style={[styles.roundTxt, roundsState[item.slug] ? styles.activeRoundTxt : '']}>
@@ -95,26 +120,20 @@ export default function Leaderboard ({rounds, setRoundsState, roundsState}: Lead
                 contentContainerStyle={styles.leaguesContainer}
             />
             <FlatList
-                data={matchResults}
+                data={bets}
                 renderItem={({item}) => (
-                    <MatchResult 
-                        currentMatchResult={item} 
-                        matchResults={matchResults} 
-                        setMatchResults={setMatchResults} 
+                    <RankedPlayer 
+                        index={1} 
+                        username={item.username}
+                        points={item.points}
+                        profileImageUrl={item.profile_image}
                     />
                 )}
                 keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={styles.matchResultsContainer}
+                contentContainerStyle={styles.betResultsContainer}
                 horizontal={false} 
                 showsVerticalScrollIndicator={true}
             />
-
-            <Pressable
-                style={styles.saveBtn}
-                onPress={() => savePredictions()}
-            >
-                <Text style={styles.saveTxt}>SAVE PREDICTIONS</Text>
-            </Pressable>
         </GestureHandlerRootView>
     )
 }
@@ -148,22 +167,8 @@ const styles = StyleSheet.create({
     activeRoundTxt: {
         color: '#6860A1'
     },
-    matchResultsContainer: {
+    betResultsContainer: {
         paddingBottom: 70,
         flexGrow: 1
     },
-    saveBtn: {
-        width: '100%',
-        backgroundColor: '#2F2766',
-        paddingVertical: 20,
-        position: 'absolute',
-        left: 0,
-        bottom: 0
-    },
-    saveTxt: {
-        textAlign: 'center',
-        fontWeight: "600",
-        color: 'white',
-        fontSize: 18
-    }
 })

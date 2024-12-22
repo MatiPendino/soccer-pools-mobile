@@ -79,11 +79,11 @@ export default function League({}) {
                   tabBarStyle: { display: 'flex' },
               })}
           >
-              <Tab.Screen name="Leaderboard">
-                {() => <Leaderboard rounds={rounds} setRoundsState={setRoundsState} roundsState={roundsState} />}
-              </Tab.Screen>
               <Tab.Screen name="Results">
-                {() => <Results rounds={rounds} />}
+                {() => <Results rounds={rounds} setRoundsState={setRoundsState} roundsState={roundsState} />}
+              </Tab.Screen>
+              <Tab.Screen name="Leaderboard">
+                {() => <Leaderboard rounds={rounds} setRounds={setRounds} setRoundsState={setRoundsState} roundsState={roundsState} />}
               </Tab.Screen>
           </Tab.Navigator>
       </NavigationContainer>

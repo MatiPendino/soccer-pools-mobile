@@ -33,3 +33,12 @@ export interface RoundProps {
 export interface RoundsStateProps {
     [key: Slug]: boolean
 }
+
+export interface BetProps {
+    id: number
+    username: string
+    profile_image: string
+    round_id: number
+    points: number
+    operation_code: string
+}
