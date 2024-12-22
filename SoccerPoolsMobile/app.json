@@ -4,7 +4,6 @@
     "slug": "soccer-pools",
     "scheme": "com.soccer-pools-mobile.soccer-pools-mobile",
     "version": "1.0.0",
-    "entryPoint": "./node_modules/expo-router/entry",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
