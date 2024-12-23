@@ -1,10 +1,11 @@
-import { Pressable, ScrollView, Text, Image, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, Text, Image, ActivityIndicator, View } from "react-native";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { useToast } from "react-native-toast-notifications";
+import { useRouter } from "expo-router";
 import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
-import { register } from "../../services/authService";
+import { register, login } from "../../services/authService";
 import styles from "./styles";
 import { Email } from "../../types";
 
@@ -14,14 +15,33 @@ export default function CreateAccount({}) {
     const [email, setEmail] = useState<Email>('')
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const toast = useToast()
+    const router = useRouter()
 
-    const createAccount = async (): Promise<void> => {
+    const logIn = async (): Promise<void> => {
         try {
-            const data = await register(firstName, lastName, username, email, password)
-            toast.show('Logged in successfully!', {type: 'success'})
+            const {access, refresh} = await login(username, password)
+            if (access && refresh) {
+                router.replace('select-league')
+            }
         } catch (error) {
             toast.show(JSON.stringify(error), {type: 'danger'})
+        }
+    }
+
+    const createAccount = async (): Promise<void> => {
+        setIsLoading(true)
+        try {
+            const registerStatus = await register(firstName, lastName, username, email, password)
+            if (registerStatus === 201) {
+                toast.show('Account created successfully!', {type: 'success'})
+                await logIn()
+            }
+        } catch (error) {
+            toast.show(JSON.stringify(error), {type: 'danger'})
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -86,10 +106,15 @@ export default function CreateAccount({}) {
                     isSecureTextEntry={true}
                 />
 
-                <CustomButton callable={createAccount} btnText='CREATE ACCOUNT' />
+                {
+                    isLoading
+                    ?
+                    <ActivityIndicator size="large" color="#0000ff" />
+                    :
+                    <CustomButton callable={createAccount} btnText='CREATE ACCOUNT' />
+                }
 
                 <Link href='/' style={styles.alreadyTxt}>Already Have An Account? Login Here</Link>
-                <Link href='/select-league' style={styles.alreadyTxt}>Select League</Link>
             </ScrollView>    
         </View>
     )
