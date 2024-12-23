@@ -10,8 +10,7 @@ export const register = async(name, last_name, username, email, password) => {
             last_name: last_name,
             password: password, 
         })
-        await storeToken(response.data);
-        return response.data
+        return response.status
     } catch (error) {
         throw error.response.data
     }
@@ -35,6 +34,19 @@ export const login = async(username, password) => {
 export const getUser = async (token) => {
     try {
         const response = await api.get('/api/users/me/', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        throw error.response.data
+    }
+}
+
+export const logout = async (token) => {
+    try {
+        const response = await api.post('/api/auth/jwt/logout/', {
             headers: {
                 Authorization: `Bearer ${token}`
             }

@@ -22,6 +22,16 @@ const refreshToken = async (): Promise<void> => {
     }
 }
 
+export const removeToken = async (): Promise<void> => {
+    try {
+        await AsyncStorage.removeItem('accessToken')
+        await AsyncStorage.removeItem('refreshToken')  
+    } catch (error) {
+        throw error
+    }
+}
+    
+
 api.interceptors.request.use(
     async (config) => {
         const token: string = await AsyncStorage.getItem('accessToken');
