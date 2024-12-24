@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { View, Text, Pressable, ActivityIndicator } from "react-native";
+import { Link } from "expo-router";
 import 'react-native-gesture-handler'
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
@@ -69,9 +70,7 @@ export default function Home({}) {
             <Text style={styles.nameTxt}>{user.name} {user.last_name}</Text>
             <Text style={styles.emailTxt}>{user.email}</Text>
 
-            <Pressable style={styles.editBtn} onPress={() => {}}>
-              <Text style={styles.editTxt}>EDIT ACCOUNT</Text>
-            </Pressable>
+            <Link style={styles.editTxt} href='edit-account'>EDIT ACCOUNT</Link>
           </View>
           <View style={styles.itemsContainer}>
             <DrawerItemList {...props} />

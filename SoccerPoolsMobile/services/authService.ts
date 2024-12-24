@@ -44,6 +44,33 @@ export const getUser = async (token) => {
     }
 }
 
+export const updateUser = async (token, firstName, lastName) => {
+    try {
+        const response = await api.patch('/api/users/me/', {
+            name: firstName,
+            last_name: lastName,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        throw error.response.data
+    }
+}
+
+export const deleteUser = async (token) => {
+    try {
+        await api.delete('/api/user/user_destroy/', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+        })
+    } catch (error) {
+        // When user is removed properly, an Axios Network Error is thrown
+    }
+}
+
 export const logout = async (token) => {
     try {
         const response = await api.post('/api/auth/jwt/logout/', {
