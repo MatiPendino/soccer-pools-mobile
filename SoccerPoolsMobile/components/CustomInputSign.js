@@ -3,20 +3,21 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useState } from "react"
 
 export default function CustomInputSign(
-    {inputMode='text', placeholder, isSecureTextEntry=false, value, setValue}
+    {inputMode='text', placeholder, isSecureTextEntry=false, value, setValue, isActive=true}
 ) {
     const [isPasswordHidden, setIsPasswordHidden] = useState(true)
 
     return (
         <View style={styles.container}>
             <TextInput
-                style={styles.input}
+                style={[styles.input, {color: isActive ? '#fff' : '#ddd'}]}
                 placeholder={placeholder}
                 placeholderTextColor='#ddd'
                 value={value}
                 onChangeText={setValue}
                 secureTextEntry={isPasswordHidden && isSecureTextEntry}
                 inputMode={inputMode}
+                editable={isActive}
             />
             {isSecureTextEntry &&
                 <Pressable
@@ -42,7 +43,6 @@ const styles = StyleSheet.create({
         position: 'relative'
     },
     input: {
-        color: '#fff',
         fontSize: 15,
         borderColor: '#AFB1B6',
         borderWidth: 1,
@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
         paddingStart: 10,
         paddingVertical: 8,
         marginBottom: 20,
-        width: 350
+        width: 350,
+        marginHorizontal: 'auto'
     },
     eyeIcon: {
         position: 'absolute',

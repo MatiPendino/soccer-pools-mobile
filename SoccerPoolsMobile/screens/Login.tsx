@@ -58,7 +58,7 @@ export default function Login({}) {
                 isSecureTextEntry={true}
             />
             
-            <CustomButton callable={logIn} btnText='LOG IN' />
+            <CustomButton callable={logIn} btnText='LOG IN' btnColor='#2F2766' />
 
             <Pressable
                 onPress={() => forgotPassword()}

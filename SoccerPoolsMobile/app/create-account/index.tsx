@@ -111,7 +111,7 @@ export default function CreateAccount({}) {
                     ?
                     <ActivityIndicator size="large" color="#0000ff" />
                     :
-                    <CustomButton callable={createAccount} btnText='CREATE ACCOUNT' />
+                    <CustomButton callable={createAccount} btnText='CREATE ACCOUNT' btnColor='#2F2766' />
                 }
 
                 <Link href='/' style={styles.alreadyTxt}>Already Have An Account? Login Here</Link>
