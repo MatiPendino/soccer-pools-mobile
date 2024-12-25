@@ -96,3 +96,18 @@ export const getUserInLeague = async (token) => {
         throw error.response.data
     }
 }
+
+export const editPassword = async (token, oldPassword, newPassword) => {
+    try {
+        const response = await api.post('/api/users/set_password/', {
+            current_password: oldPassword,
+            new_password: newPassword,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        throw error.response.data
+    }
+}

@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     },
     eyeIcon: {
         position: 'absolute',
-        top: 13,
-        right: 13
+        top: 12,
+        right: 35
     },
 })
