@@ -29,10 +29,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: 50
     },
-    instaContainer: {
-        marginHorizontal: 'auto',
-        marginTop: 200
+    socialMediaContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        marginTop: 200,
+        justifyContent: 'space-around'
     },
+    socialMediaBtn: {},
     logoutBtn: {
         backgroundColor: '#2F2766', 
         display: 'flex', 
@@ -47,7 +50,19 @@ const styles = StyleSheet.create({
         marginStart: 5,
         fontWeight: '600',
         fontSize: 17,
-    }
+    },
+    shareBtn: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+    },
+    shareTxt: {
+        color: "white",
+        fontSize: 24,
+        marginLeft: 10,
+        fontWeight: '600'
+    },
 })
 
 export default styles

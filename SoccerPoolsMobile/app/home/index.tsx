@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, Pressable, ActivityIndicator, Share} from "react-native";
 import { Link } from "expo-router";
 import 'react-native-gesture-handler'
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -9,7 +9,6 @@ import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
 import League from "./screens/League";
 import HowToPlay from "./screens/HowToPlay";
-import Settings from "./screens/Settings";
 import styles from "./styles"
 import { getToken } from "../../utils/storeToken";
 import { getUser } from "../../services/authService";
@@ -51,79 +50,85 @@ export default function Home({}) {
     }
   }
 
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: "Pronosticate all the results and win! Download it here: https://example.com",
+      })
+    } catch (error) {
+      console.error("Error sharing content:", error.message)
+    }
+  }
+
   if (isLoading) {return <ActivityIndicator size="large" color="#0000ff" />}
 
   return (
-    <Drawer.Navigator 
+    <Drawer.Navigator
       id={undefined}
       initialRouteName="Home"
-      screenOptions={({navigation}) => ({
+      screenOptions={({ navigation }) => ({
         drawerStyle: {
-          backgroundColor: '#6860A1',
-          color: 'white'
+          backgroundColor: "#6860A1",
+          color: "white",
         },
         headerShown: true,
       })}
-      drawerContent={(props) => 
-        <DrawerContentScrollView {...props} contentContainerStyle={{justifyContent: 'space-between'}} style={styles.container}>
+      drawerContent={(props) => (
+        <DrawerContentScrollView {...props} contentContainerStyle={{ justifyContent: "space-between" }} style={styles.container}>
           <View style={styles.drawerNavbar}>
-            <Text style={styles.nameTxt}>{user.name} {user.last_name}</Text>
+            <Text style={styles.nameTxt}>
+              {user.name} {user.last_name}
+            </Text>
             <Text style={styles.emailTxt}>{user.email}</Text>
 
-            <Link style={styles.editTxt} href='edit-account'>EDIT ACCOUNT</Link>
+            <Link style={styles.editTxt} href="edit-account">
+              EDIT ACCOUNT
+            </Link>
           </View>
           <View style={styles.itemsContainer}>
             <DrawerItemList {...props} />
-            <View style={styles.instaContainer}>
-              <Entypo name="instagram" size={45} color="white" />
+            <Pressable onPress={handleShare} style={styles.shareBtn}>
+              <Entypo name="share" size={22} color="white" />
+              <Text style={styles.shareTxt}>Share</Text>
+            </Pressable>
+            <View style={styles.socialMediaContainer}>
+                <Link href='https://instagram.com' style={styles.socialMediaBtn}>
+                  <Entypo name="instagram" size={45} color="white" /></Link>
+                <Link href='https://twitter.com' style={styles.socialMediaBtn}>
+                  <Entypo name="twitter" size={45} color="white" />
+                </Link>
             </View>
+            
           </View>
           <Pressable onPress={() => logOut()} style={styles.logoutBtn}>
             <Entypo name="log-out" size={24} color="white" />
             <Text style={styles.logoutTxt}>LOGOUT</Text>
           </Pressable>
         </DrawerContentScrollView>
-      }
+      )}
     >
-      <Drawer.Screen 
-        name="Home" 
-        component={League} 
+      <Drawer.Screen
+        name="Home"
+        component={League}
         options={{
           drawerLabelStyle: {
-            color: 'white',
-            fontSize: 24
+            color: "white",
+            fontSize: 24,
           },
-          drawerIcon: ({}) => (
-            <Entypo name="game-controller" color='white' size={22} />
-          ),
+          drawerIcon: () => <Entypo name="game-controller" color="white" size={22} />,
         }}
       />
-      <Drawer.Screen 
-        name="How To Play" 
-        component={HowToPlay} 
+      <Drawer.Screen
+        name="How To Play"
+        component={HowToPlay}
         options={{
           drawerLabelStyle: {
-            color: 'white',
-            fontSize: 24
+            color: "white",
+            fontSize: 24,
           },
-          drawerIcon: ({}) => (
-            <Entypo name="help" color='white' size={22} />
-          ),
+          drawerIcon: () => <Entypo name="help" color="white" size={22} />,
         }}
       />
-      <Drawer.Screen 
-        name="Settings" 
-        component={Settings} 
-        options={{
-          drawerLabelStyle: {
-            color: 'white',
-            fontSize: 24
-          },
-          drawerIcon: ({}) => (
-            <Entypo name="tools" color='white' size={22} />
-          ),
-        }}
-      />
-    </Drawer.Navigator>  
+    </Drawer.Navigator>
   )
 }
