@@ -1,11 +1,13 @@
 import { Pressable, ScrollView, Text, Image, ActivityIndicator, View } from "react-native";
 import { Link } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
+import * as Google from "expo-auth-session/providers/google";
+import * as AuthSession from "expo-auth-session";
 import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
-import { register, login } from "../../services/authService";
+import { register, login, googleOauth2SignIn, getUserInLeague } from "../../services/authService";
 import styles from "./styles";
 import { Email } from "../../types";
 
@@ -18,6 +20,15 @@ export default function CreateAccount({}) {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const toast = useToast()
     const router = useRouter()
+
+    const userInLeague = async (token: string): Promise<void> => {
+        const inLeague = await getUserInLeague(token)
+        if (inLeague.in_league) {
+            router.replace('/home')
+        } else {
+            router.replace('/select-league')
+        }
+    }
 
     const logIn = async (): Promise<void> => {
         try {
@@ -45,8 +56,28 @@ export default function CreateAccount({}) {
         }
     }
 
-    const googleLogIn = () => {
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        androidClientId: process.env.ANDROID_CLIENT_ID,
+        redirectUri: AuthSession.makeRedirectUri({
+            scheme: 'com.matipendino2001.soccerpools',
+        }),
+    })
 
+    useEffect(() => {
+        googleAuth();
+    }, [response])
+
+    const googleAuth = async () => {    
+        if (response.type === "success") { 
+            try {
+               const {access, refresh} = await googleOauth2SignIn(response.authentication.accessToken)
+                await userInLeague(access) 
+            } catch (error) {
+                toast.show('There`s been an error signing in. Please try again or use a different authentication method', {type: 'danger'})
+            }
+        } else {
+            toast.show("Google login cancelled!", { type: "warning" })
+        }
     }
 
     return (
@@ -57,7 +88,7 @@ export default function CreateAccount({}) {
                 </Text>
 
                 <Pressable 
-                    onPress={() => googleLogIn()}
+                    onPress={() => promptAsync()}
                     style={styles.googleBtn}
                 >
                     <View style={styles.googleContainer}>

@@ -1,8 +1,10 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useToast } from "react-native-toast-notifications"
-import { Text, View, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Image, Pressable, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import { login } from '../services/authService'
+import * as Google from "expo-auth-session/providers/google";
+import * as AuthSession from "expo-auth-session";
+import { googleOauth2SignIn, login } from '../services/authService'
 import { getUserInLeague } from "../services/authService";
 import CustomInputSign from '../components/CustomInputSign';
 import CustomButton from '../components/CustomButton';
@@ -33,9 +35,30 @@ export default function Login({}) {
         }
     }
 
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        androidClientId: process.env.ANDROID_CLIENT_ID,
+        redirectUri: AuthSession.makeRedirectUri({
+            scheme: 'com.matipendino2001.soccerpools',
+        }),
+    })
+
     const forgotPassword = () => {}
-    const createAccount = () => {}
-    const googleLogIn = () => {}
+    useEffect(() => {
+        googleAuth()
+    }, [response])
+
+    const googleAuth = async () => {    
+        if (response.type === "success") { 
+            try {
+               const {access, refresh} = await googleOauth2SignIn(response.authentication.accessToken)
+                await userInLeague(access) 
+            } catch (error) {
+                toast.show('There`s been an error signing in. Please try again or use a different authentication method', {type: 'danger'})
+            }
+        } else {
+            toast.show("Google login cancelled!", { type: "warning" })
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -60,15 +83,15 @@ export default function Login({}) {
             
             <CustomButton callable={logIn} btnText='LOG IN' btnColor='#2F2766' />
 
-            <Pressable
+            {/*<Pressable
                 onPress={() => forgotPassword()}
             >
                 <Text style={styles.forgotCreateText}>Forgot Your Password?</Text>
-            </Pressable>
-            <Link href='/create-account' style={styles.forgotCreateText}>Create Account</Link>
+            </Pressable>*/}
+            <Link href='/create-account' style={styles.forgotCreateText}>CREATE ACCOUNT</Link>
 
             <Pressable
-                onPress={() => googleLogIn()}
+                onPress={() => promptAsync()}
             >
                 <Image
                     source={require('../assets/img/google-icon.webp')}
@@ -101,4 +124,4 @@ const styles = StyleSheet.create({
         height: 67,
         marginTop: 30
     }
-});
+})

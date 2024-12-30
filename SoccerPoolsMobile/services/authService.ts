@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "./api";
 import {storeToken} from "../utils/storeToken"
 
@@ -107,6 +108,22 @@ export const editPassword = async (token, oldPassword, newPassword) => {
             }
         })
         return response.data
+    } catch (error) {
+        throw error.response.data
+    }
+}
+
+export const googleOauth2SignIn = async (accessToken) => {
+    try {
+        const response = await api.post("/api/user/android_google_oauth2/", {
+            accessToken: accessToken ,
+        })
+
+        const {access, refresh} = response.data;
+        await AsyncStorage.setItem("accessToken", access)
+        await AsyncStorage.setItem("refreshToken", refresh)
+
+        return {access, refresh}
     } catch (error) {
         throw error.response.data
     }

@@ -20,13 +20,14 @@
     "@types/react": "~18.3.12",
     "axios": "^1.7.7",
     "expo": "~52.0.20",
+    "expo-auth-session": "~6.0.1",
+    "expo-dev-client": "~5.0.7",
     "expo-image": "~2.0.3",
     "expo-router": "~4.0.14",
     "expo-status-bar": "~2.0.0",
     "install": "^0.13.0",
     "react": "18.3.1",
     "react-native": "^0.76.5",
-    "react-native-dotenv": "^3.4.11",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-paper": "^5.12.5",
     "react-native-reanimated": "^3.16.6",
@@ -37,7 +38,9 @@
     "typescript": "~5.3.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "babel-plugin-inline-dotenv": "^1.7.0",
+    "dotenv": "^16.4.7"
   },
   "private": true
 }
