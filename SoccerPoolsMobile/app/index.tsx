@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import Login from '../screens/Login';
 import { getUserInLeague } from '../services/authService';
 import { getToken } from '../utils/storeToken';
+import { removeToken } from '../services/api';
 
 export default function App() {
   const toast = useToast()
@@ -35,7 +36,8 @@ export default function App() {
             router.replace('/select-league')
           }
         } catch (error) {
-          toast.show('Error checking league status', { type: 'danger' });
+          toast.show('Error checking league status', { type: 'danger' })
+          await removeToken()
         } finally {
           setCheckingLeague(false)
         }
