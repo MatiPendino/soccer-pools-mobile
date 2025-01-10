@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, Pressable, ActivityIndicator, Share} from "react-native";
+import { View, Text, Pressable, ActivityIndicator} from "react-native";
 import { Link } from "expo-router";
 import 'react-native-gesture-handler'
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -13,6 +13,7 @@ import styles from "./styles"
 import { getToken } from "../../utils/storeToken";
 import { getUser } from "../../services/authService";
 import { removeToken } from "../../services/api";
+import handleShare from "../../utils/handleShare";
 
 const Drawer = createDrawerNavigator()
 
@@ -50,18 +51,7 @@ export default function Home({}) {
     }
   }
 
-  const handleShare = async () => {
-    try {
-      await Share.share({
-        message: "Pronosticate all the results and win! Download it here: https://example.com",
-      })
-    } catch (error) {
-      console.error("Error sharing content:", error.message)
-    }
-  }
-
   if (isLoading) {return <ActivityIndicator size="large" color="#0000ff" />}
-
   return (
     <Drawer.Navigator
       id={undefined}

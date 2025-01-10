@@ -6,6 +6,7 @@ import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
 import MatchResult from "./MatchResult";
 import { MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
+import { updateActiveRound } from "../../../utils/leagueRounds";
 
 interface ResultsProps {
     rounds: RoundProps[]
@@ -27,15 +28,6 @@ export default function Results ({rounds, setRoundsState, roundsState}: ResultsP
         }
     }
 
-    const updateActiveRound = (roundSlug: Slug): void => {
-        const newRoundsState = Object.keys(roundsState).reduce((updatedRoundsState: RoundsStateProps, key) => {
-            updatedRoundsState[key] = key === roundSlug
-            return updatedRoundsState
-        }, {} as RoundsStateProps)
-    
-        setRoundsState(newRoundsState)
-    }
-
     const savePredictions = async (): Promise<void> => {
         try {
             const token = await getToken()
@@ -50,7 +42,7 @@ export default function Results ({rounds, setRoundsState, roundsState}: ResultsP
         try {
             const token = await getToken()
             getMatchResults(token, roundId)  
-            updateActiveRound(roundSlug)
+            setRoundsState(updateActiveRound(roundSlug, roundsState))
         } catch (error) {
             toast.show('There´s been an error getting the matches', {type: 'danger'})
         } 

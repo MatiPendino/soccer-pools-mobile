@@ -1,5 +1,5 @@
 import { View, StyleSheet, Image, Text } from "react-native"
-import { API_URL } from "../../../services/api"
+import { API_URL } from "../services/api"
 
 interface RankedPlayerProps {
     index: number
