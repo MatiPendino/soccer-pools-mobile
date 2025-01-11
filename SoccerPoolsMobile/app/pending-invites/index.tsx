@@ -82,12 +82,12 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#6860A1',
         flex: 1,
-        paddingHorizontal: 10
     },
     topBar: {
-        backgroundColor: '#6860A1',
+        backgroundColor: '#2F2766',
         flexDirection: 'row',
         paddingVertical: 15,
+        marginTop: 20,
         paddingHorizontal: 5
     },
     topBarTxt: {
@@ -96,7 +96,9 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         marginStart: 5
     },
-    invitesContainer: {},
+    invitesContainer: {
+        paddingHorizontal: 10
+    },
     noPendingInvites: {
         marginVertical: 'auto'
     },

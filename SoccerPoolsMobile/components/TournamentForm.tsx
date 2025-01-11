@@ -61,32 +61,35 @@ export default function TournamentForm({ initialData, onSubmit, buttonLabel, isC
                 </Pressable>
             </View>
 
-            <TextInput
-                style={styles.inputTxt}
-                placeholder="Tournament Name..."
-                placeholderTextColor='white'
-                value={tournamentName}
-                onChangeText={setTournamentName}
-            />
+            <View style={styles.contentContainer}>
+                <TextInput
+                    style={styles.inputTxt}
+                    placeholder="Tournament Name..."
+                    placeholderTextColor='white'
+                    value={tournamentName}
+                    onChangeText={setTournamentName}
+                />
 
-            <AddPhotoButton 
-                label="Add Tournament Image" 
-                onPress={pickImage} 
-                logo={logo} 
-            />
+                <AddPhotoButton 
+                    label="Add Tournament Image" 
+                    onPress={pickImage} 
+                    logo={logo} 
+                />
 
-            <TextInput
-                style={[styles.inputTxt, styles.textArea]}
-                placeholder="Add a description for your tournament (optional)..."
-                placeholderTextColor='white'
-                value={description}
-                onChangeText={setDescription}
-                multiline
-            />
+                <TextInput
+                    style={[styles.inputTxt, styles.textArea]}
+                    placeholder="Add a description for your tournament (optional)..."
+                    placeholderTextColor='white'
+                    value={description}
+                    onChangeText={setDescription}
+                    multiline
+                />
 
-            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-                <Text style={styles.buttonText}>{buttonLabel}</Text>
-            </TouchableOpacity>
+                <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+                    <Text style={styles.buttonText}>{buttonLabel}</Text>
+                </TouchableOpacity>
+            </View>
+            
         </View>
     );
 }
@@ -95,14 +98,17 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#6860A1',
         flex: 1,
-        paddingHorizontal: 20
     },
     topBar: {
-        backgroundColor: '#6860A1',
+        backgroundColor: '#2F2766',
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingVertical: 15,
+        marginTop: 20,
         paddingHorizontal: 5
+    },
+    contentContainer: {
+        paddingHorizontal: 20
     },
     tntNameTxt: {
         color: 'white',
