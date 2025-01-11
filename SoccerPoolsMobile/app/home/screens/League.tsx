@@ -29,7 +29,7 @@ export default function League({}) {
         setLeague(temp_league)
         const roundsByLeague = await getRounds(token, temp_league.id)
         setRounds(roundsByLeague)
-        setRoundsState(getRoundsState(rounds))
+        setRoundsState(getRoundsState(roundsByLeague))
       } catch (error) {
         console.log(error)
         toast.show('There is been an error displayinh league information', {type: 'danger'})

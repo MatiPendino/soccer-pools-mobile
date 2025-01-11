@@ -137,11 +137,12 @@ const styles = StyleSheet.create({
         flex: 1
     },
     topBar: {
-        backgroundColor: '#6860A1',
+        backgroundColor: '#2F2766',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingVertical: 15,
+        marginTop: 20,
         paddingHorizontal: 5
     },
     arrowNameContainer: {
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         paddingTop: 7,
         backgroundColor: '#d9d9d9',
-        height: 50,
+        height: 40,
         marginBottom: 15
     },
     roundBtn: {
@@ -172,10 +173,10 @@ const styles = StyleSheet.create({
         fontSize: 17
     },
     activeRoundBtn: {
-        borderBottomColor: '#6860A1',
-        borderBottomWidth: 5,
     },
     activeRoundTxt: {
-        color: '#6860A1'
+        color: '#6860A1',
+        borderBottomColor: '#6860A1',
+        borderBottomWidth: 5,
     },
 })
