@@ -61,6 +61,10 @@ export default function Home({}) {
           backgroundColor: "#6860A1",
           color: "white",
         },
+        headerStyle: {
+          backgroundColor: '#2F2766',
+        },
+        headerTintColor: 'white',
         headerShown: true,
       })}
       drawerContent={(props) => (
