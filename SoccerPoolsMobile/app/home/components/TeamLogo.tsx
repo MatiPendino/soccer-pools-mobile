@@ -1,5 +1,4 @@
 import { View, Image, StyleSheet, Text } from "react-native"
-import { API_URL } from "../../../services/api"
 
 interface TeamLogoProps {
     teamBadge: string
@@ -12,7 +11,7 @@ export default function TeamLogo({teamBadge, teamName}: TeamLogoProps) {
         <View style={styles.teamContainer}>
             <Image 
                 style={styles.teamImg}
-                source={{ uri: `${API_URL}${teamBadge}`}}
+                source={{ uri: `${teamBadge}`}}
             />
             <Text style={styles.teamName}>
                 {teamName}
@@ -28,8 +27,8 @@ const styles = StyleSheet.create({
         marginVertical: 'auto'
     },
     teamImg: {
-        width: 70,
-        height: 70,
+        width: 50,
+        height: 50,
         objectFit: 'contain',
         marginHorizontal: 'auto'
     },

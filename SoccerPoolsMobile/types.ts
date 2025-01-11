@@ -2,6 +2,12 @@ export type Slug = string
 export type ISO8601DateString = string
 export type Email = string
 
+export interface TeamProps {
+    name: string
+    badge: string
+    slug: Slug
+}
+
 export interface UserProps {
     id: number
     name: string
@@ -11,14 +17,20 @@ export interface UserProps {
     profile_image: string
 }
 
+export interface MatchProps {
+    id: number
+    team_1: TeamProps
+    team_2: TeamProps
+    round: RoundProps
+    start_date: ISO8601DateString
+    match_state: number
+}
+
 export interface MatchResultProps {
-    badge_team_1: string
-    badge_team_2: string
+    id: number
     goals_team_1: number
     goals_team_2: number
-    id: number
-    team_1: string
-    team_2: string
+    match: MatchProps
 }
 
 export interface LeagueProps {

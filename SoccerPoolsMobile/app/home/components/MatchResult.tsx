@@ -17,8 +17,8 @@ export default function MatchResult ({
     return (
         <View style={styles.container}>
             <TeamLogo
-                teamName={currentMatchResult.team_1}
-                teamBadge={currentMatchResult.badge_team_1}
+                teamName={currentMatchResult.match.team_1.name}
+                teamBadge={currentMatchResult.match.team_1.badge}
             />
             <TeamScore
                 currentMatchResult={currentMatchResult}
@@ -34,8 +34,8 @@ export default function MatchResult ({
                 setMatchResults={setMatchResults}
             />
             <TeamLogo
-                teamName={currentMatchResult.team_2}
-                teamBadge={currentMatchResult.badge_team_2}
+                teamName={currentMatchResult.match.team_2.name}
+                teamBadge={currentMatchResult.match.team_2.badge}
             />
         </View>
     )
