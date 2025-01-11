@@ -12,9 +12,9 @@ export default function RankedPlayersFlatList ({bets}: Props) {
     return (
         <FlatList
             data={bets}
-            renderItem={({item}) => (
+            renderItem={({item, index}) => (
                 <RankedPlayer 
-                    index={1} 
+                    index={index+1} 
                     username={item.username}
                     points={item.points}
                     profileImageUrl={item.profile_image}
