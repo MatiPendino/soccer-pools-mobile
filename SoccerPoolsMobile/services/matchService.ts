@@ -1,5 +1,19 @@
 import api from "./api";
 
+export const retrieveOriginalMatchResult = async (token, matchId) => {
+    try {
+        const response = await api.get(`/api/matches/original_match_result/${matchId}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return response.data
+    } catch (error) {
+        throw error.response.data
+    }
+}
+
 export const matchResultsList = async (token, roundId) => {
     try {
         const matchResults = await api.get(`api/matches/match_results/?round_id=${roundId}`, {

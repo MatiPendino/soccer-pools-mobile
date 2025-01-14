@@ -31,6 +31,7 @@ export interface MatchResultProps {
     goals_team_1: number
     goals_team_2: number
     match: MatchProps
+    points: number
 }
 
 export interface LeagueProps {

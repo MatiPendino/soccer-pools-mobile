@@ -77,7 +77,8 @@ export default function TeamScore({
 
 const styles = StyleSheet.create({
     scoreContainer: {
-        marginVertical: 'auto'
+        marginVertical: 'auto',
+        marginHorizontal: 2
     },
     goalsBtn: {
         backgroundColor: 'rgb(190,190,190)',
