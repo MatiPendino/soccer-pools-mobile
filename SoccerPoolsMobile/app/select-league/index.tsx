@@ -6,8 +6,10 @@ import { getToken } from "../../utils/storeToken"
 import LeagueCard from "./components/LeagueCard"
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { LeagueProps } from "../../types"
+import { useTranslation } from "react-i18next"
 
 export default function SelectLeague({}) {
+    const { t } = useTranslation()
     const toast = useToast()
     const [leagues, setLeagues] = useState<LeagueProps[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -35,7 +37,7 @@ export default function SelectLeague({}) {
 
     return (
         <GestureHandlerRootView style={styles.container}>
-            <Text style={styles.selectLeagueTxt}>Select a League</Text>
+            <Text style={styles.selectLeagueTxt}>{t('select-league')}</Text>
             <FlatList
                 data={leagues}
                 renderItem={({ item }) => (

@@ -5,6 +5,7 @@ import { Router, useRouter } from "expo-router"
 import { getToken } from "../../../utils/storeToken"
 import { patchTournamentUser, retrieveTournamentUser } from "../../../services/tournamentService"
 import { Email, TournamentUserProps } from "../../../types"
+import { useTranslation } from "react-i18next"
 
 interface TournamentCardProps {
     name: string
@@ -19,6 +20,7 @@ interface TournamentCardProps {
 export default function TournamentCard(
     {name, logoUrl, nParticipants, adminEmail, adminUsername, tournamentId, leagueId}: TournamentCardProps) 
 {
+    const { t } = useTranslation()
     const [tournamentUser, setTournamentUser] = useState<TournamentUserProps>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast: ToastType = useToast()
@@ -42,13 +44,13 @@ export default function TournamentCard(
     const tournamentStateConversion = (): React.JSX.Element => {
         switch (tournamentUser.tournament_user_state) {
             case 0:
-                return <Text style={[styles.stateTxt, {color: '#0C9A24'}]}>APPLY</Text>
+                return <Text style={[styles.stateTxt, {color: '#0C9A24'}]}>{t('apply')}</Text>
             case 1:
-                return <Text style={[styles.stateTxt, {color: '#979A0C'}]}>PENDING</Text>
+                return <Text style={[styles.stateTxt, {color: '#979A0C'}]}>{t('pending')}</Text>
             case 2:
-                return <Text style={[styles.stateTxt, {color: '#6860A1'}]}>JOINED</Text>
+                return <Text style={[styles.stateTxt, {color: '#6860A1'}]}>{t('joined')}</Text>
             case 3:
-                return <Text style={[styles.stateTxt, {color: '#C52424'}]}>REJECTED</Text>
+                return <Text style={[styles.stateTxt, {color: '#C52424'}]}>{t('rejected')}</Text>
         }
     }
 
@@ -57,7 +59,7 @@ export default function TournamentCard(
         try {
             const token: string = await getToken()
             await patchTournamentUser(token, 1, tournamentUser.id)
-            toast.show('Your join request has been sent to the tournament admin!', {type: 'success'})
+            toast.show(t('join-request-sent'), {type: 'success'})
         } catch (error) {
             toast.show('There is been an error trying to send the join request', {type: 'error'})
         } finally {
@@ -71,7 +73,7 @@ export default function TournamentCard(
                 joinTournament()
                 break
             case 1:
-                toast.show('You already sent a request to join this tournament. Please wait or contact the tournament admin to be approved.', {type: 'warning'})
+                toast.show(t('already-request-sent'), {type: 'warning'})
                 break
             case 2:
                 router.push({
@@ -85,7 +87,7 @@ export default function TournamentCard(
                 })
                 break
             case 3:
-                toast.show('You have been rejected to join this tournament and cannot try to join again', {type: 'error'})
+                toast.show(t('request-rejected'), {type: 'error'})
                 break
         }
     }
@@ -99,7 +101,7 @@ export default function TournamentCard(
             <View style={styles.textsContainer}>
                 <Text style={styles.tournamentNameTxt}>{name}</Text>
                 <Text style={styles.adminTxt}>ADMIN: {adminUsername}</Text>
-                <Text style={styles.participantsTxt}>PARTICIPANTS: {nParticipants}</Text>
+                {/*<Text style={styles.participantsTxt}>PARTICIPANTS: {nParticipants}</Text> */}
             </View>
             {
                 !isLoading

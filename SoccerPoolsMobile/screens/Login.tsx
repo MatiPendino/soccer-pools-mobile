@@ -8,9 +8,11 @@ import { googleOauth2SignIn, login } from '../services/authService'
 import { getUserInLeague } from "../services/authService";
 import CustomInputSign from '../components/CustomInputSign';
 import CustomButton from '../components/CustomButton';
+import { useTranslation } from "react-i18next";
 
 
 export default function Login({}) {
+    const { t } = useTranslation()
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const router = useRouter()
@@ -28,7 +30,7 @@ export default function Login({}) {
     const logIn = async (): Promise<void> => {
         try {
             const {access, refresh} = await login(username, password)
-            toast.show('Logged in successfully!', {type: 'success'})
+            toast.show(t('logged-in-successfully'), {type: 'success'})
             await userInLeague(access)
         } catch (error) {
             toast.show(JSON.stringify(error), {type: 'danger'})
@@ -71,24 +73,24 @@ export default function Login({}) {
                 inputMode='username'
                 value={username}
                 setValue={setUsername}
-                placeholder='Username'
+                placeholder={t('username')}
             />
 
             <CustomInputSign
                 value={password}
                 setValue={setPassword}
-                placeholder='Password'
+                placeholder={t('password')}
                 isSecureTextEntry={true}
             />
             
-            <CustomButton callable={logIn} btnText='LOG IN' btnColor='#2F2766' />
+            <CustomButton callable={logIn} btnText={t('log-in')} btnColor='#2F2766' />
 
             {/*<Pressable
                 onPress={() => forgotPassword()}
             >
                 <Text style={styles.forgotCreateText}>Forgot Your Password?</Text>
             </Pressable>*/}
-            <Link href='/create-account' style={styles.forgotCreateText}>CREATE ACCOUNT</Link>
+            <Link href='/create-account' style={styles.forgotCreateText}>{t('create-account')}</Link>
 
             <Pressable
                 onPress={() => promptAsync()}

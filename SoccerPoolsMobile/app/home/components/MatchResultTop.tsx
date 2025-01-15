@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { StyleSheet, Text, View } from "react-native"
 
 interface MatchResultTopProps {
@@ -6,7 +7,7 @@ interface MatchResultTopProps {
 }
 
 export default function MatchResultTop({roundState, points}: MatchResultTopProps) {
-
+    const { t } = useTranslation()
     if (roundState === 0) return <View></View>
     return (
         <View style={styles.topContainer}>
@@ -14,9 +15,9 @@ export default function MatchResultTop({roundState, points}: MatchResultTopProps
                 {
                     roundState === 1
                     ?
-                    'PENDING'
+                    t('pending')
                     :
-                    'FINALIZED'
+                    t('finalized')
                 }
             </Text>
 

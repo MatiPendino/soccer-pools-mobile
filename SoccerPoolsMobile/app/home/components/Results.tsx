@@ -7,6 +7,7 @@ import { matchResultsList, matchResultsUpdate } from "../../../services/matchSer
 import MatchResult from "./MatchResult";
 import { MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
 import { updateActiveRound } from "../../../utils/leagueRounds";
+import { useTranslation } from "react-i18next";
 
 interface ResultsProps {
     rounds: RoundProps[]
@@ -15,6 +16,7 @@ interface ResultsProps {
 }
 
 export default function Results ({rounds, setRoundsState, roundsState}: ResultsProps) {
+    const { t } = useTranslation()
     const [matchResults, setMatchResults] = useState<MatchResultProps[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast = useToast()
@@ -32,7 +34,7 @@ export default function Results ({rounds, setRoundsState, roundsState}: ResultsP
         try {
             const token = await getToken()
             const response = await matchResultsUpdate(token, matchResults)
-            toast.show('Matches saved successfully!', {type: 'success'})
+            toast.show(t('matches-saved-successfully'), {type: 'success'})
         } catch (error) {
             toast.show('There´s been an error saving the matches', {type: 'danger'})
         }
@@ -105,7 +107,7 @@ export default function Results ({rounds, setRoundsState, roundsState}: ResultsP
                 style={styles.saveBtn}
                 onPress={() => savePredictions()}
             >
-                <Text style={styles.saveTxt}>SAVE PREDICTIONS</Text>
+                <Text style={styles.saveTxt}>{t('save-predictions')}</Text>
             </Pressable>
         </GestureHandlerRootView>
     )

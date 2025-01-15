@@ -1,18 +1,20 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { View, Text, StyleSheet, Dimensions, FlatList, ScaledSize } from "react-native"
 
 const { width: screenWidth }: ScaledSize = Dimensions.get("window")
 
-const data = [
-    { id: 1, text: 'You will be able to complete the outcome of a match before it begins. Do not forget to click "SAVE PREDICTIONS" to update the results' },
-    { id: 2, text: 'Suspended/Cancelled matches in leagues will not be considered. Postponed cup matches will be considered once they are played' },
-    { id: 3, text: 'If you hit the winner or draw, you will get 1 point. If you get the exact outcome, you will get 3 points. 0 points if you miss the outcome' },
-    { id: 4, text: 'You can create as many tournaments and join as many as you like' },
-    { id: 5, text: 'The app is free, and contains adds. If you wish to avoid adds, you can get the premium no adds version. It will be truly appreciated' },
-]
-
 export default function HowToPlay({}) {
+    const { t } = useTranslation()
     const [activeSlide, setActiveSlide] = useState<number>(0)
+
+    const data = [
+        { id: 1, text: t('htp-1') },
+        { id: 2, text: t('htp-2') },
+        { id: 3, text: t('htp-3') },
+        { id: 4, text: t('htp-4') },
+        { id: 5, text: t('htp-5') },
+    ]
 
     const renderItem = ({ item }) => (
         <View style={styles.slide}>

@@ -14,10 +14,12 @@ import { getToken } from "../../utils/storeToken";
 import { getUser } from "../../services/authService";
 import { removeToken } from "../../services/api";
 import handleShare from "../../utils/handleShare";
+import { useTranslation } from "react-i18next";
 
 const Drawer = createDrawerNavigator()
 
 export default function Home({}) {
+  const { t } = useTranslation()
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const toast = useToast()
@@ -44,7 +46,7 @@ export default function Home({}) {
   const logOut = async () => {
     try {
       await removeToken()
-      toast.show('Session finishes', {type: 'success'})
+      toast.show(t('session-finished'), {type: 'success'})
       router.replace('/')
     } catch (error) {
       toast.show('There was an error logging out', {type: 'danger'})
@@ -76,14 +78,14 @@ export default function Home({}) {
             <Text style={styles.emailTxt}>{user.email}</Text>
 
             <Link style={styles.editTxt} href="edit-account">
-              EDIT ACCOUNT
+              {t('update-account')}
             </Link>
           </View>
           <View style={styles.itemsContainer}>
             <DrawerItemList {...props} />
             <Pressable onPress={handleShare} style={styles.shareBtn}>
               <Entypo name="share" size={22} color="white" />
-              <Text style={styles.shareTxt}>Share</Text>
+              <Text style={styles.shareTxt}>{t('share')}</Text>
             </Pressable>
             <View style={styles.socialMediaContainer}>
                 <Link href='https://instagram.com' style={styles.socialMediaBtn}>
@@ -96,7 +98,7 @@ export default function Home({}) {
           </View>
           <Pressable onPress={() => logOut()} style={styles.logoutBtn}>
             <Entypo name="log-out" size={24} color="white" />
-            <Text style={styles.logoutTxt}>LOGOUT</Text>
+            <Text style={styles.logoutTxt}>{t('log-out')}</Text>
           </Pressable>
         </DrawerContentScrollView>
       )}

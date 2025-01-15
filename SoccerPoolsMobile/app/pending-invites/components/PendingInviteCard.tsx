@@ -3,6 +3,8 @@ import { StyleSheet, View, Text, Image, Pressable } from "react-native"
 import { ToastType, useToast } from "react-native-toast-notifications"
 import { updateStateTournamentUser } from "../../../services/tournamentService"
 import { TournamentUserProps } from "../../../types"
+import { ActivityIndicator } from "react-native-paper"
+import { useTranslation } from "react-i18next"
 
 interface PendingInviteCardProps {
     id: number
@@ -16,6 +18,7 @@ interface PendingInviteCardProps {
 export default function PendingInviteCard({
     id, token, username, userLogoUrl, setPendingTournamentUsers, pendingTournamentUsers
 }: PendingInviteCardProps) {
+    const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const toast: ToastType = useToast()
 
@@ -28,7 +31,7 @@ export default function PendingInviteCard({
         } catch (error) {
             toast.show('There is been an error updating the state', {type: 'danger'})
         } finally {
-            setIsLoading(true)
+            setIsLoading(false)
         }
     }
 
@@ -39,18 +42,26 @@ export default function PendingInviteCard({
                 style={styles.userLogoImg}
             />
             <Text style={styles.usernameTxt}>{username}</Text>
-            <Pressable 
-                style={[styles.btn, styles.acceptBtn]} 
-                onPress={() => handlePendingInvite(true)}
-            >
-                <Text style={[styles.btnTxt]}>ACCEPT</Text>
-            </Pressable>
-            <Pressable 
-                style={[styles.btn, styles.rejectBtn]} 
-                onPress={() => handlePendingInvite(false)}
-            >
-                <Text style={[styles.btnTxt]}>REJECT</Text>
-            </Pressable>
+            {
+                isLoading
+                ?
+                    <ActivityIndicator size="large" color="#0000ff" />
+                :
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                        <Pressable 
+                            style={[styles.btn, styles.acceptBtn]} 
+                            onPress={() => handlePendingInvite(true)}
+                        >
+                            <Text style={[styles.btnTxt]}>{t('accept')}</Text>
+                        </Pressable>
+                        <Pressable 
+                            style={[styles.btn, styles.rejectBtn]} 
+                            onPress={() => handlePendingInvite(false)}
+                        >
+                            <Text style={[styles.btnTxt]}>{t('reject')}</Text>
+                        </Pressable>
+                    </View>
+            }
         </View>
     )
 }

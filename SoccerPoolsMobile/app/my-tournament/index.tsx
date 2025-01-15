@@ -11,9 +11,11 @@ import { getToken } from "../../utils/storeToken";
 import RankedPlayersFlatList from "../../components/RankedPlayersFlatList";
 import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../utils/leagueRounds";
 import handleShare from "../../utils/handleShare";
+import { useTranslation } from "react-i18next";
 
 
 export default function MyTournament({}) {
+    const { t } = useTranslation()
     const { tournamentName, tournamentId, leagueId, isAdmin } = useLocalSearchParams()
     const [bets, setBets] = useState<BetProps[]>(null)
     const [rounds, setRounds] = useState<RoundProps[]>([])
@@ -92,13 +94,23 @@ export default function MyTournament({}) {
                                 </Pressable>
                             }
                         >
-                            <Menu.Item onPress={handleShare} title="Invite Friends" />
+                            <Menu.Item onPress={handleShare} title={t('invite-friends')} />
                             {
                                 Boolean(isAdmin)
                                 ?
                                 <View>
-                                    <Menu.Item onPress={() => handleTournamentClick('pending-invites')} title="Pending Invites" />
-                                    <Menu.Item onPress={() => handleTournamentClick('edit-tournament')} title="Tournament Settings" />
+                                    <Menu.Item 
+                                        onPress={
+                                            () => handleTournamentClick('pending-invites')
+                                        } 
+                                        title={t('pending-invites')}
+                                    />
+                                    <Menu.Item 
+                                        onPress={
+                                            () => handleTournamentClick('edit-tournament')
+                                        } 
+                                        title={t('tournament-settings')}
+                                    />
                                 </View>
                                 :
                                 <View></View>

@@ -3,8 +3,10 @@ import { Router, useLocalSearchParams, useRouter } from "expo-router";
 import { ToastType, useToast } from "react-native-toast-notifications";
 import { getToken } from "../../utils/storeToken";
 import { createTournament } from "../../services/tournamentService";
+import { useTranslation } from "react-i18next";
 
 export default function CreateTournament () {
+    const { t } = useTranslation()
     const router: Router = useRouter()
     const toast: ToastType = useToast()
     const { leagueId } = useLocalSearchParams()
@@ -16,7 +18,7 @@ export default function CreateTournament () {
                 token, data.name, data.description, data.logo, Number(leagueId)
             )
             if (tournament) {
-                toast.show('Your tournament was created successfully!')
+                toast.show(t('tournament-created-successfully'))
                 router.push({
                     pathname: 'my-tournament',
                     params: {
@@ -35,7 +37,7 @@ export default function CreateTournament () {
     return (
         <TournamentForm 
             onSubmit={handleCreate} 
-            buttonLabel="CREATE TOURNAMENT" 
+            buttonLabel={t('create-tournament')}
             isCreationMode={true}
         />
     )

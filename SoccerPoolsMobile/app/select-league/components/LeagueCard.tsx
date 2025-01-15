@@ -4,6 +4,7 @@ import { useRouter } from "expo-router"
 import { betsRegister } from "../../../services/betService"
 import { getToken } from "../../../utils/storeToken"
 import { Slug } from "../../../types"
+import { useTranslation } from "react-i18next"
 
 interface LeagueCardProps {
     leagueTitle: string
@@ -12,6 +13,7 @@ interface LeagueCardProps {
 }
 
 export default function LeagueCard({leagueTitle, leagueImgUrl, leagueSlug}: LeagueCardProps) {
+    const { t } = useTranslation()
     const toast = useToast()
     const router = useRouter()
 
@@ -19,7 +21,7 @@ export default function LeagueCard({leagueTitle, leagueImgUrl, leagueSlug}: Leag
         try {
             const token = await getToken()
             const response = await betsRegister(token, leagueSlug)
-            toast.show(`You have joined ${leagueTitle} league successfully!`, { type: 'success' });
+            toast.show(t('joined-league-successfully', {leagueTitle: leagueTitle}), { type: 'success' });
             router.replace('/home')
         } catch (error) {
             toast.show('There is been an error joining the league. Please try later', { type: 'danger' });

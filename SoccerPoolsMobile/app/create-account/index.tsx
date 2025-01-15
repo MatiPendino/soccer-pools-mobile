@@ -10,8 +10,10 @@ import CustomButton from "../../components/CustomButton";
 import { register, login, googleOauth2SignIn, getUserInLeague } from "../../services/authService";
 import styles from "./styles";
 import { Email } from "../../types";
+import { useTranslation } from "react-i18next";
 
 export default function CreateAccount({}) {
+    const { t, i18n } = useTranslation()
     const [firstName, setFirstName] = useState<string>('')
     const [lastName, setLastName] = useState<string>('')
     const [email, setEmail] = useState<Email>('')
@@ -46,7 +48,7 @@ export default function CreateAccount({}) {
         try {
             const registerStatus = await register(firstName, lastName, username, email, password)
             if (registerStatus === 201) {
-                toast.show('Account created successfully!', {type: 'success'})
+                toast.show(t('account-created-successfully'), {type: 'success'})
                 await logIn()
             }
         } catch (error) {
@@ -84,7 +86,7 @@ export default function CreateAccount({}) {
         <View style={styles.viewContainer}>
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <Text style={styles.createTxt}>
-                    Create Your SoccerPools Account
+                    {t('create-your-account')}
                 </Text>
 
                 <Pressable 
@@ -92,7 +94,7 @@ export default function CreateAccount({}) {
                     style={styles.googleBtn}
                 >
                     <View style={styles.googleContainer}>
-                        <Text style={styles.googleTxt}>SIGN UP WITH</Text>
+                        <Text style={styles.googleTxt}>{t('sign-up-with')}</Text>
                         <Image
                             source={require('../../assets/img/google-icon.webp')}
                             style={styles.googleImg}
@@ -102,36 +104,36 @@ export default function CreateAccount({}) {
 
                 <View style={styles.separationContainer}>
                     <View style={styles.whiteLine}></View>
-                    <Text style={styles.orTxt}>Or</Text>
+                    <Text style={styles.orTxt}>{t('or')}</Text>
                     <View style={styles.whiteLine}></View>
                 </View>
 
                 <CustomInputSign
-                    placeholder='First Name'
+                    placeholder={t('first-name')}
                     value={firstName}
                     setValue={setFirstName}
                 />
 
                 <CustomInputSign
-                    placeholder='Last Name'
+                    placeholder={t('last-name')}
                     value={lastName}
                     setValue={setLastName}
                 />
 
                 <CustomInputSign
-                    placeholder='Username'
+                    placeholder={t('username')}
                     value={username}
                     setValue={setUsername}
                 />
 
                 <CustomInputSign
-                    placeholder='E-mail'
+                    placeholder={t('email')}
                     value={email}
                     setValue={setEmail}
                 />
 
                 <CustomInputSign
-                    placeholder='Password'
+                    placeholder={t('password')}
                     value={password}
                     setValue={setPassword}
                     isSecureTextEntry={true}
@@ -142,10 +144,10 @@ export default function CreateAccount({}) {
                     ?
                     <ActivityIndicator size="large" color="#0000ff" />
                     :
-                    <CustomButton callable={createAccount} btnText='CREATE ACCOUNT' btnColor='#2F2766' />
+                    <CustomButton callable={createAccount} btnText={t('create-account')} btnColor='#2F2766' />
                 }
 
-                <Link href='/' style={styles.alreadyTxt}>Already Have An Account? Login Here</Link>
+                <Link href='/' style={styles.alreadyTxt}>{t('already-account')}</Link>
             </ScrollView>    
         </View>
     )

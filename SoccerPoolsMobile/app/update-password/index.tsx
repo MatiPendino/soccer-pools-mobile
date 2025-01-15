@@ -6,8 +6,10 @@ import CustomButton from "../../components/CustomButton"
 import CustomInputSign from "../../components/CustomInputSign"
 import { getToken } from "../../utils/storeToken"
 import { editPassword } from "../../services/authService"
+import { useTranslation } from "react-i18next"
 
 export default function UpdatePassword({}) {
+    const { t } = useTranslation()
     const [oldPassword, setOldPassword] = useState<string>('')
     const [newPassword, setNewPassword] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -20,7 +22,7 @@ export default function UpdatePassword({}) {
             await editPassword(token, oldPassword, newPassword)
             setOldPassword('')
             setNewPassword('')
-            toast.show('Password was updated successfully!', {type: 'success'})
+            toast.show(t('password-updated-successfully'), {type: 'success'})
         } catch (error) {
             toast.show('There was an error updating password', {type: 'danger'})
         } finally {
@@ -31,18 +33,18 @@ export default function UpdatePassword({}) {
     return (
         <View style={styles.container}>
             <Text style={styles.editTxt}>
-                Update Your Password
+                {t('update-your-password')}
             </Text>
 
             <CustomInputSign
-                placeholder='Current Password'
+                placeholder={t('current-password')}
                 value={oldPassword}
                 setValue={setOldPassword}
                 isSecureTextEntry={true}
             />
 
             <CustomInputSign
-                placeholder='New Password'
+                placeholder={t('new-password')}
                 value={newPassword}
                 setValue={setNewPassword}
                 isSecureTextEntry={true}
@@ -53,7 +55,7 @@ export default function UpdatePassword({}) {
                 ?
                 <ActivityIndicator size="large" color="#0000ff" />
                 :
-                <CustomButton callable={updatePassword} btnText='UPDATE PASSWORD' btnColor='#2F2766' />
+                <CustomButton callable={updatePassword} btnText={t('update-password')} btnColor='#2F2766' />
             }
 
         </View>

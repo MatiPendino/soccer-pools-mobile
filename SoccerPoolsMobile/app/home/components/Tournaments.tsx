@@ -9,12 +9,14 @@ import { TournamentProps } from "../../../types";
 import TournamentCard from "./TournamentCard";
 import { getToken } from "../../../utils/storeToken";
 import { listTournaments } from "../../../services/tournamentService";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     leagueId: number
 }
 
 export default function Tournaments ({leagueId}: Props) {
+    const { t } = useTranslation()
     const [tournamentLookup, setTournamentLookup] = useState<string>('')
     const [tournaments, setTournaments] = useState<TournamentProps[]>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -47,7 +49,7 @@ export default function Tournaments ({leagueId}: Props) {
                 <MaterialIcons name="search" size={24} color="#444" style={styles.lookUpIcon} />
 
                 <TextInput
-                    placeholder="Look for a tournament..."
+                    placeholder={t('look-for-tournament')}
                     style={styles.lookTntInput}
                     value={tournamentLookup}
                     onChangeText={setTournamentLookup}
@@ -85,7 +87,7 @@ export default function Tournaments ({leagueId}: Props) {
                         contentContainerStyle={styles.tournamentsContainer}
                     />
                     :
-                    <View><Text style={styles.noTournamentTxt}>You are not in any tournament yet! Look for a tournament in the search bar or create your own</Text></View>
+                    <View><Text style={styles.noTournamentTxt}>{t('not-tournament-yet')}</Text></View>
                 :
                 <ActivityIndicator size="large" color="#0000ff" />
             }

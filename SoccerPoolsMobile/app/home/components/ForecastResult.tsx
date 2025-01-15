@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { View, Text, StyleSheet } from "react-native"
 
 interface ForecastResultProps {
@@ -11,21 +12,23 @@ interface ForecastResultProps {
 export default function ForecastResult ({
     forecastGoalsTeam1, forecastGoalsTeam2, goalsTeam1, goalsTeam2, roundState
 }: ForecastResultProps) {
-
+    const { t } = useTranslation()
     const handleResultGoals = (goalsTeam: number) => {
         return roundState === 1 ? '' : goalsTeam.toString()
     }
 
     return (
         <View style={styles.container}>
-            <Text style={[styles.resultTxt, styles.text]}>Result</Text>
+            <Text style={[styles.resultTxt, styles.text]}>{t('result')}</Text>
             <Text style={[styles.resultNumbersTxt, styles.text]}>
                 {handleResultGoals(goalsTeam1)} - {handleResultGoals(goalsTeam2)}
             </Text>
 
             <View style={styles.forecastContainer}>
-                <Text style={[styles.forecastTxt, styles.text]}>Your Forecast</Text>
-                <Text style={[styles.forecastNumbersTxt, styles.text]}>{forecastGoalsTeam1} - {forecastGoalsTeam2}</Text>
+                <Text style={[styles.forecastTxt, styles.text]}>{t('your-forecast')}</Text>
+                <Text style={[styles.forecastNumbersTxt, styles.text]}>
+                    {forecastGoalsTeam1} - {forecastGoalsTeam2}
+                </Text>
             </View>
         </View>
     )

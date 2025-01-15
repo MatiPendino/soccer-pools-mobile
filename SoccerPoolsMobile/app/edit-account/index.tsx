@@ -9,8 +9,10 @@ import { Email } from "../../types";
 import { getToken } from "../../utils/storeToken";
 import { deleteUser, getUser, updateUser } from "../../services/authService";
 import { removeToken } from "../../services/api";
+import { useTranslation } from "react-i18next";
 
 export default function EditAccount({}) {
+    const { t } = useTranslation()
     const [firstName, setFirstName] = useState<string>('')
     const [lastName, setLastName] = useState<string>('')
     const [email, setEmail] = useState<Email>('')
@@ -25,7 +27,7 @@ export default function EditAccount({}) {
             if (token) {
                 const {name, last_name} = await updateUser(token, firstName, lastName)
                 if (name && last_name) {
-                    toast.show('User updated successfully!', {type: 'success'})
+                    toast.show(t('user-updated-successfully'), {type: 'success'})
                 } else {
                     toast.show('There was an error updating the user', {type: 'danger'})
                 }
@@ -44,7 +46,7 @@ export default function EditAccount({}) {
             if (token) {
                 await deleteUser(token)
                 await removeToken()
-                toast.show('The account was removed successfully!', {type: 'success'})
+                toast.show(t('user-removed-successfully'), {type: 'success'})
                 router.replace('/')
             }
         } catch (error) {
@@ -78,23 +80,23 @@ export default function EditAccount({}) {
     return (
         <View style={styles.container}>
             <Text style={styles.editTxt}>
-                Edit Your Account
+                {t('edit-your-account')}
             </Text>
 
             <CustomInputSign
-                placeholder='First Name'
+                placeholder={t('first-name')}
                 value={firstName}
                 setValue={setFirstName}
             />
 
             <CustomInputSign
-                placeholder='Last Name'
+                placeholder={t('last-name')}
                 value={lastName}
                 setValue={setLastName}
             />
 
             <CustomInputSign
-                placeholder='E-mail'
+                placeholder={t('email')}
                 value={email}
                 setValue={setEmail}
                 isActive={false}
@@ -105,17 +107,17 @@ export default function EditAccount({}) {
                 ?
                 <ActivityIndicator size="large" color="#0000ff" />
                 :
-                <CustomButton callable={editAccount} btnText='UPDATE ACCOUNT' btnColor='#2F2766' />
+                <CustomButton callable={editAccount} btnText={t('update-account')} btnColor='#2F2766' />
             }
 
-            <Link href='update-password' style={styles.updatePasswordTxt}>Wanna update password? Click here</Link>
+            <Link href='update-password' style={styles.updatePasswordTxt}>{t('wanna-update-password')}</Link>
 
             {
                 isLoading
                 ?
                 <ActivityIndicator size="large" color="#0000ff" />
                 :
-                <CustomButton callable={removeAccount} btnText='REMOVE ACCOUNT' btnColor='#C52424' />
+                <CustomButton callable={removeAccount} btnText={t('remove-account')} btnColor='#C52424' />
             }
         </View>
     )

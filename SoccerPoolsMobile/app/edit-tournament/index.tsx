@@ -6,8 +6,10 @@ import { getToken } from "../../utils/storeToken"
 import { editTournament, retrieveTournament } from "../../services/tournamentService"
 import { TournamentProps } from "../../types"
 import { ActivityIndicator } from "react-native"
+import { useTranslation } from "react-i18next"
 
 export default function EditTournament () {
+    const { t } = useTranslation()
     const { tournamentId } = useLocalSearchParams()
     const [tournament, setTournament] = useState<TournamentProps>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -38,7 +40,7 @@ export default function EditTournament () {
                 token, data.name, data.description, data.logo, leagueId
             )
             if (updatedTournament) {
-                toast.show('Your tournament was updated successfully!')
+                toast.show(t('tournament-updated-successfully'))
                 router.push({
                     pathname: 'my-tournament',
                     params: {
@@ -59,7 +61,7 @@ export default function EditTournament () {
         <TournamentForm 
             initialData={tournament} 
             onSubmit={handleEdit} 
-            buttonLabel="EDIT TOURNAMENT" 
+            buttonLabel={t('edit-tournament')}
             isCreationMode={false}
         />
     )

@@ -10,8 +10,10 @@ import { getToken } from "../../utils/storeToken"
 import { listPendingTournamentUsers } from "../../services/tournamentService"
 import { TournamentUserProps } from "../../types"
 import PendingInviteCard from "./components/PendingInviteCard"
+import { useTranslation } from "react-i18next"
 
 export default function PendingInvites () {
+    const { t } = useTranslation()
     const { tournamentId } = useLocalSearchParams()
     const [pendingTournamentUsers, setPendingTournamentUsers] = useState<TournamentUserProps[]>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -42,7 +44,7 @@ export default function PendingInvites () {
                 <Pressable onPress={() => router.back()}>
                     <Entypo name="chevron-left" color="white" size={30} />
                 </Pressable>
-                <Text style={styles.topBarTxt}>Pending Invites</Text>
+                <Text style={styles.topBarTxt}>{t('pending-invites')}</Text>
             </View>
 
             {
@@ -70,7 +72,7 @@ export default function PendingInvites () {
                         />
                     :
                         <View style={styles.noPendingInvites}>
-                            <Text style={styles.noPendingInvitesTxt}>No Pending Invites</Text>
+                            <Text style={styles.noPendingInvitesTxt}>{t('no-pending-invites')}</Text>
                         </View>
             }
 

@@ -4,6 +4,7 @@ import { View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable, Image }
 import { Router, useRouter } from "expo-router";
 import { Entypo } from "@expo/vector-icons";
 import AddPhotoButton from "./AddPhotoButton";
+import { useTranslation } from "react-i18next";
 
 interface TournamentFormProps {
     initialData?: any;
@@ -12,7 +13,10 @@ interface TournamentFormProps {
     isCreationMode: boolean;
 }
 
-export default function TournamentForm({ initialData, onSubmit, buttonLabel, isCreationMode }: TournamentFormProps) {
+export default function TournamentForm({ 
+    initialData, onSubmit, buttonLabel, isCreationMode 
+}: TournamentFormProps) {
+    const { t } = useTranslation()
     const [tournamentName, setTournamentName] = useState<string>(!isCreationMode ? initialData.name : "");
     const [description, setDescription] = useState<string>(!isCreationMode ? initialData.description : "");
     const [logo, setLogo] = useState<string>(!isCreationMode ? initialData.logo : "");
@@ -22,7 +26,7 @@ export default function TournamentForm({ initialData, onSubmit, buttonLabel, isC
         // Request permission to access the media library
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
-            alert('Permission to access media library is required!');
+            alert(t('permission-media-required'));
             return;
         }
 
@@ -36,7 +40,7 @@ export default function TournamentForm({ initialData, onSubmit, buttonLabel, isC
         if (!result.canceled) {
             setLogo(result.assets[0].uri);
         } else {
-            alert('No image selected!');
+            alert(t('no-image-selected'));
         }
     };
 
@@ -53,7 +57,7 @@ export default function TournamentForm({ initialData, onSubmit, buttonLabel, isC
                         ? 
                         initialData.name.toString().toUpperCase() 
                         : 
-                        'CREATE TOURNAMENT'
+                        t('create-tournament')
                     }
                 </Text>
                 <Pressable onPress={() => router.back()}>
@@ -64,21 +68,21 @@ export default function TournamentForm({ initialData, onSubmit, buttonLabel, isC
             <View style={styles.contentContainer}>
                 <TextInput
                     style={styles.inputTxt}
-                    placeholder="Tournament Name..."
+                    placeholder={t('tournament-name')}
                     placeholderTextColor='white'
                     value={tournamentName}
                     onChangeText={setTournamentName}
                 />
 
                 <AddPhotoButton 
-                    label="Add Tournament Image" 
+                    label={t('add-tournament-image')}
                     onPress={pickImage} 
                     logo={logo} 
                 />
 
                 <TextInput
                     style={[styles.inputTxt, styles.textArea]}
-                    placeholder="Add a description for your tournament (optional)..."
+                    placeholder={t('add-tournament-description')}
                     placeholderTextColor='white'
                     value={description}
                     onChangeText={setDescription}
