@@ -12,6 +12,7 @@ import RankedPlayersFlatList from "../../components/RankedPlayersFlatList";
 import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../utils/leagueRounds";
 import handleShare from "../../utils/handleShare";
 import { useTranslation } from "react-i18next";
+import RoundsHorizontalList from "../../components/RoundsHorizontalList";
 
 
 export default function MyTournament({}) {
@@ -31,7 +32,7 @@ export default function MyTournament({}) {
                 const token = await getToken()
                 const roundsByLeague = await getRounds(token, leagueId)
                 setRounds(roundsByLeague)
-                setRoundsState(getRoundsState(roundsByLeague))
+                setRoundsState(getRoundsState(roundsByLeague)) 
                 if (roundsByLeague) {
                     const firstRoundSlug: Slug = roundsByLeague[0].slug
                     const betLeaders = await getBetLeaders(token, firstRoundSlug, Number(tournamentId)) 
@@ -47,7 +48,7 @@ export default function MyTournament({}) {
         getFirstBetLeaders()
     }, [])
 
-    const swapRoundBetLeaders = async (roundSlug: Slug) => {
+    const swapRoundBetLeaders = async (roundId: number, roundSlug: Slug) => {
         try {
             const {betLeaders, newRoundsState} = await swapRoundsBetLeaders(
                 roundSlug, Number(tournamentId), roundsState
@@ -119,23 +120,10 @@ export default function MyTournament({}) {
                     </View>
                 </View>
 
-                <FlatList
-                    data={rounds}
-                    renderItem={({item}) => (
-                        <Pressable
-                            onPress={() => swapRoundBetLeaders(item.slug)}
-                            style={[styles.roundBtn, roundsState[item.slug] ? styles.activeRoundBtn : '' ]}
-                        >
-                            <Text style={[styles.roundTxt, roundsState[item.slug] ? styles.activeRoundTxt : '']}>
-                                {item.name.toUpperCase()}
-                            </Text>
-                        </Pressable>
-                    )}
-                    horizontal={true}
-                    keyExtractor={(item) => item.slug}
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.leaguesContainer}
+                <RoundsHorizontalList
+                    rounds={rounds}
+                    handleRoundSwap={swapRoundBetLeaders}
+                    roundsState={roundsState}
                 />
                 <RankedPlayersFlatList bets={bets} /> 
             </GestureHandlerRootView>

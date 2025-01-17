@@ -6,6 +6,7 @@ import { RoundProps, RoundsStateProps, BetProps, Slug } from "../../../types";
 import { getToken } from "../../../utils/storeToken";
 import RankedPlayersFlatList from "../../../components/RankedPlayersFlatList";
 import { getBetLeaders, swapRoundsBetLeaders } from "../../../utils/leagueRounds";
+import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 
 interface LeaderboardProps {
     rounds: RoundProps[]
@@ -19,7 +20,7 @@ export default function Leaderboard ({rounds, setRounds, setRoundsState, roundsS
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast = useToast()
 
-    const swapRoundBetLeaders = async (roundSlug: Slug) => {
+    const swapRoundBetLeaders = async (roundId: number, roundSlug: Slug) => {
         try {
             const {betLeaders, newRoundsState} = await swapRoundsBetLeaders(
                 roundSlug, 0, roundsState
@@ -54,23 +55,10 @@ export default function Leaderboard ({rounds, setRounds, setRoundsState, roundsS
 
     return (
         <GestureHandlerRootView style={styles.container}>
-            <FlatList
-                data={rounds}
-                renderItem={({item}) => (
-                    <Pressable 
-                        onPress={() => swapRoundBetLeaders(item.slug)}
-                        style={[styles.roundBtn, roundsState[item.slug] ? styles.activeRoundBtn : '' ]}
-                    >
-                        <Text style={[styles.roundTxt, roundsState[item.slug] ? styles.activeRoundTxt : '']}>
-                            {item.name.toUpperCase()}
-                        </Text>
-                    </Pressable>
-                )}
-                horizontal={true}
-                keyExtractor={(item) => item.slug}
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.leaguesContainer}
+            <RoundsHorizontalList
+                rounds={rounds}
+                handleRoundSwap={swapRoundBetLeaders}
+                roundsState={roundsState}
             />
             <RankedPlayersFlatList bets={bets} />
         </GestureHandlerRootView>

@@ -27,7 +27,7 @@ export const removeToken = async (): Promise<void> => {
         await AsyncStorage.removeItem('accessToken')
         await AsyncStorage.removeItem('refreshToken')  
     } catch (error) {
-        throw error
+        console.log(error.response.data)
     }
 }
     

@@ -8,6 +8,7 @@ import MatchResult from "./MatchResult";
 import { MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
 import { updateActiveRound } from "../../../utils/leagueRounds";
 import { useTranslation } from "react-i18next";
+import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 
 interface ResultsProps {
     rounds: RoundProps[]
@@ -70,23 +71,10 @@ export default function Results ({rounds, setRoundsState, roundsState}: ResultsP
 
     return (
         <GestureHandlerRootView style={styles.container}>
-            <FlatList
-                data={rounds}
-                renderItem={({item}) => (
-                    <Pressable 
-                        onPress={() => swapRoundMatchResults(item.id, item.slug)}
-                        style={[styles.roundBtn, roundsState[item.slug] ? styles.activeRoundBtn : '' ]}
-                    >
-                        <Text style={[styles.roundTxt, roundsState[item.slug] ? styles.activeRoundTxt : '']}>
-                            {item.name.toUpperCase()}
-                        </Text>
-                    </Pressable>
-                )}
-                horizontal={true}
-                keyExtractor={(item) => item.slug}
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.leaguesContainer}
+            <RoundsHorizontalList
+                rounds={rounds}
+                handleRoundSwap={swapRoundMatchResults}
+                roundsState={roundsState}
             />
             <FlatList
                 data={matchResults}
