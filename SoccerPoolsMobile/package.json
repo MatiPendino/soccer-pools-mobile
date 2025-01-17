@@ -17,6 +17,7 @@
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/drawer": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
+    "@sentry/react-native": "^6.5.0",
     "@types/react": "~18.3.12",
     "axios": "^1.7.7",
     "expo": "^52.0.23",
@@ -24,6 +25,7 @@
     "expo-dev-client": "~5.0.7",
     "expo-image": "~2.0.3",
     "expo-image-picker": "~16.0.3",
+    "expo-localization": "~16.0.1",
     "expo-router": "^4.0.15",
     "expo-status-bar": "~2.0.0",
     "i18next": "^24.2.1",
@@ -41,8 +43,7 @@
     "react-native-screens": "^4.4.0",
     "react-native-svg": "15.8.0",
     "react-native-toast-notifications": "^3.4.0",
-    "typescript": "~5.3.3",
-    "expo-localization": "~16.0.1"
+    "typescript": "~5.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

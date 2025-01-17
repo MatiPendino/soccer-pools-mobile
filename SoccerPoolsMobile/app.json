@@ -29,7 +29,15 @@
     },
     "plugins": [
       "expo-router",
-      "expo-localization"
+      "expo-localization",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "soccer-pools-mobile",
+          "organization": "mappek"
+        }
+      ]
     ],
     "extra": {
       "eas": {
