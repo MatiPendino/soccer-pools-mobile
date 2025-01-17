@@ -37,7 +37,7 @@ export default function EditTournament () {
             const token = await getToken()
             const leagueId = tournament.league.id
             const updatedTournament = await editTournament(
-                token, data.name, data.description, data.logo, leagueId
+                token, data.name, data.description, data.logo, tournament.id
             )
             if (updatedTournament) {
                 toast.show(t('tournament-updated-successfully'))
