@@ -45,6 +45,7 @@ export default function SelectLeague({}) {
                         leagueImgUrl={item.logo}
                         leagueTitle={item.name}
                         leagueSlug={item.slug}
+                        setIsLoading={setIsLoading}
                     />
                 )}
                 numColumns={2}

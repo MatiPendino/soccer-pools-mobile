@@ -10,14 +10,18 @@ interface LeagueCardProps {
     leagueTitle: string
     leagueImgUrl: string
     leagueSlug: Slug
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function LeagueCard({leagueTitle, leagueImgUrl, leagueSlug}: LeagueCardProps) {
+export default function LeagueCard({
+    leagueTitle, leagueImgUrl, leagueSlug, setIsLoading
+}: LeagueCardProps) {
     const { t } = useTranslation()
     const toast = useToast()
     const router = useRouter()
 
     const selectLeague = async (): Promise<void> => {
+        setIsLoading(true)
         try {
             const token = await getToken()
             const response = await betsRegister(token, leagueSlug)
@@ -25,8 +29,9 @@ export default function LeagueCard({leagueTitle, leagueImgUrl, leagueSlug}: Leag
             router.replace('/home')
         } catch (error) {
             toast.show('There is been an error joining the league. Please try later', { type: 'danger' });
+        } finally {
+            setIsLoading(false)
         }
-        
     }
 
     return (
