@@ -1,5 +1,4 @@
 import { View, StyleSheet, Image, Text } from "react-native"
-import { API_URL } from "../services/api"
 
 interface RankedPlayerProps {
     index: number
@@ -15,7 +14,7 @@ export default function RankedPlayer({index, profileImageUrl, username, points}:
             <Text style={styles.indexTxt}>{index}</Text>
             <Image 
                 style={styles.profileImage}
-                source={{uri: `${API_URL}${profileImageUrl}`}}
+                source={{uri: `${profileImageUrl}`}}
             />
             <Text style={styles.usernameTxt}>
                 {username}
