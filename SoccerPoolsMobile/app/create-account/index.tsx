@@ -70,15 +70,17 @@ export default function CreateAccount({}) {
     }, [response])
 
     const googleAuth = async () => {    
-        if (response.type === "success") { 
-            try {
-               const {access, refresh} = await googleOauth2SignIn(response.authentication.accessToken)
-                await userInLeague(access) 
-            } catch (error) {
-                toast.show('There`s been an error signing in. Please try again or use a different authentication method', {type: 'danger'})
+        if (response) {
+            if (response.type === "success") { 
+                try {
+                   const {access, refresh} = await googleOauth2SignIn(response.authentication.accessToken)
+                    await userInLeague(access) 
+                } catch (error) {
+                    toast.show('There`s been an error signing in. Please try again or use a different authentication method', {type: 'danger'})
+                }
+            } else {
+                toast.show("Google login cancelled!", { type: "warning" })
             }
-        } else {
-            toast.show("Google login cancelled!", { type: "warning" })
         }
     }
 
