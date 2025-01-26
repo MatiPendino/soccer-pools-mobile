@@ -88,9 +88,9 @@ export default function Home({}) {
               <Text style={styles.shareTxt}>{t('share')}</Text>
             </Pressable>
             <View style={styles.socialMediaContainer}>
-                <Link href='https://instagram.com' style={styles.socialMediaBtn}>
+                <Link href='https://www.instagram.com/tuprodefutbol/' style={styles.socialMediaBtn}>
                   <Entypo name="instagram" size={45} color="white" /></Link>
-                <Link href='https://twitter.com' style={styles.socialMediaBtn}>
+                <Link href='https://x.com/tuprodefutbol' style={styles.socialMediaBtn}>
                   <Entypo name="twitter" size={45} color="white" />
                 </Link>
             </View>

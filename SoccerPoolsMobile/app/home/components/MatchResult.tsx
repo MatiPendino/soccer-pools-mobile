@@ -43,54 +43,53 @@ export default function MatchResult ({
         getOriginalMatchResult()
     }, [])
 
+    const getMatchState = () => {
+        if (currentMatchResult.match.match_state !== 0) {
+            return currentMatchResult.match.match_state
+        } else {
+            return currentMatchResult.match.round.round_state
+        }
+    }
+
+    const renderResult = () => {
+        return (
+            getMatchState() === 0
+            ?  
+                <Scores
+                    currentMatchResult={currentMatchResult}
+                    matchResults={matchResults}
+                    setMatchResults={setMatchResults}
+                />  
+            :
+                isLoading
+                ?
+                    <ActivityIndicator size="large" color="#0000ff" />
+                :
+                    <ForecastResult
+                        forecastGoalsTeam1={currentMatchResult.goals_team_1}
+                        forecastGoalsTeam2={currentMatchResult.goals_team_2}
+                        goalsTeam1={originalMatchResult ? originalMatchResult.goals_team_1 : 0}
+                        goalsTeam2={originalMatchResult ? originalMatchResult.goals_team_2 : 0}
+                        matchState={getMatchState()}
+                    />
+        )
+    }
+
     return (
         <View style={styles.container}>
             <MatchResultTop
-                roundState={currentMatchResult.match.round.round_state}
+                matchState={getMatchState()}
                 points={currentMatchResult.points}
             />
 
             <View style={styles.contentContainer}>
                 <TeamLogo
-                    teamName={currentMatchResult.match.team_1.name}
+                    teamAcronym={currentMatchResult.match.team_1.acronym}
                     teamBadge={currentMatchResult.match.team_1.badge}
                 />
-                {
-                    currentMatchResult.match.round.round_state === 0
-                    ?  
-                        <Scores
-                            currentMatchResult={currentMatchResult}
-                            matchResults={matchResults}
-                            setMatchResults={setMatchResults}
-                        />  
-                    :
-                        isLoading
-                        ?
-                            <ActivityIndicator size="large" color="#0000ff" />
-                        :
-                            <ForecastResult
-                                forecastGoalsTeam1={currentMatchResult.goals_team_1}
-                                forecastGoalsTeam2={currentMatchResult.goals_team_2}
-                                goalsTeam1={
-                                    originalMatchResult
-                                    ?
-                                    originalMatchResult.goals_team_1
-                                    :
-                                    0
-                                }
-                                goalsTeam2={
-                                    originalMatchResult
-                                    ?
-                                    originalMatchResult.goals_team_2
-                                    :
-                                    0
-                                }
-                                roundState={currentMatchResult.match.round.round_state}
-                            />
-                }
-                
+                {renderResult()}
                 <TeamLogo
-                    teamName={currentMatchResult.match.team_2.name}
+                    teamAcronym={currentMatchResult.match.team_2.acronym}
                     teamBadge={currentMatchResult.match.team_2.badge}
                 />
             </View>

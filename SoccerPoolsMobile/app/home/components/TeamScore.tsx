@@ -81,14 +81,16 @@ const styles = StyleSheet.create({
         marginHorizontal: 2
     },
     goalsBtn: {
-        backgroundColor: 'rgb(190,190,190)',
+        backgroundColor: '#6860A1',
         borderRadius: 30,
-        width: 45
+        width: 47,
+        paddingVertical: 1,
     },
     goalsTxt: {
-        fontSize: 17,
+        fontSize: 18,
         fontWeight: '600',
-        textAlign: 'center'
+        textAlign: 'center',
+        color: 'white',
     },
     scoreTxt: {
         fontSize: 19,

@@ -4,6 +4,7 @@ export type Email = string
 
 export interface TeamProps {
     name: string
+    acronym: string
     badge: string
     slug: Slug
 }

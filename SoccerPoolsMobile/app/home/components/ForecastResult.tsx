@@ -6,15 +6,15 @@ interface ForecastResultProps {
     forecastGoalsTeam2: number
     goalsTeam1: number
     goalsTeam2: number
-    roundState: number
+    matchState: number
 }
 
 export default function ForecastResult ({
-    forecastGoalsTeam1, forecastGoalsTeam2, goalsTeam1, goalsTeam2, roundState
+    forecastGoalsTeam1, forecastGoalsTeam2, goalsTeam1, goalsTeam2, matchState
 }: ForecastResultProps) {
     const { t } = useTranslation()
     const handleResultGoals = (goalsTeam: number) => {
-        return roundState === 1 ? '' : goalsTeam.toString()
+        return matchState === 1 ? '' : goalsTeam.toString()
     }
 
     return (

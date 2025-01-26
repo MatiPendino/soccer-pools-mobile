@@ -2,10 +2,10 @@ import { View, Image, StyleSheet, Text } from "react-native"
 
 interface TeamLogoProps {
     teamBadge: string
-    teamName: string
+    teamAcronym: string
 }
 
-export default function TeamLogo({teamBadge, teamName}: TeamLogoProps) {
+export default function TeamLogo({teamBadge, teamAcronym}: TeamLogoProps) {
 
     return (
         <View style={styles.teamContainer}>
@@ -13,8 +13,8 @@ export default function TeamLogo({teamBadge, teamName}: TeamLogoProps) {
                 style={styles.teamImg}
                 source={{ uri: `${teamBadge}`}}
             />
-            <Text style={styles.teamName}>
-                {teamName}
+            <Text style={styles.teamAcronym}>
+                {teamAcronym}
             </Text>
         </View> 
     )
@@ -32,7 +32,9 @@ const styles = StyleSheet.create({
         objectFit: 'contain',
         marginHorizontal: 'auto'
     },
-    teamName: {
-        textAlign: 'center'
+    teamAcronym: {
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: '500',
     },
 })
