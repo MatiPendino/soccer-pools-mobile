@@ -53,7 +53,7 @@ export default function LeagueCard({
 
 const styles = StyleSheet.create({
     leagueContainer: {
-        width: 180,
+        width: 160,
         textAlign: 'center',
         marginTop: 25,
         marginHorizontal: 5
@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
         padding: 10
     },
     leagueImg: {
-        width: 160,
-        height: 160,
+        width: 140,
+        height: 140,
         textAlign: 'center',
         objectFit: 'contain'
     },
