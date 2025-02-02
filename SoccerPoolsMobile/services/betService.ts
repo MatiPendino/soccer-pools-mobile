@@ -19,7 +19,7 @@ export const betsRegister = async (token, leagueSlug) => {
 export const betsLeaders = async (token: string, roundSlug: Slug, tournamentId: number) => {
     try {
         const response = await api.get(
-            `/api/bets/bet_results/?round_slug=${roundSlug}&tournament_id=${tournamentId}`, {
+            `/api/bets/bet_results/${roundSlug}/${tournamentId}/`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
