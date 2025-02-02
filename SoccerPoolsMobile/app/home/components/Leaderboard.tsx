@@ -2,20 +2,16 @@ import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, ActivityIndicator } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import { GestureHandlerRootView, FlatList } from "react-native-gesture-handler";
-import { RoundProps, RoundsStateProps, BetProps, Slug } from "../../../types";
+import { RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps } from "../../../types";
 import { getToken } from "../../../utils/storeToken";
 import RankedPlayersFlatList from "../../../components/RankedPlayersFlatList";
-import { getBetLeaders, swapRoundsBetLeaders } from "../../../utils/leagueRounds";
+import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../../utils/leagueRounds";
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
+import { userLeague } from "../../../services/leagueService";
 
-interface LeaderboardProps {
-    rounds: RoundProps[]
-    setRounds: React.Dispatch<React.SetStateAction<RoundProps[]>>
-    setRoundsState: React.Dispatch<React.SetStateAction<RoundsStateProps>>
-    roundsState: RoundsStateProps
-}
-
-export default function Leaderboard ({rounds, setRounds, setRoundsState, roundsState}: LeaderboardProps) {
+export default function Leaderboard ({}) {
+    const [rounds, setRounds] = useState<RoundProps[]>([])
+    const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
     const [bets, setBets] = useState<BetProps[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast = useToast()
@@ -35,10 +31,24 @@ export default function Leaderboard ({rounds, setRounds, setRoundsState, roundsS
     }
 
     useEffect(() => {
-        const getFirstBetLeaders = async (): Promise<void> => {
+        const getLeague = async (): Promise<void> => {
             try {
-                const token = await getToken()
-                const betLeaders = await getBetLeaders(token, rounds[0].slug, 0)  
+                const token: string = await getToken()
+                const temp_league: LeagueProps = await userLeague(token)
+                const roundsByLeague = await getRounds(token, temp_league.id)
+                setRounds(roundsByLeague)
+                setRoundsState(getRoundsState(roundsByLeague))
+
+                getFirstBetLeaders(token, roundsByLeague[0].slug)
+            } catch (error) {
+                console.log(error)
+                toast.show('There is been an error displaying league information', {type: 'danger'})
+            } 
+        }
+
+        const getFirstBetLeaders = async (token, firstRoundSlug): Promise<void> => {
+            try {
+                const betLeaders = await getBetLeaders(token, firstRoundSlug, 0)  
                 setBets(betLeaders)
             } catch (error) {
                 toast.show('There´s been an error getting the matches', {type: 'danger'})
@@ -46,7 +56,8 @@ export default function Leaderboard ({rounds, setRounds, setRoundsState, roundsS
                 setIsLoading(false)
             }
         }
-        getFirstBetLeaders()
+        
+        getLeague()
     }, [])
 
     if (isLoading) {

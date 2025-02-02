@@ -5,28 +5,51 @@ import { FloatingAction } from "react-native-floating-action";
 import { useRouter } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
 import { MaterialIcons } from "@expo/vector-icons";
-import { TournamentProps } from "../../../types";
+import { LeagueProps, TournamentProps } from "../../../types";
 import TournamentCard from "./TournamentCard";
 import { getToken } from "../../../utils/storeToken";
 import { listTournaments } from "../../../services/tournamentService";
 import { useTranslation } from "react-i18next";
+import { userLeague } from "../../../services/leagueService";
 
 interface Props {
     leagueId: number
 }
 
-export default function Tournaments ({leagueId}: Props) {
+export default function Tournaments ({}) {
     const { t } = useTranslation()
     const [tournamentLookup, setTournamentLookup] = useState<string>('')
     const [tournaments, setTournaments] = useState<TournamentProps[]>(null)
+    const [leagueId, setLeagueId] = useState<number>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const router = useRouter()
     const toast = useToast()
 
     useEffect(() => {
-        const getTournaments = async () => {
+        const getLeague = async (): Promise<void> => {
             try {
                 const token: string = await getToken()
+                /* 
+                    Since this function is called everytime the tournamentLookup updates,
+                    to avoid fetching the league more than once, if there is a leagueId
+                    already stored in the state, call getTournaments directly and return
+                */
+                if (leagueId) {
+                    getTournaments(token, leagueId)
+                    return ;
+                }
+
+                const league: LeagueProps = await userLeague(token)
+                setLeagueId(league.id)
+                getTournaments(token, league.id)
+            } catch (error) {
+                console.log(error)
+                toast.show('There is been an error displaying league information', {type: 'danger'})
+            } 
+        }
+
+        const getTournaments = async (token, leagueId) => {
+            try {
                 if (token) {
                     const data: TournamentProps[] = await listTournaments(token, leagueId, tournamentLookup)
                     setTournaments(data)
@@ -38,7 +61,7 @@ export default function Tournaments ({leagueId}: Props) {
             }
         }
 
-        getTournaments()
+        getLeague()
     }, [tournamentLookup])
 
     const actions = []

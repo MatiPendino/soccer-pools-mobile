@@ -26,9 +26,11 @@ export const userLeague = async (token) => {
     }
 }
 
-export const roundsListByLeague = async (token, leagueId) => {
+export const roundsListByLeague = async (token, leagueId, notGeneralRound=undefined) => {
     try {
-        const response = await api.get(`/api/leagues/rounds/league/${leagueId}/`, {
+        const response = await api.get(
+        `/api/leagues/rounds/league/${leagueId}/?not_general_round=${notGeneralRound}`, {
+
             headers: {
                 Authorization: `Bearer ${token}`
             }

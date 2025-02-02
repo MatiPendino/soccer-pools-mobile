@@ -5,10 +5,11 @@ import { useToast } from "react-native-toast-notifications";
 import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
 import MatchResult from "./MatchResult";
-import { MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
-import { updateActiveRound } from "../../../utils/leagueRounds";
+import { LeagueProps, MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
+import { getRounds, getRoundsState, updateActiveRound } from "../../../utils/leagueRounds";
 import { useTranslation } from "react-i18next";
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
+import { userLeague } from "../../../services/leagueService";
 
 interface ResultsProps {
     rounds: RoundProps[]
@@ -16,8 +17,10 @@ interface ResultsProps {
     roundsState: RoundsStateProps
 }
 
-export default function Results ({rounds, setRoundsState, roundsState}: ResultsProps) {
+export default function Results ({}) {
     const { t } = useTranslation()
+    const [rounds, setRounds] = useState<RoundProps[]>([])
+    const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
     const [matchResults, setMatchResults] = useState<MatchResultProps[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast = useToast()
@@ -52,17 +55,32 @@ export default function Results ({rounds, setRoundsState, roundsState}: ResultsP
     }
 
     useEffect(() => {
-        const getFirstMatchResults = async (): Promise<void> => {
+        const getLeague = async (): Promise<void> => {
             try {
-                const token = await getToken()
-                getMatchResults(token, rounds[0].id)  
+                const token: string = await getToken()
+                const temp_league: LeagueProps = await userLeague(token)
+                const roundsByLeague = await getRounds(token, temp_league.id, true)
+                setRounds(roundsByLeague)
+                setRoundsState(getRoundsState(roundsByLeague))
+
+                getFirstMatchResults(token, roundsByLeague[0].id)
+            } catch (error) {
+                console.log(error)
+                toast.show('There is been an error displaying league information', {type: 'danger'})
+            } 
+        }
+
+        const getFirstMatchResults = async (token, firstRoundId): Promise<void> => {
+            try {
+                getMatchResults(token, firstRoundId)  
             } catch (error) {
                 toast.show('There´s been an error getting the matches', {type: 'danger'})
             } finally {
                 setIsLoading(false)
             }
         }
-        getFirstMatchResults()
+
+        getLeague()
     }, [])
 
     if (isLoading) {

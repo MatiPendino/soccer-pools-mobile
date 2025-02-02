@@ -3,10 +3,12 @@ import { roundsListByLeague } from "../services/leagueService";
 import { RoundProps, RoundsStateProps, Slug } from "../types";
 import { getToken } from "./storeToken";
 
-export async function getRounds(token, leagueId) {
+export async function getRounds(token, leagueId, notGeneralRound=undefined) {
     try {
         if (leagueId) {
-            const roundsByLeague: RoundProps[] = await roundsListByLeague(token, leagueId)
+            const roundsByLeague: RoundProps[] = await roundsListByLeague(
+                token, leagueId, notGeneralRound
+            )
             return roundsByLeague
         }
     } catch (error) {
