@@ -7,6 +7,7 @@ import LeagueCard from "./components/LeagueCard"
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { LeagueProps } from "../../types"
 import { useTranslation } from "react-i18next"
+import { Banner } from "../../components/Ads"
 
 export default function SelectLeague({}) {
     const { t } = useTranslation()
@@ -53,6 +54,8 @@ export default function SelectLeague({}) {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.leaguesContainer}
             />
+
+            <Banner bannerId={process.env.SELECT_LEAGUE_BANNER_ID} />
         </GestureHandlerRootView>
     )
 }

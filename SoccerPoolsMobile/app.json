@@ -7,7 +7,7 @@
     "orientation": "portrait",
     "icon": "./assets/img/pools-logo2.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
@@ -30,6 +30,13 @@
     "plugins": [
       "expo-router",
       "expo-localization",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3984939241340358~8898058683",
+          "iosAppId": "ca-app-pub-3984939241340358~8898058683"
+        }
+      ],
       [
         "@sentry/react-native/expo",
         {

@@ -5,6 +5,7 @@ import { Router, useRouter } from "expo-router";
 import { Entypo } from "@expo/vector-icons";
 import AddPhotoButton from "./AddPhotoButton";
 import { useTranslation } from "react-i18next";
+import { Banner, interstitial } from "./Ads";
 
 interface TournamentFormProps {
     initialData?: any;
@@ -47,6 +48,8 @@ export default function TournamentForm({
     const handleSubmit = () => {
         onSubmit({ name: tournamentName, description: description, logo: logo });
     };
+
+    interstitial(process.env.CREATE_TOURNAMENT_INTERST_ID)
 
     return (
         <View style={styles.container}>
@@ -94,6 +97,7 @@ export default function TournamentForm({
                 </TouchableOpacity>
             </View>
             
+            <Banner bannerId={process.env.CREATE_TOURNAMENT_BANNER_ID} />
         </View>
     );
 }

@@ -7,6 +7,7 @@ import CustomInputSign from "../../components/CustomInputSign"
 import { getToken } from "../../utils/storeToken"
 import { editPassword } from "../../services/authService"
 import { useTranslation } from "react-i18next"
+import { Banner } from "../../components/Ads"
 
 export default function UpdatePassword({}) {
     const { t } = useTranslation()
@@ -58,6 +59,7 @@ export default function UpdatePassword({}) {
                 <CustomButton callable={updatePassword} btnText={t('update-password')} btnColor='#2F2766' />
             }
 
+            <Banner bannerId={process.env.UPDATE_PASSWORD_BANNER_ID} />
         </View>
     )
 }

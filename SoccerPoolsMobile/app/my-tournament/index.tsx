@@ -13,7 +13,7 @@ import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "
 import handleShare from "../../utils/handleShare";
 import { useTranslation } from "react-i18next";
 import RoundsHorizontalList from "../../components/RoundsHorizontalList";
-
+import { Banner, interstitial } from "../../components/Ads";
 
 export default function MyTournament({}) {
     const { t } = useTranslation()
@@ -25,6 +25,8 @@ export default function MyTournament({}) {
     const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
     const toast: ToastType = useToast()
     const router: Router = useRouter()
+
+    interstitial(process.env.MY_TOURNAMENT_INTERST_ID)
 
     useEffect(() => {
         const getFirstBetLeaders = async (): Promise<void> => {
@@ -126,6 +128,8 @@ export default function MyTournament({}) {
                     roundsState={roundsState}
                 />
                 <RankedPlayersFlatList bets={bets} /> 
+
+                <Banner bannerId={process.env.MY_TOURNAMENT_BANNER_ID} />
             </GestureHandlerRootView>
         </PaperProvider>
     )

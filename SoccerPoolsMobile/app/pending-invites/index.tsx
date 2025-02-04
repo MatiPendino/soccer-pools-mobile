@@ -11,6 +11,7 @@ import { listPendingTournamentUsers } from "../../services/tournamentService"
 import { TournamentUserProps } from "../../types"
 import PendingInviteCard from "./components/PendingInviteCard"
 import { useTranslation } from "react-i18next"
+import { Banner } from "../../components/Ads"
 
 export default function PendingInvites () {
     const { t } = useTranslation()
@@ -76,6 +77,7 @@ export default function PendingInvites () {
                         </View>
             }
 
+            <Banner bannerId={process.env.PENDING_INVITES_BANNER_ID} />
         </GestureHandlerRootView>
     )
 }

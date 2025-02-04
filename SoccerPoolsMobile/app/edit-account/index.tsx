@@ -10,6 +10,7 @@ import { getToken } from "../../utils/storeToken";
 import { deleteUser, getUser, updateUser } from "../../services/authService";
 import { removeToken } from "../../services/api";
 import { useTranslation } from "react-i18next";
+import { Banner, interstitial } from "../../components/Ads";
 
 export default function EditAccount({}) {
     const { t } = useTranslation()
@@ -76,6 +77,8 @@ export default function EditAccount({}) {
         retrieveUserDetails()
     }, [])
 
+    interstitial(process.env.UPDATE_ACCOUNT_INTERST_ID)
+
     if (isLoading) {<ActivityIndicator size="large" color="#0000ff" />}
     return (
         <View style={styles.container}>
@@ -119,6 +122,8 @@ export default function EditAccount({}) {
                 :
                 <CustomButton callable={removeAccount} btnText={t('remove-account')} btnColor='#C52424' />
             }
+
+            <Banner bannerId={process.env.UPDATE_ACCOUNT_BANNER_ID} />
         </View>
     )
 }

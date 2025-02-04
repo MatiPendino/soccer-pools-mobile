@@ -8,6 +8,7 @@ import RankedPlayersFlatList from "../../../components/RankedPlayersFlatList";
 import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../../utils/leagueRounds";
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 import { userLeague } from "../../../services/leagueService";
+import { Banner, interstitial } from "../../../components/Ads";
 
 export default function Leaderboard ({}) {
     const [rounds, setRounds] = useState<RoundProps[]>([])
@@ -60,6 +61,8 @@ export default function Leaderboard ({}) {
         getLeague()
     }, [])
 
+    interstitial(process.env.LEADERBOARD_INTERST_ID)
+
     if (isLoading) {
         return <ActivityIndicator size="large" color="#0000ff" />
     }
@@ -72,6 +75,7 @@ export default function Leaderboard ({}) {
                 roundsState={roundsState}
             />
             <RankedPlayersFlatList bets={bets} />
+            <Banner bannerId={process.env.LEADERBOARD_BANNER_ID} />
         </GestureHandlerRootView>
     )
 }
