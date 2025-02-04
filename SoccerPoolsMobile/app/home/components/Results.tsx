@@ -11,11 +11,6 @@ import { useTranslation } from "react-i18next";
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 import { userLeague } from "../../../services/leagueService";
 
-interface ResultsProps {
-    rounds: RoundProps[]
-    setRoundsState: React.Dispatch<React.SetStateAction<RoundsStateProps>>
-    roundsState: RoundsStateProps
-}
 
 export default function Results ({}) {
     const { t } = useTranslation()

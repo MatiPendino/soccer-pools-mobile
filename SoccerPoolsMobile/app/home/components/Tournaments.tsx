@@ -12,9 +12,6 @@ import { listTournaments } from "../../../services/tournamentService";
 import { useTranslation } from "react-i18next";
 import { userLeague } from "../../../services/leagueService";
 
-interface Props {
-    leagueId: number
-}
 
 export default function Tournaments ({}) {
     const { t } = useTranslation()

@@ -27,7 +27,7 @@ export default function MatchResult ({
     useEffect(() => {
         const getOriginalMatchResult = async () => {
             try {
-                if (currentMatchResult.match.round.round_state === 2) {
+                if (currentMatchResult.match.match_state === 2) {
                     const token = await getToken()
                     const data = await retrieveOriginalMatchResult(token, currentMatchResult.match.id)
     
