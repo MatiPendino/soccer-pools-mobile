@@ -22,6 +22,9 @@
         "foregroundImage": "./assets/img/pools-logo2.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ],
       "package": "com.matipendino2001.soccerpools"
     },
     "web": {
