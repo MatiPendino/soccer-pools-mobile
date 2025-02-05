@@ -27,6 +27,7 @@
     "your-forecast": "Your Forecast",
     "pending": "PENDING",
     "finalized": "FINALIZED",
+    "cancelled": "CANCELLED",
     "apply": "APPLY",
     "joined": "JOINED",
     "rejected": "REJECTED",

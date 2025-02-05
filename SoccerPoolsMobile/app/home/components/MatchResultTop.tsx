@@ -8,17 +8,25 @@ interface MatchResultTopProps {
 
 export default function MatchResultTop({matchState, points}: MatchResultTopProps) {
     const { t } = useTranslation()
+
+    const handleResultText = () => {
+        switch (matchState) {
+            case 0:
+                return ''
+            case 1:
+                return t('pending')
+            case 2:
+                return t('finalized')
+            case 3:
+                return t('cancelled')
+        }
+    }
+    
     if (matchState === 0) return <View></View>
     return (
         <View style={styles.topContainer}>
             <Text style={styles.topTxt}>
-                {
-                    matchState === 1
-                    ?
-                    t('pending')
-                    :
-                    t('finalized')
-                }
+                {handleResultText()}
             </Text>
 
             <View style={styles.pointsContainer}>
