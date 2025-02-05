@@ -16,7 +16,7 @@ export async function getRounds(token, leagueId, notGeneralRound=undefined) {
     }
 }
 
-export function getRoundsState(roundsByLeague) {
+export function getRoundsState(roundsByLeague, nextRoundId) {
     /* 
         To manage the current selected round, create a list of objects 
         in the format roundSlug: boolean.
@@ -25,7 +25,7 @@ export function getRoundsState(roundsByLeague) {
     const roundsStateObject = roundsByLeague.reduce((
         activeRoundsState: RoundsStateProps, round: RoundProps, index: number
     ) => {
-        activeRoundsState[round.slug] = index === 0; 
+        activeRoundsState[round.slug] = round.id === nextRoundId; 
         return activeRoundsState
     }, {} as RoundsStateProps)
     

@@ -10,6 +10,7 @@ import { getRounds, getRoundsState, updateActiveRound } from "../../../utils/lea
 import { useTranslation } from "react-i18next";
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 import { userLeague } from "../../../services/leagueService";
+import { getNextRoundId } from "../../../utils/getNextRound";
 
 
 export default function Results ({}) {
@@ -55,10 +56,11 @@ export default function Results ({}) {
                 const token: string = await getToken()
                 const temp_league: LeagueProps = await userLeague(token)
                 const roundsByLeague = await getRounds(token, temp_league.id, true)
-                setRounds(roundsByLeague)
-                setRoundsState(getRoundsState(roundsByLeague))
+                const nextRoundId = getNextRoundId(roundsByLeague)
 
-                getFirstMatchResults(token, roundsByLeague[0].id)
+                setRounds(roundsByLeague)
+                setRoundsState(getRoundsState(roundsByLeague, nextRoundId))
+                getFirstMatchResults(token, nextRoundId)
             } catch (error) {
                 console.log(error)
                 toast.show('There is been an error displaying league information', {type: 'danger'})

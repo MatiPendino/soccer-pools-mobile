@@ -43,17 +43,9 @@ export default function MatchResult ({
         getOriginalMatchResult()
     }, [])
 
-    const getMatchState = () => {
-        if (currentMatchResult.match.match_state !== 0) {
-            return currentMatchResult.match.match_state
-        } else {
-            return currentMatchResult.match.round.round_state
-        }
-    }
-
     const renderResult = () => {
         return (
-            getMatchState() === 0
+            currentMatchResult.match.match_state === 0
             ?  
                 <Scores
                     currentMatchResult={currentMatchResult}
@@ -70,7 +62,7 @@ export default function MatchResult ({
                         forecastGoalsTeam2={currentMatchResult.goals_team_2}
                         goalsTeam1={originalMatchResult ? originalMatchResult.goals_team_1 : 0}
                         goalsTeam2={originalMatchResult ? originalMatchResult.goals_team_2 : 0}
-                        matchState={getMatchState()}
+                        matchState={currentMatchResult.match.match_state}
                     />
         )
     }
@@ -78,7 +70,7 @@ export default function MatchResult ({
     return (
         <View style={styles.container}>
             <MatchResultTop
-                matchState={getMatchState()}
+                matchState={currentMatchResult.match.match_state}
                 points={currentMatchResult.points}
             />
 
