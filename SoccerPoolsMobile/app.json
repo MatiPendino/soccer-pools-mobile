@@ -8,6 +8,7 @@
     "icon": "./assets/img/pools-logo2.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
+    "jsEngine": "jsc",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",

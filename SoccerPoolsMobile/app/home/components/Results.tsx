@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { useToast } from "react-native-toast-notifications";
+import { OneSignal } from 'react-native-onesignal';
 import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
 import MatchResult from "./MatchResult";
@@ -58,6 +59,10 @@ export default function Results ({}) {
                 const roundsByLeague = await getRounds(token, temp_league.id, true)
                 const nextRoundId = getNextRoundId(roundsByLeague)
 
+                // Add tag for OneSignal push notifications
+                OneSignal.User.addTags({
+                    league: temp_league.slug,
+                })
                 setRounds(roundsByLeague)
                 setRoundsState(getRoundsState(roundsByLeague, nextRoundId))
                 getFirstMatchResults(token, nextRoundId)
