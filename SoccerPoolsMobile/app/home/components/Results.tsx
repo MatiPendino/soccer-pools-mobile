@@ -63,6 +63,7 @@ export default function Results ({}) {
                 OneSignal.User.addTags({
                     league: temp_league.slug,
                 })
+                
                 setRounds(roundsByLeague)
                 setRoundsState(getRoundsState(roundsByLeague, nextRoundId))
                 getFirstMatchResults(token, nextRoundId)

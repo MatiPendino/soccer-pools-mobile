@@ -1,7 +1,4 @@
-import { Email } from "../types";
-import { getToken } from "../utils/storeToken";
-import api, { API_URL } from "./api";
-import { getUser } from "./authService";
+import api from "./api";
 
 export const listTournaments = async (token: string, leagueId: number, searchText: string) => {
     try {

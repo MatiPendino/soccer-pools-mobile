@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable, Image } from "react-native";
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import { Router, useRouter } from "expo-router";
 import { Entypo } from "@expo/vector-icons";
 import AddPhotoButton from "./AddPhotoButton";

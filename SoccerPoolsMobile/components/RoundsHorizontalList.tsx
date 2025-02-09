@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { RoundProps, RoundsStateProps, Slug } from "../types";
 import RoundItem from "./RoundItem";

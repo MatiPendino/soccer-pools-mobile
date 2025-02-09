@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { FlatList, GestureHandlerRootView, Pressable } from "react-native-gesture-handler";
+import { ActivityIndicator, StyleSheet, Text, View, Pressable } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastType, useToast } from "react-native-toast-notifications";
-import { BetProps, LeagueProps, RoundProps, RoundsStateProps, Slug } from "../../types";
+import { BetProps, RoundProps, RoundsStateProps, Slug } from "../../types";
 import { Router, useLocalSearchParams } from "expo-router";
 import Entypo from '@expo/vector-icons/Entypo';
-import { Menu, Divider, Button, PaperProvider } from 'react-native-paper';
+import { Menu, PaperProvider } from 'react-native-paper';
 import { useRouter } from "expo-router";
 import { getToken } from "../../utils/storeToken";
 import RankedPlayersFlatList from "../../components/RankedPlayersFlatList";
@@ -80,7 +80,7 @@ export default function MyTournament({}) {
             <GestureHandlerRootView style={styles.container}>
                 <View style={styles.topBar}>
                     <View style={styles.arrowNameContainer}>
-                        <Pressable onPress={() => router.replace('home')}>
+                        <Pressable onPress={() => router.replace('/home')}>
                             <Entypo name="chevron-left" color="white" size={30} />   
                         </Pressable>
 

@@ -1,5 +1,4 @@
-import { StyleSheet, View, Pressable, Text, Image } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { StyleSheet, Pressable, Image } from "react-native";
 
 interface AddPhotoButtonProps {
     label: string

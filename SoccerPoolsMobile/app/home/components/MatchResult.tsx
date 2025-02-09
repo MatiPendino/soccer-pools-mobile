@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { View, StyleSheet, Text } from "react-native"
+import { View, StyleSheet } from "react-native"
 import { ToastType, useToast } from "react-native-toast-notifications"
 import { MatchResultProps } from "../../../types"
 import TeamLogo from "./TeamLogo"

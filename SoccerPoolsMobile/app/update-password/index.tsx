@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { View, StyleSheet, Text, ActivityIndicator } from "react-native"
-import { Link } from "expo-router"
 import { useToast } from "react-native-toast-notifications"
 import CustomButton from "../../components/CustomButton"
 import CustomInputSign from "../../components/CustomInputSign"

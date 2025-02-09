@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { useToast } from "react-native-toast-notifications";
-import { GestureHandlerRootView, FlatList } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps } from "../../../types";
 import { getToken } from "../../../utils/storeToken";
 import RankedPlayersFlatList from "../../../components/RankedPlayersFlatList";

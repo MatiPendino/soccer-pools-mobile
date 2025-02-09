@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Pressable, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { Link } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
