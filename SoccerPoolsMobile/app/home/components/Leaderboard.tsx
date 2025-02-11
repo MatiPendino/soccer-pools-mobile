@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps } from "../../../types";
 import { getToken } from "../../../utils/storeToken";
 import RankedPlayersFlatList from "../../../components/RankedPlayersFlatList";
@@ -9,6 +10,7 @@ import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 import { userLeague } from "../../../services/leagueService";
 import { Banner, interstitial } from "../../../components/Ads";
+import LoadingCards from "../../../components/LoadingCards";
 
 export default function Leaderboard ({}) {
     const [rounds, setRounds] = useState<RoundProps[]>([])
@@ -63,18 +65,27 @@ export default function Leaderboard ({}) {
 
     interstitial(process.env.LEADERBOARD_INTERST_ID)
 
-    if (isLoading) {
-        return <ActivityIndicator size="large" color="#0000ff" />
-    }
-
     return (
         <GestureHandlerRootView style={styles.container}>
-            <RoundsHorizontalList
-                rounds={rounds}
-                handleRoundSwap={swapRoundBetLeaders}
-                roundsState={roundsState}
-            />
-            <RankedPlayersFlatList bets={bets} />
+            {
+                isLoading
+                ?
+                <ShimmerPlaceholder style={styles.roundsListLoading} />
+                :
+                <RoundsHorizontalList
+                    rounds={rounds}
+                    handleRoundSwap={swapRoundBetLeaders}
+                    roundsState={roundsState}
+                />
+            }
+                                    
+            {
+                isLoading
+                ?
+                <LoadingCards cardHeight={80} nCards={5} cardColor='#d9d9d9' />
+                :
+                <RankedPlayersFlatList bets={bets} />
+            }
             <Banner bannerId={process.env.LEADERBOARD_BANNER_ID} />
         </GestureHandlerRootView>
     )
@@ -83,7 +94,13 @@ export default function Leaderboard ({}) {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#6860A1',
-        flex: 1
+        flex: 1,
+        
+    },
+    roundsListLoading: { 
+        width: "100%", 
+        height: 50, 
+        marginBottom: 30 
     },
     leaguesContainer: {
         display: 'flex',

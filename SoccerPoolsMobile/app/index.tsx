@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
 import { useRouter } from 'expo-router';
 import Login from '../screens/Login';
 import { getUserInLeague } from '../services/authService';
 import { getToken } from '../utils/storeToken';
 import { removeToken } from '../services/api';
+import InitialLoadingScreen from '../components/InitialLoadingScreen';
 
 export default function App() {
   const toast = useToast()
@@ -51,7 +51,9 @@ export default function App() {
   }
 
   if (checkingLeague) {
-    return <ActivityIndicator size="large" color="#0000ff" />
+    return (
+      <InitialLoadingScreen />
+    ) 
   }
 
   return null

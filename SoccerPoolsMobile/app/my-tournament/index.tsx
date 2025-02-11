@@ -14,6 +14,8 @@ import handleShare from "../../utils/handleShare";
 import { useTranslation } from "react-i18next";
 import RoundsHorizontalList from "../../components/RoundsHorizontalList";
 import { Banner, interstitial } from "../../components/Ads";
+import ShimmerPlaceholder from "react-native-shimmer-placeholder";
+import LoadingCards from "../../components/LoadingCards";
 
 export default function MyTournament({}) {
     const { t } = useTranslation()
@@ -26,7 +28,7 @@ export default function MyTournament({}) {
     const toast: ToastType = useToast()
     const router: Router = useRouter()
 
-    interstitial(process.env.MY_TOURNAMENT_INTERST_ID)
+    //interstitial(process.env.MY_TOURNAMENT_INTERST_ID)
 
     useEffect(() => {
         const getFirstBetLeaders = async (): Promise<void> => {
@@ -72,9 +74,6 @@ export default function MyTournament({}) {
         })
     }
 
-    if (isLoading) {
-        return <ActivityIndicator size="large" color="#0000ff" />
-    }
     return (
         <PaperProvider>
             <GestureHandlerRootView style={styles.container}>
@@ -122,12 +121,25 @@ export default function MyTournament({}) {
                     </View>
                 </View>
 
-                <RoundsHorizontalList
-                    rounds={rounds}
-                    handleRoundSwap={swapRoundBetLeaders}
-                    roundsState={roundsState}
-                />
-                <RankedPlayersFlatList bets={bets} /> 
+                {
+                    isLoading
+                    ?
+                    <ShimmerPlaceholder style={styles.roundsListLoading} />
+                    :
+                    <RoundsHorizontalList
+                        rounds={rounds}
+                        handleRoundSwap={swapRoundBetLeaders}
+                        roundsState={roundsState}
+                    />
+                }
+                
+                {
+                    isLoading
+                    ?
+                    <LoadingCards cardHeight={80} nCards={5} cardColor='#d9d9d9' />
+                    :
+                    <RankedPlayersFlatList bets={bets} />
+                }
 
                 <Banner bannerId={process.env.MY_TOURNAMENT_BANNER_ID} />
             </GestureHandlerRootView>
@@ -139,6 +151,11 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#6860A1',
         flex: 1
+    },
+    roundsListLoading: { 
+        width: "100%", 
+        height: 50, 
+        marginBottom: 30 
     },
     topBar: {
         backgroundColor: '#2F2766',

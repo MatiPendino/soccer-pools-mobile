@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import { Router, useRouter } from "expo-router";
@@ -6,21 +6,23 @@ import { Entypo } from "@expo/vector-icons";
 import AddPhotoButton from "./AddPhotoButton";
 import { useTranslation } from "react-i18next";
 import { Banner, interstitial } from "./Ads";
+import { ActivityIndicator } from "react-native-paper";
 
 interface TournamentFormProps {
     initialData?: any;
     onSubmit: CallableFunction;
     buttonLabel: string;
     isCreationMode: boolean;
+    isLoading: boolean;
 }
 
 export default function TournamentForm({ 
-    initialData, onSubmit, buttonLabel, isCreationMode 
+    initialData, onSubmit, buttonLabel, isCreationMode, isLoading
 }: TournamentFormProps) {
     const { t } = useTranslation()
-    const [tournamentName, setTournamentName] = useState<string>(!isCreationMode ? initialData.name : "");
-    const [description, setDescription] = useState<string>(!isCreationMode ? initialData.description : "");
-    const [logo, setLogo] = useState<string>(!isCreationMode ? initialData.logo : "");
+    const [tournamentName, setTournamentName] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [logo, setLogo] = useState<string>("");
     const router: Router = useRouter();
 
     const pickImage = async () => {
@@ -49,7 +51,23 @@ export default function TournamentForm({
         onSubmit({ name: tournamentName, description: description, logo: logo });
     };
 
+    const setInitialFormData = () => {
+        if (!isCreationMode) {
+            if (initialData) {
+                setTournamentName(initialData.name)
+                setDescription(initialData.description)
+                setLogo(initialData.logo)
+            }
+        }
+    }
+
     interstitial(process.env.CREATE_TOURNAMENT_INTERST_ID)
+
+    useEffect(() => {
+        if (!isLoading) {
+            setInitialFormData()
+        }
+    }, [isLoading])
 
     return (
         <View style={styles.container}>
@@ -92,8 +110,19 @@ export default function TournamentForm({
                     multiline
                 />
 
-                <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-                    <Text style={styles.buttonText}>{buttonLabel}</Text>
+                <TouchableOpacity 
+                    onPress={() => !isLoading ? handleSubmit() : {}} 
+                    style={styles.button}
+                >
+                    {
+                        isLoading
+                        ?
+                        <ActivityIndicator color="#fff" size="small" />
+                        :
+                        <Text style={styles.buttonText}>
+                            {buttonLabel}
+                        </Text>
+                    }
                 </TouchableOpacity>
             </View>
             

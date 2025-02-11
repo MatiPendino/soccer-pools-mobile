@@ -79,7 +79,6 @@ export default function EditAccount({}) {
 
     interstitial(process.env.UPDATE_ACCOUNT_INTERST_ID)
 
-    if (isLoading) {<ActivityIndicator size="large" color="#0000ff" />}
     return (
         <View style={styles.container}>
             <Text style={styles.editTxt}>

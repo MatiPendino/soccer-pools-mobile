@@ -33,6 +33,7 @@ export default function EditTournament () {
     }, [])
 
     const handleEdit = async (data) => {
+        setIsLoading(true)
         try {
             const token = await getToken()
             const leagueId = tournament.league.id
@@ -53,13 +54,15 @@ export default function EditTournament () {
             }
         } catch (error) {
             toast.show('There is been an error updating the tournament', {type: 'danger'})
-        } 
+        } finally {
+            setIsLoading(false)
+        }
     }
 
-    if (isLoading) return <ActivityIndicator size="large" color="#0000ff" />
     return (
         <TournamentForm 
             initialData={tournament} 
+            isLoading={isLoading}
             onSubmit={handleEdit} 
             buttonLabel={t('edit-tournament')}
             isCreationMode={false}

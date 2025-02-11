@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
-import { useToast } from "react-native-toast-notifications";
+import { ToastType, useToast } from "react-native-toast-notifications";
 import { OneSignal } from 'react-native-onesignal';
 import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 import { userLeague } from "../../../services/leagueService";
 import { getNextRoundId } from "../../../utils/getNextRound";
+import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 
 
 export default function Results ({}) {
@@ -20,7 +21,8 @@ export default function Results ({}) {
     const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
     const [matchResults, setMatchResults] = useState<MatchResultProps[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const toast = useToast()
+    const [isSavePredLoading, setIsSavePredLoading] = useState<boolean>(false)
+    const toast: ToastType = useToast()
 
     const getMatchResults = async (token: string, roundId: number): Promise<void> => {
         try {
@@ -32,12 +34,15 @@ export default function Results ({}) {
     }
 
     const savePredictions = async (): Promise<void> => {
+        setIsSavePredLoading(true)
         try {
             const token = await getToken()
             const response = await matchResultsUpdate(token, matchResults)
             toast.show(t('matches-saved-successfully'), {type: 'success'})
         } catch (error) {
             toast.show('There´s been an error saving the matches', {type: 'danger'})
+        } finally {
+            setIsSavePredLoading(false)
         }
     }
 
@@ -92,11 +97,18 @@ export default function Results ({}) {
 
     return (
         <GestureHandlerRootView style={styles.container}>
-            <RoundsHorizontalList
-                rounds={rounds}
-                handleRoundSwap={swapRoundMatchResults}
-                roundsState={roundsState}
-            />
+            {
+                isLoading
+                ?
+                <ShimmerPlaceholder style={styles.roundsListLoading} />
+                :
+                <RoundsHorizontalList
+                    rounds={rounds}
+                    handleRoundSwap={swapRoundMatchResults}
+                    roundsState={roundsState}
+                />
+            }
+
             <FlatList
                 data={matchResults}
                 renderItem={({item}) => (
@@ -114,9 +126,17 @@ export default function Results ({}) {
 
             <Pressable
                 style={styles.saveBtn}
-                onPress={() => savePredictions()}
+                onPress={
+                    () => !isSavePredLoading ? savePredictions() : {}
+                }
             >
-                <Text style={styles.saveTxt}>{t('save-predictions')}</Text>
+                {
+                    isSavePredLoading
+                    ?
+                    <ActivityIndicator color='#fff' size='small' />
+                    :
+                    <Text style={styles.saveTxt}>{t('save-predictions')}</Text>
+                }
             </Pressable>
         </GestureHandlerRootView>
     )
@@ -126,6 +146,11 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#6860A1',
         flex: 1
+    },
+    roundsListLoading: { 
+        width: "100%", 
+        height: 50, 
+        marginBottom: 30 
     },
     leaguesContainer: {
         display: 'flex',

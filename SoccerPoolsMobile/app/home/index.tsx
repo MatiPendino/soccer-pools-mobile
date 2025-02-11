@@ -53,7 +53,6 @@ export default function Home({}) {
     }
   }
 
-  if (isLoading) {return <ActivityIndicator size="large" color="#0000ff" />}
   return (
     <Drawer.Navigator
       id={undefined}
@@ -73,9 +72,9 @@ export default function Home({}) {
         <DrawerContentScrollView {...props} contentContainerStyle={{ justifyContent: "space-between" }} style={styles.container}>
           <View style={styles.drawerNavbar}>
             <Text style={styles.nameTxt}>
-              {user.name} {user.last_name}
+              {isLoading ? '...' : `${user.name} ${user.last_name}`}
             </Text>
-            <Text style={styles.emailTxt}>{user.email}</Text>
+            <Text style={styles.emailTxt}>{isLoading ? '...' : `${user.email}`}</Text>
 
             <Link style={styles.editTxt} href="edit-account">
               {t('update-account')}
