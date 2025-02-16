@@ -72,6 +72,7 @@ export default function MatchResult ({
             <MatchResultTop
                 matchState={currentMatchResult.match.match_state}
                 points={currentMatchResult.points}
+                startDate={currentMatchResult.match.start_date}
             />
 
             <View style={styles.contentContainer}>

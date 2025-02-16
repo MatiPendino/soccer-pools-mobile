@@ -1,18 +1,40 @@
 import { useTranslation } from "react-i18next"
 import { StyleSheet, Text, View } from "react-native"
+import { ISO8601DateString } from "../../../types"
 
 interface MatchResultTopProps {
     matchState: number
     points: number
+    startDate: ISO8601DateString
 }
 
-export default function MatchResultTop({matchState, points}: MatchResultTopProps) {
+export default function MatchResultTop({matchState, points, startDate}: MatchResultTopProps) {
     const { t } = useTranslation()
+
+    const addLeftZero = (num: number): string => {
+        if (num < 10) {
+            return `0${num}`
+        }
+        return num.toString()
+    }
+
+    const formatDate = (): string => {
+        if (!startDate) {
+            return t('undefined-date')
+        }
+        const isoDate = new Date(startDate)
+        const localMonth = addLeftZero(isoDate.getMonth() + 1)
+        const localDay = addLeftZero(isoDate.getDate()) 
+        const localHours = addLeftZero(isoDate.getHours())
+        const localMinutes = addLeftZero(isoDate.getMinutes())
+
+        return `${localHours}:${localMinutes} - ${localDay}/${localMonth}`
+    }
 
     const handleResultText = () => {
         switch (matchState) {
             case 0:
-                return ''
+                return formatDate()
             case 1:
                 return t('pending')
             case 2:
@@ -22,16 +44,17 @@ export default function MatchResultTop({matchState, points}: MatchResultTopProps
         }
     }
     
-    if (matchState === 0) return <View></View>
     return (
         <View style={styles.topContainer}>
             <Text style={styles.topTxt}>
                 {handleResultText()}
             </Text>
 
-            <View style={styles.pointsContainer}>
-                <Text style={styles.pointsTxt}>{points} pts</Text>
-            </View>
+            {matchState !== 0 && 
+                <View style={styles.pointsContainer}>
+                    <Text style={styles.pointsTxt}>{points} pts</Text>
+                </View>
+            }
         </View>
     )
 }

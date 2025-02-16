@@ -62,5 +62,6 @@
     "add-tournament-image": "Imagen del Torneo",
     "add-tournament-description": "Descripcion del Torneo (opcional)",
     "logged-in-successfully": "Sesion iniciada correctamente!",
-    "log-in": "INICIAR SESION"
+    "log-in": "INICIAR SESION",
+    "undefined-date": "FECHA INDEFINIDA"
 }

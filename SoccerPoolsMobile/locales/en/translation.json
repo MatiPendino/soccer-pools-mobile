@@ -62,5 +62,6 @@
     "add-tournament-image": "Add Tournament Image",
     "add-tournament-description": "Add a description for your tournament (optional)",
     "logged-in-successfully": "Logged in successfully!",
-    "log-in": "LOG IN"
+    "log-in": "LOG IN",
+    "undefined-date": "UNDEFINED DATE"
 }
