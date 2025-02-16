@@ -31,17 +31,21 @@ export const retrieveTournament = async (token: string, tournamentId: number) =>
 const generateTournamentFormData = (
     name: string, description: string, logo: string, leagueId?: number
 ) => {
-    const logoFile = {
-        uri: logo,
-        name: logo.split('/').pop(),
-        type: 'image/jpeg', 
-    }
-
     const formData = new FormData()
+
+    if (logo){
+        const logoFile = {
+            uri: logo,
+            name: logo.split('/').pop(),
+            type: 'image/jpeg', 
+        }
+        // @ts-ignore
+        formData.append('logo', logoFile)   
+    } else {
+        formData.append('logo', null)
+    }
     formData.append('name', name)
     formData.append('description', description)
-    // @ts-ignore
-    formData.append('logo', logoFile)
     if (leagueId) {
         formData.append('league', String(leagueId))
     }
