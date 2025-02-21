@@ -9,8 +9,7 @@ export const betsRegister = async (token, leagueSlug) => {
             },
             league_slug: leagueSlug
         })
-
-        return response.data
+        return response
     } catch (error) {
         throw error.response.data
     }

@@ -63,7 +63,7 @@ export default function Leaderboard ({}) {
         getLeague()
     }, [])
 
-    interstitial(process.env.LEADERBOARD_INTERST_ID)
+    //interstitial(process.env.LEADERBOARD_INTERST_ID)
 
     return (
         <GestureHandlerRootView style={styles.container}>

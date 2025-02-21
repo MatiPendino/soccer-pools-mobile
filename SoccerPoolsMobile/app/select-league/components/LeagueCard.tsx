@@ -10,11 +10,12 @@ interface LeagueCardProps {
     leagueTitle: string
     leagueImgUrl: string
     leagueSlug: Slug
+    isUserJoined: Boolean
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function LeagueCard({
-    leagueTitle, leagueImgUrl, leagueSlug, setIsLoading
+    leagueTitle, leagueImgUrl, leagueSlug, isUserJoined, setIsLoading
 }: LeagueCardProps) {
     const { t } = useTranslation()
     const toast = useToast()
@@ -25,7 +26,9 @@ export default function LeagueCard({
         try {
             const token = await getToken()
             const response = await betsRegister(token, leagueSlug)
-            toast.show(t('joined-league-successfully', {leagueTitle: leagueTitle}), { type: 'success' });
+            if (response.status === 201) {
+                toast.show(t('joined-league-successfully', {leagueTitle: leagueTitle}), { type: 'success' });
+            }
             router.replace('/home')
         } catch (error) {
             toast.show('There is been an error joining the league. Please try later', { type: 'danger' });
@@ -39,11 +42,19 @@ export default function LeagueCard({
             style={styles.leagueContainer} 
             onPress={() => selectLeague()}
         >
-            <View style={styles.leagueImgContainer}>
+            <View style={[
+                styles.leagueImgContainer, 
+                {backgroundColor: isUserJoined ? '#72ad81' : '#d9d9d9'}]
+            }>
                 <Image
                     source={{ uri: leagueImgUrl }}
                     style={styles.leagueImg}
                 />
+                {isUserJoined &&
+                    <View style={styles.userJoinedFooter}>
+                        <Text style={styles.userJoinedTxt}>{t('joined')}</Text>
+                    </View>
+                }
             </View>
             <Text style={styles.leagueTxt}>{leagueTitle}</Text>
         </Pressable>
@@ -59,7 +70,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 5
     },
     leagueImgContainer: {
-        width: '100%',
         textAlign: 'center',
         marginHorizontal: 'auto',
         backgroundColor: '#fdfdfd',
@@ -77,7 +87,19 @@ const styles = StyleSheet.create({
     leagueTxt: {
         textAlign: 'center',
         color: '#fff',
-        fontSize: 14,
+        fontSize: 16,
+        marginTop: 3,
         fontWeight: '500',
+        textTransform: 'uppercase'
+    },
+    userJoinedFooter: {
+        backgroundColor: '#d9d9d9',
+        borderRadius: 5
+    },
+    userJoinedTxt: {
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: 15,
+        paddingVertical: 1
     }
 })

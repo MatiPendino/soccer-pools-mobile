@@ -63,5 +63,8 @@
     "add-tournament-description": "Add a description for your tournament (optional)",
     "logged-in-successfully": "Logged in successfully!",
     "log-in": "LOG IN",
-    "undefined-date": "UNDEFINED DATE"
+    "undefined-date": "UNDEFINED DATE",
+    "leagues": "Leagues",
+    "how-to-play": "How to Play",
+    "home": "Home"
 }

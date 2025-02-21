@@ -32,28 +32,31 @@ export default function SelectLeague({}) {
         getLeagueList()
     }, [])
 
-    if (isLoading) {
-        return <ActivityIndicator size="large" color="#0000ff" />
-    }
-
     return (
         <GestureHandlerRootView style={styles.container}>
             <Text style={styles.selectLeagueTxt}>{t('select-league')}</Text>
-            <FlatList
-                data={leagues}
-                renderItem={({ item }) => (
-                    <LeagueCard
-                        leagueImgUrl={item.logo}
-                        leagueTitle={item.name}
-                        leagueSlug={item.slug}
-                        setIsLoading={setIsLoading}
-                    />
-                )}
-                numColumns={2}
-                keyExtractor={(item) => item.slug}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.leaguesContainer}
-            />
+            {
+                isLoading
+                ?
+                <ActivityIndicator size="large" color="white" />
+                :
+                <FlatList
+                    data={leagues}
+                    renderItem={({ item }) => (
+                        <LeagueCard
+                            leagueImgUrl={item.logo}
+                            leagueTitle={item.name}
+                            leagueSlug={item.slug}
+                            isUserJoined={item.is_user_joined}
+                            setIsLoading={setIsLoading}
+                        />
+                    )}
+                    numColumns={2}
+                    keyExtractor={(item) => item.slug}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.leaguesContainer}
+                />
+            }
 
             <Banner bannerId={process.env.SELECT_LEAGUE_BANNER_ID} />
         </GestureHandlerRootView>
@@ -73,8 +76,6 @@ const styles = StyleSheet.create({
         fontWeight: '600'
     },
     leaguesContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
+        marginHorizontal: 'auto'
     }
 })

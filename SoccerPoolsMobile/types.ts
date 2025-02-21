@@ -40,6 +40,7 @@ export interface LeagueProps {
     logo: string
     name: string
     slug: Slug
+    is_user_joined: Boolean
 }
 
 export interface RoundProps {

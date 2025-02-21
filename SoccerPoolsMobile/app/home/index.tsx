@@ -82,6 +82,10 @@ export default function Home({}) {
           </View>
           <View style={styles.itemsContainer}>
             <DrawerItemList {...props} />
+            <Pressable onPress={() => router.push('/select-league')} style={styles.shareBtn}>
+              <Entypo name="game-controller" size={22} color="white" />
+              <Text style={styles.shareTxt}>{t('leagues')}</Text>
+            </Pressable>
             <Pressable onPress={handleShare} style={styles.shareBtn}>
               <Entypo name="share" size={22} color="white" />
               <Text style={styles.shareTxt}>{t('share')}</Text>
@@ -110,11 +114,11 @@ export default function Home({}) {
             color: "white",
             fontSize: 24,
           },
-          drawerIcon: () => <Entypo name="game-controller" color="white" size={22} />,
+          drawerIcon: () => <Entypo name="home" color="white" size={22} />,
         }}
       />
       <Drawer.Screen
-        name="How To Play"
+        name={t('how-to-play')}
         component={HowToPlay}
         options={{
           drawerLabelStyle: {
