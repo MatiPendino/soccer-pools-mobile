@@ -52,6 +52,7 @@ export interface RoundProps {
     round_state: number
     slug: Slug
     start_date: ISO8601DateString
+    has_bet_round: Boolean
 }
 
 export interface RoundsStateProps {

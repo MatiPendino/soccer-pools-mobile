@@ -6,19 +6,40 @@ interface RoundItemProps {
     roundId: number
     roundSlug: Slug
     roundName: string
+    hasBetRound: Boolean
     roundsState: RoundsStateProps
 }
 
 export default function RoundItem({
-    handleRoundSwap, roundId, roundSlug, roundName, roundsState
+    handleRoundSwap, roundId, roundSlug, roundName, hasBetRound, roundsState
 }: RoundItemProps) {
+
+    const handleClick = () => {
+        if (hasBetRound) {
+            handleRoundSwap(roundId, roundSlug)
+        } else {
+            () => {}
+        }
+    }
+
+    const handleTxtStyle = () => {
+        if (hasBetRound) {
+            if (roundsState[roundSlug]) {
+                return styles.activeRoundTxt
+            } else {
+                return ''
+            }
+        } else {
+            return styles.inactiveRoundTxt
+        }
+    }
 
     return (
         <Pressable 
-            onPress={() => handleRoundSwap(roundId, roundSlug)}
+            onPress={() => handleClick()}
             style={[styles.roundBtn, roundsState[roundSlug] ? styles.activeRoundBtn : '' ]}
         >
-            <Text style={[styles.roundTxt, roundsState[roundSlug] ? styles.activeRoundTxt : '']}>
+            <Text style={[styles.roundTxt, handleTxtStyle()]}>
                 {roundName.toUpperCase()}
             </Text>
         </Pressable>
@@ -41,4 +62,7 @@ const styles = StyleSheet.create({
     activeRoundTxt: {
         color: '#6860A1'
     },
+    inactiveRoundTxt: {
+        color: '#aaa'
+    }
 })

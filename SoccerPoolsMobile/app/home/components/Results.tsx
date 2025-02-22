@@ -106,6 +106,7 @@ export default function Results ({}) {
                     rounds={rounds}
                     handleRoundSwap={swapRoundMatchResults}
                     roundsState={roundsState}
+                    isResultsTab={true}
                 />
             }
 

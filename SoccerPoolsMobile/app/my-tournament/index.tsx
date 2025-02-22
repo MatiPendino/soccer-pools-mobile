@@ -138,7 +138,11 @@ export default function MyTournament({}) {
                     ?
                     <LoadingCards cardHeight={80} nCards={5} cardColor='#d9d9d9' />
                     :
-                    <RankedPlayersFlatList bets={bets} />
+                        bets.length > 0
+                        ?
+                        <RankedPlayersFlatList bets={bets} />
+                        :
+                        <View><Text style={styles.noBetsTxt}>{t('no-bets')}</Text></View>
                 }
 
                 <Banner bannerId={process.env.MY_TOURNAMENT_BANNER_ID} />
@@ -175,6 +179,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '500',
         marginStart: 5
+    },
+    noBetsTxt: {
+        fontSize: 27,
+        textAlign: 'center',
+        color: 'white',
+        fontWeight: '500',
+        marginBottom: 250
     },
     leaguesContainer: {
         display: 'flex',

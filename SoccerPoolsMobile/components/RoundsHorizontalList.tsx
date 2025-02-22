@@ -7,9 +7,12 @@ interface Props {
     rounds: RoundProps[]
     handleRoundSwap: (roundId: number, roundSlug: Slug) => void
     roundsState: RoundsStateProps
+    isResultsTab?: Boolean
 }
 
-export default function RoundsHorizontalList({rounds, handleRoundSwap, roundsState}: Props) {
+export default function RoundsHorizontalList({
+    rounds, handleRoundSwap, roundsState, isResultsTab=false
+}: Props) {
     return (
         <FlatList
             data={rounds}
@@ -19,6 +22,7 @@ export default function RoundsHorizontalList({rounds, handleRoundSwap, roundsSta
                     roundSlug={item.slug}
                     roundName={item.name}
                     roundsState={roundsState}
+                    hasBetRound={isResultsTab ? item.has_bet_round : true}
                     handleRoundSwap={handleRoundSwap}
                 />
             )}
