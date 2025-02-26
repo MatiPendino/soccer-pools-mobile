@@ -8,7 +8,10 @@ export const getNextRoundId = (rounds: RoundProps[]): number => {
     */
     const currentDate = new Date()
     const pendingRounds = rounds.filter(({round_state}) => round_state === 1)
-    const futureRounds = rounds.filter(({ start_date }) => new Date(start_date) > currentDate)
+    let futureRounds = rounds.filter(({ start_date }) => new Date(start_date) > currentDate)
+    if (futureRounds.length === 0) {
+        futureRounds = rounds.filter(({ round_state }) => round_state === 0)
+    }
 
     if (pendingRounds.length > 0) {
         return pendingRounds[0].id
