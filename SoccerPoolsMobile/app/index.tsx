@@ -11,23 +11,10 @@ export default function App() {
   const toast = useToast()
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [token, setToken] = useState<string>(null)
   const [checkingLeague, setCheckingLeague] = useState<boolean>(true);
 
   useEffect(() => {
-    const checkAuth = async (): Promise<void> => {
-      const token = await getToken()
-      setIsAuthenticated(!!token);
-      if (!!token) {
-        setToken(token)
-      }
-    };
-    checkAuth();
-  }, []);
-
-  useEffect(() => {
-    const checkUserLeagueStatus = async (): Promise<void> => {
-      if (isAuthenticated) {
+    const checkUserLeagueStatus = async (token): Promise<void> => {
         try {
           const inLeague = await getUserInLeague(token)
           if (inLeague.in_league) {
@@ -41,10 +28,18 @@ export default function App() {
         } finally {
           setCheckingLeague(false)
         }
+    }
+
+    const checkAuth = async (): Promise<void> => {
+      const token = await getToken()
+      setIsAuthenticated(!!token);
+      if (!!token) {
+        checkUserLeagueStatus(token)
       }
     }
-    checkUserLeagueStatus()
-  }, [isAuthenticated, token])
+    
+    checkAuth();
+  }, []);
 
   if (!isAuthenticated) {
     return <Login />
@@ -56,5 +51,5 @@ export default function App() {
     ) 
   }
 
-  return null
+  return <InitialLoadingScreen />
 }

@@ -80,7 +80,6 @@ export default function Results ({}) {
                 toast.show('There´s been an error getting the matches', {type: 'danger'})
             } finally {
                 setIsLoading(false)
-                sendFCMToken()
             }
         }
 
@@ -95,6 +94,7 @@ export default function Results ({}) {
         }
 
         getLeague()
+        sendFCMToken()
     }, [])
 
     if (isLoading) {
