@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Stack } from "expo-router";
-import { OneSignal } from 'react-native-onesignal';
 import { ToastProvider } from "react-native-toast-notifications";
 import { StatusBar } from "expo-status-bar";
 import mobileAds from 'react-native-google-mobile-ads';
@@ -20,19 +19,6 @@ export default function Layout () {
             .then(adapterStatuses => {
             // Initialization complete!
             })
-
-
-        // OneSignal Initialization
-        OneSignal.initialize(process.env.ONE_SIGNAL_APP_ID);
-
-        // requestPermission will show the native iOS or Android notification permission prompt.
-        // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-        OneSignal.Notifications.requestPermission(true);
-
-        // Method for listening for notification clicks
-        OneSignal.Notifications.addEventListener('click', (event) => {
-            console.log('OneSignal: notification clicked:', event);
-        });
     }, []);
 
     return (

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { ToastType, useToast } from "react-native-toast-notifications";
-import { OneSignal } from 'react-native-onesignal';
+import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
 import MatchResult from "./MatchResult";
@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 import { userLeague } from "../../../services/leagueService";
 import { getNextRoundId } from "../../../utils/getNextRound";
-import ShimmerPlaceholder from "react-native-shimmer-placeholder";
+import { registerPush, getFCMToken } from "../../../services/pushNotificationService";
 
 
 export default function Results ({}) {
@@ -64,11 +64,6 @@ export default function Results ({}) {
                 const roundsByLeague = await getRounds(token, temp_league.id, true)
                 const nextRoundId = getNextRoundId(roundsByLeague)
 
-                // Add tag for OneSignal push notifications
-                OneSignal.User.addTags({
-                    league: temp_league.slug,
-                })
-                
                 setRounds(roundsByLeague)
                 setRoundsState(getRoundsState(roundsByLeague, nextRoundId))
                 getFirstMatchResults(token, nextRoundId)
@@ -85,6 +80,17 @@ export default function Results ({}) {
                 toast.show('There´s been an error getting the matches', {type: 'danger'})
             } finally {
                 setIsLoading(false)
+                sendFCMToken()
+            }
+        }
+
+        const sendFCMToken = async () => {
+            try {
+                const token = await getToken()
+                const fcmToken = await getFCMToken()
+                const response = registerPush(token, fcmToken)
+            } catch (error) {
+                console.log(error)
             }
         }
 

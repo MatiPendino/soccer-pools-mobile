@@ -26,6 +26,7 @@
       "permissions": [
         "com.google.android.gms.permission.AD_ID"
       ],
+      "googleServicesFile": "./google-services.json",
       "package": "com.matipendino2001.soccerpools"
     },
     "web": {
