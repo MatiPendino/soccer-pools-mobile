@@ -5,7 +5,7 @@ import { ToastType, useToast } from "react-native-toast-notifications";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
-import MatchResult from "./MatchResult";
+import MatchResult from "../components/MatchResult";
 import { LeagueProps, MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
 import { getRounds, getRoundsState, updateActiveRound } from "../../../utils/leagueRounds";
 import { useTranslation } from "react-i18next";

@@ -1,9 +1,9 @@
 import { NavigationContainer, NavigationIndependentTree } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Leaderboard from "../components/Leaderboard";
-import Results from "../components/Results";
-import Tournaments from "../components/Tournaments";
+import Leaderboard from "../tabs/Leaderboard";
+import Results from "../tabs/Results";
+import Tournaments from "../tabs/Tournaments";
 
 const Tab = createBottomTabNavigator()
 
