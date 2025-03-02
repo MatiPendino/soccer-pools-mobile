@@ -21,15 +21,19 @@ export default function Results ({}) {
     const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
     const [matchResults, setMatchResults] = useState<MatchResultProps[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [isRoundLoading, setIsRoundLoading] = useState<boolean>(false)
     const [isSavePredLoading, setIsSavePredLoading] = useState<boolean>(false)
     const toast: ToastType = useToast()
 
     const getMatchResults = async (token: string, roundId: number): Promise<void> => {
+        setIsRoundLoading(true)
         try {
             const matchResults = await matchResultsList(token, roundId)
             setMatchResults(matchResults)
         } catch (error) {
             toast.show('There´s been an error getting the matches', {type: 'danger'})
+        } finally {
+            setIsRoundLoading(false)
         }
     }
 
@@ -116,20 +120,26 @@ export default function Results ({}) {
                 />
             }
 
-            <FlatList
-                data={matchResults}
-                renderItem={({item}) => (
-                    <MatchResult 
-                        currentMatchResult={item} 
-                        matchResults={matchResults} 
-                        setMatchResults={setMatchResults} 
-                    />
-                )}
-                keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={styles.matchResultsContainer}
-                horizontal={false} 
-                showsVerticalScrollIndicator={true}
-            />
+            {
+                isRoundLoading
+                ?
+                    <ActivityIndicator style={{paddingBottom: 250}} size="large" color="#fff" />
+                :
+                <FlatList
+                    data={matchResults}
+                    renderItem={({item}) => (
+                        <MatchResult 
+                            currentMatchResult={item} 
+                            matchResults={matchResults} 
+                            setMatchResults={setMatchResults} 
+                        />
+                    )}
+                    keyExtractor={(item) => item.id.toString()}
+                    contentContainerStyle={styles.matchResultsContainer}
+                    horizontal={false} 
+                    showsVerticalScrollIndicator={true}
+                />
+            }
 
             <Pressable
                 style={styles.saveBtn}

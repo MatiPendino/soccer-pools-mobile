@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
 import { MaterialIcons } from "@expo/vector-icons";
 import { LeagueProps, TournamentProps } from "../../../types";
-import TournamentCard from "./TournamentCard";
+import TournamentCard from "../components/TournamentCard";
 import { getToken } from "../../../utils/storeToken";
 import { listTournaments } from "../../../services/tournamentService";
 import { useTranslation } from "react-i18next";
