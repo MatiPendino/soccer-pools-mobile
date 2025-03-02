@@ -6,6 +6,7 @@ import { ToastType, useToast } from "react-native-toast-notifications"
 import { useEffect, useState } from "react"
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { ActivityIndicator } from "react-native-paper"
+import { MAIN_COLOR } from "../../constants"
 import { getToken } from "../../utils/storeToken"
 import { listPendingTournamentUsers } from "../../services/tournamentService"
 import { TournamentUserProps } from "../../types"
@@ -84,7 +85,7 @@ export default function PendingInvites () {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         flex: 1,
     },
     topBar: {

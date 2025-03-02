@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, Pressable, ActivityIndicator} from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { Link } from "expo-router";
 import 'react-native-gesture-handler'
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -7,6 +7,7 @@ import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawe
 import Entypo from '@expo/vector-icons/Entypo';
 import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
+import { MAIN_COLOR } from "../../constants";
 import League from "./screens/League";
 import HowToPlay from "./screens/HowToPlay";
 import styles from "./styles"
@@ -59,7 +60,7 @@ export default function Home({}) {
       initialRouteName="Home"
       screenOptions={({ navigation }) => ({
         drawerStyle: {
-          backgroundColor: "#6860A1",
+          backgroundColor: MAIN_COLOR,
           color: "white",
         },
         headerStyle: {

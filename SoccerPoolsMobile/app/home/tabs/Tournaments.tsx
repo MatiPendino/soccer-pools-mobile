@@ -5,6 +5,7 @@ import { FloatingAction } from "react-native-floating-action";
 import { useRouter } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
 import { MaterialIcons } from "@expo/vector-icons";
+import { MAIN_COLOR } from "../../../constants";
 import { LeagueProps, TournamentProps } from "../../../types";
 import TournamentCard from "../components/TournamentCard";
 import { getToken } from "../../../utils/storeToken";
@@ -132,7 +133,7 @@ export default function Tournaments ({}) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         height: '100%',
         paddingHorizontal: 10
     },

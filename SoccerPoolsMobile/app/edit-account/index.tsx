@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { Link } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
+import { MAIN_COLOR } from "../../constants";
 import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
 import { Email } from "../../types";
@@ -129,7 +130,7 @@ export default function EditAccount({}) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         height: '100%',
         width: '100%',
         flex: 1,

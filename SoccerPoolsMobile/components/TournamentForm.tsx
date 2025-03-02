@@ -3,6 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import { Router, useRouter } from "expo-router";
 import { Entypo } from "@expo/vector-icons";
+import { MAIN_COLOR } from "../constants";
 import AddPhotoButton from "./AddPhotoButton";
 import { useTranslation } from "react-i18next";
 import { Banner, interstitial } from "./Ads";
@@ -133,7 +134,7 @@ export default function TournamentForm({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         flex: 1,
     },
     topBar: {

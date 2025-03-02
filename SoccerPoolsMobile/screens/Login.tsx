@@ -4,6 +4,7 @@ import { View, Image, Pressable, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
+import { MAIN_COLOR } from "../constants";
 import { googleOauth2SignIn, login } from '../services/authService'
 import { getUserInLeague } from "../services/authService";
 import CustomInputSign from '../components/CustomInputSign';
@@ -109,7 +110,7 @@ export default function Login({}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         alignItems: 'center',
         justifyContent: 'center',
     },

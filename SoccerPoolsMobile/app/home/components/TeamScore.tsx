@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { View, Pressable, Text, StyleSheet } from "react-native"
+import { MAIN_COLOR } from "../../../constants"
 import { MatchResultProps } from "../../../types"
 
 interface TeamScoreProps {
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 2
     },
     goalsBtn: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         borderRadius: 30,
         width: 47,
         paddingVertical: 1,

@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { StyleSheet, Text, View } from "react-native"
+import { MAIN_COLOR } from "../../../constants"
 import { ISO8601DateString } from "../../../types"
 
 interface MatchResultTopProps {
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     },
     pointsContainer: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         borderRadius: 7,
         paddingHorizontal: 10,
         paddingVertical: 3

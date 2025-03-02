@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { MAIN_COLOR } from "../../constants";
 
 const styles = StyleSheet.create({
     container: {
@@ -6,7 +7,7 @@ const styles = StyleSheet.create({
     drawerNavbar: {
         padding: 20,
         alignItems: 'center',
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
     },
     nameTxt: {
         marginTop: 10,

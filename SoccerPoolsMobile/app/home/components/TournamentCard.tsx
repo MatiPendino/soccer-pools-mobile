@@ -2,6 +2,7 @@ import { View, StyleSheet, Text, Image, ActivityIndicator, Pressable } from "rea
 import { useEffect, useState } from "react"
 import { ToastType, useToast } from "react-native-toast-notifications"
 import { Router, useRouter } from "expo-router"
+import { MAIN_COLOR } from "../../../constants"
 import { getToken } from "../../../utils/storeToken"
 import { patchTournamentUser, retrieveTournamentUser } from "../../../services/tournamentService"
 import { Email, TournamentUserProps } from "../../../types"
@@ -48,7 +49,7 @@ export default function TournamentCard(
             case 1:
                 return <Text style={[styles.stateTxt, {color: '#979A0C'}]}>{t('pending')}</Text>
             case 2:
-                return <Text style={[styles.stateTxt, {color: '#6860A1'}]}>{t('joined')}</Text>
+                return <Text style={[styles.stateTxt, {color: MAIN_COLOR}]}>{t('joined')}</Text>
             case 3:
                 return <Text style={[styles.stateTxt, {color: '#C52424'}]}>{t('rejected')}</Text>
         }

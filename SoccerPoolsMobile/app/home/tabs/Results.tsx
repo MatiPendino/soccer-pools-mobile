@@ -3,6 +3,7 @@ import { Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { ToastType, useToast } from "react-native-toast-notifications";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
+import { MAIN_COLOR } from "../../../constants";
 import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
 import MatchResult from "../components/MatchResult";
@@ -161,7 +162,7 @@ export default function Results ({}) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         flex: 1
     },
     roundsListLoading: { 
@@ -187,11 +188,11 @@ const styles = StyleSheet.create({
         fontSize: 17
     },
     activeRoundBtn: {
-        borderBottomColor: '#6860A1',
+        borderBottomColor: MAIN_COLOR,
         borderBottomWidth: 5,
     },
     activeRoundTxt: {
-        color: '#6860A1'
+        color: MAIN_COLOR
     },
     matchResultsContainer: {
         paddingBottom: 70,

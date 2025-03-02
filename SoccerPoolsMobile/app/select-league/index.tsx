@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useToast } from "react-native-toast-notifications"
 import { StyleSheet, Text, ActivityIndicator } from "react-native"
+import { MAIN_COLOR } from "../../constants"
 import { leagueList } from "../../services/leagueService"
 import { getToken } from "../../utils/storeToken"
 import LeagueCard from "./components/LeagueCard"
@@ -65,7 +66,7 @@ export default function SelectLeague({}) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         height: '100%',
     },
     selectLeagueTxt: {

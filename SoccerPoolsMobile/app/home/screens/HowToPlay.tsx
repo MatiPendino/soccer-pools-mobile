@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { View, Text, StyleSheet, Dimensions, FlatList, ScaledSize } from "react-native"
+import { MAIN_COLOR } from "../../../constants"
 
 const { width: screenWidth }: ScaledSize = Dimensions.get("window")
 
@@ -58,7 +59,7 @@ export default function HowToPlay({}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#6860A1",
+        backgroundColor: MAIN_COLOR,
         alignItems: "center",
         justifyContent: "center",
     },

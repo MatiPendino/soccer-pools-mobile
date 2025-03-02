@@ -1,8 +1,9 @@
 import { StyleSheet } from "react-native"
+import { MAIN_COLOR } from "../../constants"
 
 const styles = StyleSheet.create({
     viewContainer: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         height: '100%'
     },
     container: {

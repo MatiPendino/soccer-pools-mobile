@@ -7,6 +7,7 @@ import { Router, useLocalSearchParams } from "expo-router";
 import Entypo from '@expo/vector-icons/Entypo';
 import { Menu, PaperProvider } from 'react-native-paper';
 import { useRouter } from "expo-router";
+import { MAIN_COLOR } from "../../constants";
 import { getToken } from "../../utils/storeToken";
 import RankedPlayersFlatList from "../../components/RankedPlayersFlatList";
 import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../utils/leagueRounds";
@@ -153,7 +154,7 @@ export default function MyTournament({}) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         flex: 1
     },
     roundsListLoading: { 
@@ -207,8 +208,8 @@ const styles = StyleSheet.create({
     activeRoundBtn: {
     },
     activeRoundTxt: {
-        color: '#6860A1',
-        borderBottomColor: '#6860A1',
+        color: MAIN_COLOR,
+        borderBottomColor: MAIN_COLOR,
         borderBottomWidth: 5,
     },
 })

@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text } from "react-native"
+import { MAIN_COLOR } from "../constants"
 import { RoundsStateProps, Slug } from "../types"
 
 interface RoundItemProps {
@@ -56,11 +57,11 @@ const styles = StyleSheet.create({
         fontSize: 17
     },
     activeRoundBtn: {
-        borderBottomColor: '#6860A1',
+        borderBottomColor: MAIN_COLOR,
         borderBottomWidth: 5,
     },
     activeRoundTxt: {
-        color: '#6860A1'
+        color: MAIN_COLOR
     },
     inactiveRoundTxt: {
         color: '#aaa'

@@ -1,4 +1,5 @@
 import { View, Image, ActivityIndicator, StyleSheet } from "react-native"
+import { MAIN_COLOR } from "../constants"
 
 export default function InitialLoadingScreen () {
 
@@ -15,7 +16,7 @@ export default function InitialLoadingScreen () {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         flex: 1,
         textAlign: 'center',
         marginHorizontal: 'auto',

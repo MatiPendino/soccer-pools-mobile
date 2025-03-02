@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { View, StyleSheet, Text, ActivityIndicator } from "react-native"
 import { useToast } from "react-native-toast-notifications"
+import { MAIN_COLOR } from "../../constants"
 import CustomButton from "../../components/CustomButton"
 import CustomInputSign from "../../components/CustomInputSign"
 import { getToken } from "../../utils/storeToken"
@@ -65,7 +66,7 @@ export default function UpdatePassword({}) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#6860A1',
+        backgroundColor: MAIN_COLOR,
         height: '100%',
         width: '100%',
         flex: 1,
