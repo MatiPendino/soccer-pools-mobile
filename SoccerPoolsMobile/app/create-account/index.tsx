@@ -5,6 +5,7 @@ import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
+import handleError from "../../utils/handleError";
 import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
 import { register, login, googleOauth2SignIn, getUserInLeague } from "../../services/authService";
@@ -52,7 +53,7 @@ export default function CreateAccount({}) {
                 await logIn()
             }
         } catch (error) {
-            toast.show(JSON.stringify(error), {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         } finally {
             setIsLoading(false)
         }

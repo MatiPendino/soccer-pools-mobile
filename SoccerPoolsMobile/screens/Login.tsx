@@ -9,7 +9,7 @@ import { getUserInLeague } from "../services/authService";
 import CustomInputSign from '../components/CustomInputSign';
 import CustomButton from '../components/CustomButton';
 import { useTranslation } from "react-i18next";
-
+import handleError from "../utils/handleError";
 
 export default function Login({}) {
     const { t } = useTranslation()
@@ -33,7 +33,7 @@ export default function Login({}) {
             toast.show(t('logged-in-successfully'), {type: 'success'})
             await userInLeague(access)
         } catch (error) {
-            toast.show(JSON.stringify(error), {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         }
     }
 
