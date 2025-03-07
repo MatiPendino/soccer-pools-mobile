@@ -2,9 +2,20 @@ import { View, TextInput, Pressable, StyleSheet } from "react-native"
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useState } from "react"
 
-export default function CustomInputSign(
-    {inputMode='text', placeholder, isSecureTextEntry=false, value, setValue, isActive=true}
-) {
+interface Props {
+    inputMode?: 'text' | 'email'
+    placeholder: string
+    isSecureTextEntry?: boolean
+    value: string
+    setValue: React.Dispatch<React.SetStateAction<string>>
+    isActive?: boolean
+    isCapitalized?: boolean
+}
+
+export default function CustomInputSign({
+    inputMode='text', placeholder, isSecureTextEntry=false, value, setValue, isActive=true,
+    isCapitalized=false
+}: Props) {
     const [isPasswordHidden, setIsPasswordHidden] = useState(true)
 
     return (
@@ -14,6 +25,7 @@ export default function CustomInputSign(
                 placeholder={placeholder}
                 placeholderTextColor='#ddd'
                 value={value}
+                autoCapitalize={isCapitalized ? 'words' : 'none'}
                 onChangeText={setValue}
                 secureTextEntry={isPasswordHidden && isSecureTextEntry}
                 inputMode={inputMode}

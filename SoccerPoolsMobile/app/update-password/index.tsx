@@ -19,7 +19,7 @@ export default function UpdatePassword({}) {
         setIsLoading(true)
         try {
             const token = await getToken()
-            await editPassword(token, oldPassword, newPassword)
+            await editPassword(token, oldPassword.trim(), newPassword.trim())
             setOldPassword('')
             setNewPassword('')
             toast.show(t('password-updated-successfully'), {type: 'success'})

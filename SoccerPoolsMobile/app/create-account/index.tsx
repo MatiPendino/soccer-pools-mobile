@@ -47,7 +47,9 @@ export default function CreateAccount({}) {
     const createAccount = async (): Promise<void> => {
         setIsLoading(true)
         try {
-            const registerStatus = await register(firstName, lastName, username, email, password)
+            const registerStatus = await register(
+                firstName.trim(), lastName.trim(), username.trim(), email.trim(), password.trim()
+            )
             if (registerStatus === 201) {
                 toast.show(t('account-created-successfully'), {type: 'success'})
                 await logIn()
@@ -115,12 +117,14 @@ export default function CreateAccount({}) {
                     placeholder={t('first-name')}
                     value={firstName}
                     setValue={setFirstName}
+                    isCapitalized={true}
                 />
 
                 <CustomInputSign
                     placeholder={t('last-name')}
                     value={lastName}
                     setValue={setLastName}
+                    isCapitalized={true}
                 />
 
                 <CustomInputSign
@@ -133,6 +137,7 @@ export default function CreateAccount({}) {
                     placeholder={t('email')}
                     value={email}
                     setValue={setEmail}
+                    inputMode="email"
                 />
 
                 <CustomInputSign

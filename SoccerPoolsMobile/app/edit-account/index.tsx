@@ -26,7 +26,7 @@ export default function EditAccount({}) {
         try {
             const token = await getToken()
             if (token) {
-                const {name, last_name} = await updateUser(token, firstName, lastName)
+                const {name, last_name} = await updateUser(token, firstName.trim(), lastName.trim())
                 if (name && last_name) {
                     toast.show(t('user-updated-successfully'), {type: 'success'})
                 } else {
@@ -89,12 +89,14 @@ export default function EditAccount({}) {
                 placeholder={t('first-name')}
                 value={firstName}
                 setValue={setFirstName}
+                isCapitalized={true}
             />
 
             <CustomInputSign
                 placeholder={t('last-name')}
                 value={lastName}
                 setValue={setLastName}
+                isCapitalized={true}
             />
 
             <CustomInputSign
@@ -102,6 +104,7 @@ export default function EditAccount({}) {
                 value={email}
                 setValue={setEmail}
                 isActive={false}
+                inputMode="email"
             />
 
             {

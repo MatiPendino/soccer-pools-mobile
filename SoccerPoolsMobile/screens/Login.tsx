@@ -29,7 +29,7 @@ export default function Login({}) {
 
     const logIn = async (): Promise<void> => {
         try {
-            const {access, refresh} = await login(username, password)
+            const {access, refresh} = await login(username.trim(), password.trim())
             toast.show(t('logged-in-successfully'), {type: 'success'})
             await userInLeague(access)
         } catch (error) {
@@ -72,7 +72,6 @@ export default function Login({}) {
             />
     
             <CustomInputSign
-                inputMode='username'
                 value={username}
                 setValue={setUsername}
                 placeholder={t('username')}
