@@ -2,6 +2,7 @@ import TournamentForm from "../../components/TournamentForm";
 import { Router, useLocalSearchParams, useRouter } from "expo-router";
 import { ToastType, useToast } from "react-native-toast-notifications";
 import { getToken } from "../../utils/storeToken";
+import handleError from "../../utils/handleError";
 import { createTournament } from "../../services/tournamentService";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -33,7 +34,7 @@ export default function CreateTournament () {
                 })    
             }
         } catch (error) {
-            toast.show('There is been an error creating the tournament', {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         } finally {
             setIsLoading(false)
         }

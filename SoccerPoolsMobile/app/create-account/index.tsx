@@ -5,6 +5,7 @@ import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
+import handleError from "../../utils/handleError";
 import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
 import { register, login, googleOauth2SignIn, getUserInLeague } from "../../services/authService";
@@ -39,20 +40,22 @@ export default function CreateAccount({}) {
                 router.replace('select-league')
             }
         } catch (error) {
-            toast.show(JSON.stringify(error), {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         }
     }
 
     const createAccount = async (): Promise<void> => {
         setIsLoading(true)
         try {
-            const registerStatus = await register(firstName, lastName, username, email, password)
+            const registerStatus = await register(
+                firstName.trim(), lastName.trim(), username.trim(), email.trim(), password.trim()
+            )
             if (registerStatus === 201) {
                 toast.show(t('account-created-successfully'), {type: 'success'})
                 await logIn()
             }
         } catch (error) {
-            toast.show(JSON.stringify(error), {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         } finally {
             setIsLoading(false)
         }
@@ -114,12 +117,14 @@ export default function CreateAccount({}) {
                     placeholder={t('first-name')}
                     value={firstName}
                     setValue={setFirstName}
+                    isCapitalized={true}
                 />
 
                 <CustomInputSign
                     placeholder={t('last-name')}
                     value={lastName}
                     setValue={setLastName}
+                    isCapitalized={true}
                 />
 
                 <CustomInputSign
@@ -132,6 +137,7 @@ export default function CreateAccount({}) {
                     placeholder={t('email')}
                     value={email}
                     setValue={setEmail}
+                    inputMode="email"
                 />
 
                 <CustomInputSign

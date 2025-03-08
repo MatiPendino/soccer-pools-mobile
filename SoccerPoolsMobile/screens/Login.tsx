@@ -10,7 +10,7 @@ import { getUserInLeague } from "../services/authService";
 import CustomInputSign from '../components/CustomInputSign';
 import CustomButton from '../components/CustomButton';
 import { useTranslation } from "react-i18next";
-
+import handleError from "../utils/handleError";
 
 export default function Login({}) {
     const { t } = useTranslation()
@@ -30,11 +30,11 @@ export default function Login({}) {
 
     const logIn = async (): Promise<void> => {
         try {
-            const {access, refresh} = await login(username, password)
+            const {access, refresh} = await login(username.trim(), password.trim())
             toast.show(t('logged-in-successfully'), {type: 'success'})
             await userInLeague(access)
         } catch (error) {
-            toast.show(JSON.stringify(error), {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         }
     }
 
@@ -73,7 +73,6 @@ export default function Login({}) {
             />
     
             <CustomInputSign
-                inputMode='username'
                 value={username}
                 setValue={setUsername}
                 placeholder={t('username')}

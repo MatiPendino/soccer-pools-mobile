@@ -8,6 +8,7 @@ import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
 import { Email } from "../../types";
 import { getToken } from "../../utils/storeToken";
+import handleError from "../../utils/handleError";
 import { deleteUser, getUser, updateUser } from "../../services/authService";
 import { removeToken } from "../../services/api";
 import { useTranslation } from "react-i18next";
@@ -27,7 +28,7 @@ export default function EditAccount({}) {
         try {
             const token = await getToken()
             if (token) {
-                const {name, last_name} = await updateUser(token, firstName, lastName)
+                const {name, last_name} = await updateUser(token, firstName.trim(), lastName.trim())
                 if (name && last_name) {
                     toast.show(t('user-updated-successfully'), {type: 'success'})
                 } else {
@@ -35,7 +36,7 @@ export default function EditAccount({}) {
                 }
             }
         } catch (error) {
-            toast.show('There was an error updating the user', {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         } finally {
             setIsLoading(false)
         }
@@ -90,12 +91,14 @@ export default function EditAccount({}) {
                 placeholder={t('first-name')}
                 value={firstName}
                 setValue={setFirstName}
+                isCapitalized={true}
             />
 
             <CustomInputSign
                 placeholder={t('last-name')}
                 value={lastName}
                 setValue={setLastName}
+                isCapitalized={true}
             />
 
             <CustomInputSign
@@ -103,6 +106,7 @@ export default function EditAccount({}) {
                 value={email}
                 setValue={setEmail}
                 isActive={false}
+                inputMode="email"
             />
 
             {

@@ -26,6 +26,7 @@
     "expo-image": "~2.0.3",
     "expo-image-picker": "~16.0.3",
     "expo-localization": "~16.0.1",
+    "expo-notifications": "~0.29.13",
     "expo-router": "^4.0.15",
     "expo-status-bar": "~2.0.0",
     "i18next": "^24.2.1",
@@ -45,8 +46,7 @@
     "react-native-shimmer-placeholder": "^2.0.9",
     "react-native-svg": "15.8.0",
     "react-native-toast-notifications": "^3.4.0",
-    "typescript": "~5.3.3",
-    "expo-notifications": "~0.29.13"
+    "typescript": "~5.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -27,8 +27,7 @@ export const login = async(username, password) => {
         await storeToken(response.data);
         return {access, refresh}
     } catch (error) {
-        console.log(error.message)
-        throw error.message
+        throw error.response.data
     }
 }
 

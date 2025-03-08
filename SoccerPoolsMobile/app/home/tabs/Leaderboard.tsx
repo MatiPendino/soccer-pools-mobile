@@ -25,11 +25,9 @@ export default function Leaderboard ({}) {
             const {betLeaders, newRoundsState} = await swapRoundsBetLeaders(
                 roundSlug, 0, roundsState
             )
-
             setBets(betLeaders)
             setRoundsState(newRoundsState)
         } catch (error) {
-            console.log(error)
             toast.show('There`s been an error displaying the bets', {type: 'danger'})
         }
     }
@@ -45,7 +43,6 @@ export default function Leaderboard ({}) {
 
                 getFirstBetLeaders(token, roundsByLeague[0].slug)
             } catch (error) {
-                console.log(error)
                 toast.show('There is been an error displaying league information', {type: 'danger'})
             } 
         }
