@@ -7,6 +7,7 @@ import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
 import { Email } from "../../types";
 import { getToken } from "../../utils/storeToken";
+import handleError from "../../utils/handleError";
 import { deleteUser, getUser, updateUser } from "../../services/authService";
 import { removeToken } from "../../services/api";
 import { useTranslation } from "react-i18next";
@@ -34,7 +35,7 @@ export default function EditAccount({}) {
                 }
             }
         } catch (error) {
-            toast.show('There was an error updating the user', {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         } finally {
             setIsLoading(false)
         }

@@ -3,6 +3,7 @@ import TournamentForm from "../../components/TournamentForm"
 import { Router, useLocalSearchParams, useRouter } from "expo-router"
 import { ToastType, useToast } from "react-native-toast-notifications"
 import { getToken } from "../../utils/storeToken"
+import handleError from "../../utils/handleError"
 import { editTournament, retrieveTournament } from "../../services/tournamentService"
 import { TournamentProps } from "../../types"
 import { ActivityIndicator } from "react-native"
@@ -53,7 +54,7 @@ export default function EditTournament () {
                 })    
             }
         } catch (error) {
-            toast.show('There is been an error updating the tournament', {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         } finally {
             setIsLoading(false)
         }

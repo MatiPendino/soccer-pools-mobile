@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, Pressable } from "react-native"
 import { ToastType, useToast } from "react-native-toast-notifications"
 import { updateStateTournamentUser } from "../../../services/tournamentService"
 import { TournamentUserProps } from "../../../types"
+import handleError from "../../../utils/handleError"
 import { ActivityIndicator } from "react-native-paper"
 import { useTranslation } from "react-i18next"
 
@@ -29,7 +30,7 @@ export default function PendingInviteCard({
             await updateStateTournamentUser(token, id, tournamentState)
             setPendingTournamentUsers(pendingTournamentUsers.filter((tntUser) => tntUser.id != id))
         } catch (error) {
-            toast.show('There is been an error updating the state', {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         } finally {
             setIsLoading(false)
         }

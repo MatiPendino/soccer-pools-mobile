@@ -4,6 +4,7 @@ import { useToast } from "react-native-toast-notifications"
 import CustomButton from "../../components/CustomButton"
 import CustomInputSign from "../../components/CustomInputSign"
 import { getToken } from "../../utils/storeToken"
+import handleError from "../../utils/handleError"
 import { editPassword } from "../../services/authService"
 import { useTranslation } from "react-i18next"
 import { Banner } from "../../components/Ads"
@@ -24,7 +25,7 @@ export default function UpdatePassword({}) {
             setNewPassword('')
             toast.show(t('password-updated-successfully'), {type: 'success'})
         } catch (error) {
-            toast.show('There was an error updating password', {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         } finally {
             setIsLoading(false)
         }

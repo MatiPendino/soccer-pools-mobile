@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import * as Sentry from "@sentry/react-native";
 import { Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { ToastType, useToast } from "react-native-toast-notifications";
@@ -12,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 import { userLeague } from "../../../services/leagueService";
 import { getNextRoundId } from "../../../utils/getNextRound";
+import handleError from "../../../utils/handleError";
 import { registerPush, getFCMToken } from "../../../services/pushNotificationService";
 
 
@@ -40,7 +42,7 @@ export default function Results ({}) {
             const response = await matchResultsUpdate(token, matchResults)
             toast.show(t('matches-saved-successfully'), {type: 'success'})
         } catch (error) {
-            toast.show('There´s been an error saving the matches', {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         } finally {
             setIsSavePredLoading(false)
         }
@@ -68,7 +70,6 @@ export default function Results ({}) {
                 setRoundsState(getRoundsState(roundsByLeague, nextRoundId))
                 getFirstMatchResults(token, nextRoundId)
             } catch (error) {
-                console.log(error)
                 toast.show('There is been an error displaying league information', {type: 'danger'})
             } 
         }
@@ -89,7 +90,7 @@ export default function Results ({}) {
                 const fcmToken = await getFCMToken()
                 const response = registerPush(token, fcmToken)
             } catch (error) {
-                console.log(error)
+                Sentry.captureException(error)
             }
         }
 

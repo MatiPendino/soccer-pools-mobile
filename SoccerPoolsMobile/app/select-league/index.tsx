@@ -23,7 +23,6 @@ export default function SelectLeague({}) {
                 setLeagues(leagues)
             } catch (error) {
                 toast.show('Error authenticating user', {type: 'danger'})
-                console.log(error)
             } finally {
                 setIsLoading(false)
             }

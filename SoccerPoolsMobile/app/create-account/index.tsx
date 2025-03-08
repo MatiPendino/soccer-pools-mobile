@@ -40,7 +40,7 @@ export default function CreateAccount({}) {
                 router.replace('select-league')
             }
         } catch (error) {
-            toast.show(JSON.stringify(error), {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'})
         }
     }
 
