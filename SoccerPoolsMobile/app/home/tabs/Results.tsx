@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as Sentry from "@sentry/react-native";
-import { Text, Pressable, StyleSheet, ActivityIndicator } from "react-native";
+import { Text, Pressable, StyleSheet, ActivityIndicator, AppState } from "react-native";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { ToastType, useToast } from "react-native-toast-notifications";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
@@ -16,6 +16,7 @@ import { userLeague } from "../../../services/leagueService";
 import { getNextRoundId } from "../../../utils/getNextRound";
 import handleError from "../../../utils/handleError";
 import { registerPush, getFCMToken } from "../../../services/pushNotificationService";
+import { showOpenAppAd } from "../../../components/Ads";
 
 
 export default function Results ({}) {
@@ -101,6 +102,14 @@ export default function Results ({}) {
 
         getLeague()
         sendFCMToken()
+    }, [])
+
+    useEffect(() => {
+        try {
+            showOpenAppAd(process.env.OPEN_AD_APP_ID)
+        } catch (error) {
+            Sentry.captureException(error)
+        }
     }, [])
 
     if (isLoading) {
