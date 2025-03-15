@@ -26,17 +26,31 @@ export default function TeamScore({
     const handleTeamGoals = (isAdding: boolean) => {
         let newMatchResults = matchResults
         if (isAdding) {
-            setTeamGoals(teamGoals + 1)
-            newMatchResults = matchResults.map((matchResult) => {
-                if(matchResult.id === currentMatchResult.id) {
-                    if (teamNum === 1) {
-                        return {...matchResult, goals_team_1: teamGoals+1}
-                    } else {
-                        return {...matchResult, goals_team_2: teamGoals+1}
+            if (teamGoals === null) {
+                setTeamGoals(0)
+                newMatchResults = matchResults.map((matchResult) => {
+                    if(matchResult.id === currentMatchResult.id) {
+                        if (teamNum === 1) {
+                            return {...matchResult, goals_team_1: 0}
+                        } else {
+                            return {...matchResult, goals_team_2: 0}
+                        }
                     }
-                }
-                return matchResult
-            })
+                    return matchResult
+                })
+            } else {
+                setTeamGoals(teamGoals + 1)
+                newMatchResults = matchResults.map((matchResult) => {
+                    if(matchResult.id === currentMatchResult.id) {
+                        if (teamNum === 1) {
+                            return {...matchResult, goals_team_1: teamGoals+1}
+                        } else {
+                            return {...matchResult, goals_team_2: teamGoals+1}
+                        }
+                    }
+                    return matchResult
+                })
+            }
         } else {
             if (teamGoals > 0) {
                 newMatchResults = matchResults.map((matchResult) => {
@@ -64,7 +78,13 @@ export default function TeamScore({
                 <Text style={styles.goalsTxt}>+</Text>
             </Pressable>
             <Text style={styles.scoreTxt}>
-                {teamGoals}
+                {
+                    teamGoals !== null
+                    ?
+                    teamGoals
+                    : 
+                    '-'
+                }
             </Text>
             <Pressable 
                 onPress={() => handleTeamGoals(false)}
