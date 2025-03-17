@@ -67,5 +67,12 @@
     "leagues": "Ligas",
     "how-to-play": "Cómo jugar",
     "home": "Inicio",
-    "no-bets": "Aun no hay resultados"
+    "no-bets": "Aun no hay resultados",
+    "all": "TODOS",
+    "americas": "AMERICAS",
+    "europe": "EUROPA",
+    "africa": "AFRICA",
+    "asia": "ASIA",
+    "oceania": "OCEANIA",
+    "tournaments": "TORNEOS"
 }

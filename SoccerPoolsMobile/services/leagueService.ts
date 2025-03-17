@@ -1,8 +1,8 @@
 import api from "./api";
 
-export const leagueList = async (token) => {
+export const leagueList = async (token, continent) => {
     try {
-        const response = await api.get('/api/leagues/league/', {
+        const response = await api.get(`/api/leagues/league/?continent=${continent}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

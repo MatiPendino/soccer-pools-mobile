@@ -1,26 +1,43 @@
-import { useEffect, useState } from "react"
-import { useToast } from "react-native-toast-notifications"
-import { StyleSheet, Text, ActivityIndicator } from "react-native"
-import { MAIN_COLOR } from "../../constants"
-import { leagueList } from "../../services/leagueService"
-import { getToken } from "../../utils/storeToken"
-import LeagueCard from "./components/LeagueCard"
-import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
-import { LeagueProps } from "../../types"
-import { useTranslation } from "react-i18next"
-import { Banner } from "../../components/Ads"
+import { useState, useEffect } from 'react';
+import { 
+  View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar, ActivityIndicator
+} from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { ToastType, useToast } from 'react-native-toast-notifications';
+import { getToken } from '../../utils/storeToken';
+import { LeagueProps } from '../../types';
+import { leagueList } from '../../services/leagueService';
+import LeagueCard from './components/LeagueCard';
+import Continents from './components/Continents';
+import { MAIN_COLOR } from '../../constants';
 
-export default function SelectLeague({}) {
+interface ContinentProps {
+    id: number
+    name: string
+}
+
+const LeagueSelectionScreen = () => {
     const { t } = useTranslation()
-    const toast = useToast()
+    const toast: ToastType = useToast()
+    const CONTINENTS_DATA: ContinentProps[] = [
+        { id: 6, name: t('all') },
+        { id: 0, name: t('americas') },
+        { id: 1, name: t('europe')},
+        { id: 2, name: t('africa') },
+        { id: 3, name: t('asia') },
+        { id: 4, name: t('oceania') },
+        { id: 5, name: t('tournaments') },
+    ];
+
     const [leagues, setLeagues] = useState<LeagueProps[]>([])
+    const [selectedContinent, setSelectedContinent] = useState<ContinentProps>(CONTINENTS_DATA[0])
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
         const getLeagueList = async (): Promise<void> => {
             try {
                 const token = await getToken()
-                const leagues = await leagueList(token)
+                const leagues: LeagueProps[] = await leagueList(token, selectedContinent.id)
                 setLeagues(leagues)
             } catch (error) {
                 toast.show('Error authenticating user', {type: 'danger'})
@@ -30,52 +47,96 @@ export default function SelectLeague({}) {
         }
         
         getLeagueList()
-    }, [])
+    }, [selectedContinent])
 
-    return (
-        <GestureHandlerRootView style={styles.container}>
-            <Text style={styles.selectLeagueTxt}>{t('select-league')}</Text>
-            {
-                isLoading
-                ?
-                <ActivityIndicator size="large" color="white" />
-                :
-                <FlatList
-                    data={leagues}
-                    renderItem={({ item }) => (
-                        <LeagueCard
-                            leagueImgUrl={item.logo}
-                            leagueTitle={item.name}
-                            leagueSlug={item.slug}
-                            isUserJoined={item.is_user_joined}
-                            setIsLoading={setIsLoading}
-                        />
-                    )}
-                    numColumns={2}
-                    keyExtractor={(item) => item.slug}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={styles.leaguesContainer}
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#4c3b8e" />
+      
+      <View style={styles.background}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{t('select-league')}</Text>
+        </View>
+        
+        <View style={styles.tabsContainer}>
+          <FlatList
+            data={CONTINENTS_DATA}
+            renderItem={({ item }) => (
+                <Continents
+                    item={item}
+                    selectedContinent={selectedContinent}
+                    setSelectedContinent={setSelectedContinent}
                 />
-            }
+            )}
+            keyExtractor={item => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.tabsList}
+          />
+        </View>
 
-            <Banner bannerId={process.env.SELECT_LEAGUE_BANNER_ID} />
-        </GestureHandlerRootView>
-    )
+        {
+            isLoading
+            ?
+            <ActivityIndicator size="large" color="white" />
+            :
+            <FlatList
+                data={leagues}
+                renderItem={({ item }) => (
+                    <LeagueCard
+                        item={item}
+                        setIsLoading={setIsLoading}
+                    />
+                )}
+                keyExtractor={item => item.id.toString()}
+                numColumns={2}
+                contentContainerStyle={styles.listContainer}
+                showsVerticalScrollIndicator={false}
+                columnWrapperStyle={styles.columnWrapper}
+            />
+        }
+      </View>
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: MAIN_COLOR,
-        height: '100%',
-    },
-    selectLeagueTxt: {
-        color: '#fff',
-        fontSize: 26,
-        marginTop: 60,
-        textAlign: 'center',
-        fontWeight: '600'
-    },
-    leaguesContainer: {
-        marginHorizontal: 'auto'
-    }
-})
+  container: {
+    flex: 1,
+  },
+  background: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: MAIN_COLOR,
+  },
+  header: {
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    letterSpacing: 1,
+    marginTop: 25
+  },
+  // Continent FlatList styles
+  tabsContainer: {
+    marginBottom: 16,
+  },
+  tabsList: {
+    paddingHorizontal: 16,
+  },
+  // League FlatList styles
+  listContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+});
+
+export default LeagueSelectionScreen;

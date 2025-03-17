@@ -40,6 +40,7 @@ export interface LeagueProps {
     logo: string
     name: string
     slug: Slug
+    continent: number
     is_user_joined: Boolean
 }
 
