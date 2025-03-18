@@ -6,7 +6,7 @@ export default function InitialLoadingScreen () {
     return (
         <View style={styles.container}>
             <Image
-                source={require('../assets/splash.png')}
+                source={require('../assets/icon-no-bg.png')}
                 style={styles.logoImg}
             />
             <ActivityIndicator color="#ffffff" size="large" />

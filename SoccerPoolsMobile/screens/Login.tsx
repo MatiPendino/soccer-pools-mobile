@@ -68,7 +68,7 @@ export default function Login({}) {
     return (
         <View style={styles.container}>
             <Image 
-                source={require("../assets/img/pools-logo2.png")}
+                source={require("../assets/icon-no-bg.png")}
                 style={styles.image}
             />
     
