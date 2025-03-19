@@ -46,7 +46,8 @@
     "react-native-shimmer-placeholder": "^2.0.9",
     "react-native-svg": "15.8.0",
     "react-native-toast-notifications": "^3.4.0",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "vexo-analytics": "^1.4.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
