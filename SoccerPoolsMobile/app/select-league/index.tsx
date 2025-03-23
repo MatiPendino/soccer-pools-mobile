@@ -21,12 +21,12 @@ const LeagueSelectionScreen = () => {
     const toast: ToastType = useToast()
     const CONTINENTS_DATA: ContinentProps[] = [
         { id: 6, name: t('all') },
+        { id: 5, name: t('tournaments') },
         { id: 0, name: t('americas') },
         { id: 1, name: t('europe')},
         { id: 2, name: t('africa') },
         { id: 3, name: t('asia') },
         { id: 4, name: t('oceania') },
-        { id: 5, name: t('tournaments') },
     ];
 
     const [leagues, setLeagues] = useState<LeagueProps[]>([])
