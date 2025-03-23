@@ -11,7 +11,7 @@
     "username": "Username",
     "email": "E-mail",
     "password": "Password",
-    "account-created-successfully": "Account created successfully!",
+    "check-email": "Check your email to complete the creation of your account!",
     "tournament-created-successfully": "Your tournament was created successfully!",
     "tournament-updated-successfully": "Your tournament was updated successfully!",
     "create-tournament": "CREATE TOURNAMENT",

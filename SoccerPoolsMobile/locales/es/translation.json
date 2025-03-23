@@ -11,7 +11,7 @@
     "username": "Nombre de usuario",
     "email": "Correo electrónico",
     "password": "Contraseña",
-    "account-created-successfully": "Su cuenta fue creada exitosamente!",
+    "check-email": "Revisa tu correo para finalizar la creación de la cuenta!",
     "tournament-created-successfully": "Su torneo fue creado exitosamente!",
     "tournament-updated-successfully": "Su torneo fue actualizado exitosamente!",
     "create-tournament": "CREAR TORNEO",

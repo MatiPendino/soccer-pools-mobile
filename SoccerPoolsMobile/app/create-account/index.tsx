@@ -33,17 +33,6 @@ export default function CreateAccount({}) {
         }
     }
 
-    const logIn = async (): Promise<void> => {
-        try {
-            const {access, refresh} = await login(username, password)
-            if (access && refresh) {
-                router.replace('select-league')
-            }
-        } catch (error) {
-            toast.show(handleError(error), {type: 'danger'})
-        }
-    }
-
     const createAccount = async (): Promise<void> => {
         setIsLoading(true)
         try {
@@ -51,8 +40,12 @@ export default function CreateAccount({}) {
                 firstName.trim(), lastName.trim(), username.trim(), email.trim(), password.trim()
             )
             if (registerStatus === 201) {
-                toast.show(t('account-created-successfully'), {type: 'success'})
-                await logIn()
+                toast.show(t('check-email'), {type: 'success'})
+                setEmail('')
+                setFirstName('')
+                setLastName('')
+                setUsername('')
+                setPassword('')
             }
         } catch (error) {
             toast.show(handleError(error), {type: 'danger'})
