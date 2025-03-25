@@ -74,5 +74,12 @@
     "africa": "AFRICA",
     "asia": "ASIA",
     "oceania": "OCEANIA",
-    "tournaments": "TOURNAMENTS"
+    "tournaments": "TOURNAMENTS",
+    "forgot-password": "FORGOT YOUR PASSWORD?",
+    "couldnt-send-reset-email": "Could not send password reset email.",
+    "check-email-password-link": "Check your email for a password reset link.",
+    "success": "Success",
+    "cancel": "CANCEL",
+    "sending": "SENDING...",
+    "send-reset-link": "SEND RESET LINK"
 }

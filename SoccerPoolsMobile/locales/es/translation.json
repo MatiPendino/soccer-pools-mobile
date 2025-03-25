@@ -74,5 +74,12 @@
     "africa": "AFRICA",
     "asia": "ASIA",
     "oceania": "OCEANIA",
-    "tournaments": "TORNEOS"
+    "tournaments": "TORNEOS",
+    "forgot-password": "OLVIDASTE TU CLAVE?",
+    "couldnt-send-reset-email": "No se pudo enviar el correo de cambio de clave.",
+    "check-email-password-link": "Revisa tu correo por el link del cambio de clave",
+    "success": "Exitoso",
+    "cancel": "CANCELAR",
+    "sending": "ENVIANDO...",
+    "send-reset-link": "ENVIAR"
 }

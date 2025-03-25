@@ -1,23 +1,25 @@
 import { useState, useEffect } from "react"
-import { useToast } from "react-native-toast-notifications"
-import { View, Image, Pressable, StyleSheet } from 'react-native';
-import { Link, useRouter } from 'expo-router';
+import { ToastType, useToast } from "react-native-toast-notifications"
+import { View, Image, Pressable, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Link, Router, useRouter } from 'expo-router';
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
+import { useTranslation } from "react-i18next";
 import { MAIN_COLOR } from "../constants";
 import { googleOauth2SignIn, login } from '../services/authService'
 import { getUserInLeague } from "../services/authService";
 import CustomInputSign from '../components/CustomInputSign';
 import CustomButton from '../components/CustomButton';
-import { useTranslation } from "react-i18next";
 import handleError from "../utils/handleError";
+import ForgotPasswordModal from "../modals/ForgotPasswordModal";
 
 export default function Login({}) {
     const { t } = useTranslation()
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-    const router = useRouter()
-    const toast = useToast()
+    const [modalVisible, setModalVisible] = useState<boolean>(false)
+    const router: Router = useRouter()
+    const toast: ToastType = useToast()
 
     const userInLeague = async (token: string): Promise<void> => {
         const inLeague = await getUserInLeague(token)
@@ -45,7 +47,6 @@ export default function Login({}) {
         }),
     })
 
-    const forgotPassword = () => {}
     useEffect(() => {
         googleAuth()
     }, [response])
@@ -87,11 +88,15 @@ export default function Login({}) {
             
             <CustomButton callable={logIn} btnText={t('log-in')} btnColor='#2F2766' />
 
-            {/*<Pressable
-                onPress={() => forgotPassword()}
-            >
-                <Text style={styles.forgotCreateText}>Forgot Your Password?</Text>
-            </Pressable>*/}
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Text style={styles.forgotCreateText}>{t('forgot-password')}</Text>
+            </TouchableOpacity>
+
+            <ForgotPasswordModal
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+            />
+
             <Link href='/create-account' style={styles.forgotCreateText}>{t('create-account')}</Link>
 
             <Pressable

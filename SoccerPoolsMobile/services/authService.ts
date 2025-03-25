@@ -127,3 +127,15 @@ export const googleOauth2SignIn = async (accessToken) => {
         throw error.response.data
     }
 }
+
+export const resetPassword = async (email: string) => {
+    try {
+        const response = await api.post('/api/users/reset_password/', {
+            email: email
+        })
+
+        return response.data
+    } catch (error) {
+        throw error.response.data
+    }
+}
