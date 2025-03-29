@@ -60,6 +60,7 @@
     "no-image-selected": "No hay imagen seleccionada!",
     "tournament-name": "Nombre del Torneo",
     "add-tournament-image": "Imagen del Torneo",
+    "description": "Descripción",
     "add-tournament-description": "Descripción del Torneo (opcional)",
     "logged-in-successfully": "Sesión iniciada correctamente!",
     "log-in": "INICIAR SESIÓN",

@@ -60,6 +60,7 @@
     "no-image-selected": "No image selected!",
     "tournament-name": "Tournament Name",
     "add-tournament-image": "Add Tournament Image",
+    "description": "Description",
     "add-tournament-description": "Add a description for your tournament (optional)",
     "logged-in-successfully": "Logged in successfully!",
     "log-in": "LOG IN",
