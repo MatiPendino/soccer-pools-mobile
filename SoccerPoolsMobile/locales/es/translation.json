@@ -82,5 +82,7 @@
     "success": "Exitoso",
     "cancel": "CANCELAR",
     "sending": "ENVIANDO...",
-    "send-reset-link": "ENVIAR"
+    "send-reset-link": "ENVIAR",
+    "create-tournament-tapping-button": "Crea un torneo presionando el botón de abajo",
+    "loading-tournaments": "Cargando torneos..."
 }

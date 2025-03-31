@@ -34,7 +34,7 @@ export default function Tournaments ({}) {
                 */
                 if (leagueId) {
                     getTournaments(token, leagueId)
-                    return ;
+                    return
                 }
 
                 const league: LeagueProps = await userLeague(token)
@@ -53,7 +53,7 @@ export default function Tournaments ({}) {
                     setTournaments(data)
                 }
             } catch (error) {
-                toast.show(error.toString(), {type: 'danger'})
+                toast.show(error.toString(), { type: 'danger' })
             } finally {
                 setIsLoading(false)
             }
@@ -64,68 +64,101 @@ export default function Tournaments ({}) {
 
     const actions = []
 
+    const renderEmptyState = () => (
+        <View style={styles.emptyStateContainer}>
+            <MaterialIcons name='emoji-events' size={80} color='#ffffff80' />
+            <Text style={styles.noTournamentTxt}>{t('not-tournament-yet')}</Text>
+            <Text style={styles.emptyStateSubtitle}>{t('create-tournament-tapping-button')}</Text>
+        </View>
+    )
+
+    const renderLoader = () => (
+        <View style={styles.loaderContainer}>
+            <ActivityIndicator size='large' color='#ffffff' />
+            <Text style={styles.loaderText}>{t('loading-tournaments')}</Text>
+        </View>
+    )
+
     return (
         <View style={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>{t('tournaments')}</Text>
+            </View>
+            
             <View style={styles.inputContainer}>
-                <MaterialIcons name="search" size={24} color="#444" style={styles.lookUpIcon} />
+                <MaterialIcons
+                    name='search'
+                    size={22}
+                    color='#666'
+                    style={styles.lookUpIcon}
+                />
 
                 <TextInput
                     placeholder={t('look-for-tournament')}
                     style={styles.lookTntInput}
                     value={tournamentLookup}
                     onChangeText={setTournamentLookup}
-                    placeholderTextColor="#444444"
+                    placeholderTextColor='#666666'
                 />
 
                 {tournamentLookup.length > 0 && (
-                    <TouchableOpacity onPress={() => setTournamentLookup('')} style={styles.clearIcon}>
-                        <MaterialIcons name="clear" size={24} color="#444" />
+                    <TouchableOpacity
+                        onPress={() => setTournamentLookup("")}
+                        style={styles.clearIcon}
+                    >
+                        <MaterialIcons name='clear' size={20} color='#666' />
                     </TouchableOpacity>
                 )}
             </View>
+
             {
-                !isLoading
-                ?
-                    tournaments.length > 0
-                    ?
+                isLoading 
+                ? 
+                renderLoader()
+                : 
+                (tournaments && tournaments.length > 0 
+                    ? 
                     <FlatList
-                        data={tournaments}
-                        renderItem={({item}) => (
-                            <TournamentCard 
-                                name={item.name}
-                                logoUrl={item.logo}
-                                adminUsername={item.admin_tournament.username}
-                                adminEmail={item.admin_tournament.email}
-                                nParticipants={item.n_participants}
-                                tournamentId={item.id}
-                                leagueId={item.league.id}
-                            />
-                        )}
-                        horizontal={false}
-                        keyExtractor={(item) => item.id.toString()}
-                        showsVerticalScrollIndicator={true}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.tournamentsContainer}
+                    data={tournaments}
+                    renderItem={({ item }) => (
+                        <TournamentCard
+                        name={item.name}
+                        logoUrl={item.logo}
+                        adminUsername={item.admin_tournament.username}
+                        adminEmail={item.admin_tournament.email}
+                        nParticipants={item.n_participants}
+                        tournamentId={item.id}
+                        leagueId={item.league.id}
+                        />
+                    )}
+                    horizontal={false}
+                    keyExtractor={(item) => item.id.toString()}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.tournamentsContainer}
                     />
-                    :
-                    <View><Text style={styles.noTournamentTxt}>{t('not-tournament-yet')}</Text></View>
-                :
-                <ActivityIndicator size="large" color="#0000ff" />
+                    : 
+                    renderEmptyState()
+                )
             }
+
             <FloatingAction
                 actions={actions}
                 onOpen={() => {
-                    router.push({
-                        pathname: 'create-tournament',
-                        params: {
-                            leagueId: leagueId
-                        }
-                    })
+                    router.push({pathname: 'create-tournament', params: {leagueId: leagueId}})
                 }}
-                color="#0C9A24"
+                color='#0C9A24'
                 iconHeight={24}
                 iconWidth={24}
-                buttonSize={75}
+                buttonSize={60}
+                distanceToEdge={16}
+                overlayColor='rgba(0, 0, 0, 0.7)'
+                shadow={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 5,
+                }}
             />
         </View>
     )
@@ -133,43 +166,81 @@ export default function Tournaments ({}) {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         backgroundColor: MAIN_COLOR,
-        height: '100%',
-        paddingHorizontal: 10
+        paddingHorizontal: 16,
+    },
+    header: {
+        paddingTop: 16,
+        paddingBottom: 8,
+    },
+    headerTitle: {
+        fontSize: 28,
+        fontWeight: '700',
+        color: 'white',
+        marginBottom: 4,
     },
     inputContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "white",
-        borderRadius: 30,
-        marginVertical: 20,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        shadowColor: "#000",
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: 12,
+        marginBottom: 20,
+        paddingHorizontal: 12,
+        height: 50,
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 3, 
+        elevation: 3,
     },
     lookTntInput: {
         flex: 1,
         fontSize: 16,
         paddingVertical: 10,
-        paddingHorizontal: 10,
-        color: "#000",
+        paddingHorizontal: 8,
+        color: '#333',
     },
     lookUpIcon: {
-        marginRight: 10,
+        marginRight: 8,
     },
     clearIcon: {
-        marginLeft: 10,
+        padding: 4,
     },
-    tournamentsContainer: {},
+    tournamentsContainer: {
+        paddingBottom: 80,
+    },
+    emptyStateContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 32,
+        marginTop: -60,
+    },
     noTournamentTxt: {
         fontSize: 22,
         textAlign: 'center',
         color: 'white',
+        fontWeight: '600',
+        marginTop: 16,
+        marginBottom: 8,
+    },
+    emptyStateSubtitle: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: '#ffffff99',
+        lineHeight: 22,
+    },
+    loaderContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: -60,
+    },
+    loaderText: {
+        marginTop: 16,
+        fontSize: 16,
+        color: 'white',
         fontWeight: '500',
-        marginTop: 150
     },
 })

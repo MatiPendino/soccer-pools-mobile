@@ -1,12 +1,13 @@
-import { View, StyleSheet, Text, Image, ActivityIndicator, Pressable } from "react-native"
-import { useEffect, useState } from "react"
-import { ToastType, useToast } from "react-native-toast-notifications"
-import { Router, useRouter } from "expo-router"
-import { MAIN_COLOR } from "../../../constants"
-import { getToken } from "../../../utils/storeToken"
-import { patchTournamentUser, retrieveTournamentUser } from "../../../services/tournamentService"
-import { Email, TournamentUserProps } from "../../../types"
-import { useTranslation } from "react-i18next"
+import { View, StyleSheet, Text, Image, ActivityIndicator, Pressable } from 'react-native'
+import { useEffect, useState } from 'react'
+import { ToastType, useToast } from 'react-native-toast-notifications'
+import { Router, useRouter } from 'expo-router'
+import { useTranslation } from 'react-i18next'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import { MAIN_COLOR } from '../../../constants'
+import { getToken } from '../../../utils/storeToken'
+import { patchTournamentUser, retrieveTournamentUser } from '../../../services/tournamentService'
+import { Email, TournamentUserProps } from '../../../types'
 
 interface TournamentCardProps {
     name: string
@@ -18,9 +19,9 @@ interface TournamentCardProps {
     leagueId: number
 }
 
-export default function TournamentCard(
-    {name, logoUrl, nParticipants, adminEmail, adminUsername, tournamentId, leagueId}: TournamentCardProps) 
-{
+export default function TournamentCard({
+    name, logoUrl, nParticipants, adminEmail, adminUsername, tournamentId, leagueId,
+}: TournamentCardProps) {
     const { t } = useTranslation()
     const [tournamentUser, setTournamentUser] = useState<TournamentUserProps>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -38,21 +39,38 @@ export default function TournamentCard(
             setIsLoading(false)
         }
     }
+  
     useEffect(() => {
         getTournamentUser()
-    })
+    }, [])
 
-    const tournamentStateConversion = (): React.JSX.Element => {
+    const getStateInfo = () => {
+        if (!tournamentUser) return { color: '#0C9A24', text: t('apply'), icon: 'add-circle-outline' }
+        
         switch (tournamentUser.tournament_user_state) {
             case 0:
-                return <Text style={[styles.stateTxt, {color: '#0C9A24'}]}>{t('apply')}</Text>
+                return { color: '#0C9A24', text: t('apply'), icon: 'add-circle-outline' }
             case 1:
-                return <Text style={[styles.stateTxt, {color: '#979A0C'}]}>{t('pending')}</Text>
+                return { color: '#F9A826', text: t('pending'), icon: 'hourglass-empty' }
             case 2:
-                return <Text style={[styles.stateTxt, {color: MAIN_COLOR}]}>{t('joined')}</Text>
+                return { color: '#2E7DFF', text: t('joined'), icon: 'check-circle-outline' }
             case 3:
-                return <Text style={[styles.stateTxt, {color: '#C52424'}]}>{t('rejected')}</Text>
+                return { color: '#E63946', text: t('rejected'), icon: 'cancel-outline' }
+            default:
+                return { color: '#0C9A24', text: t('apply'), icon: 'add-circle-outline' }
         }
+    }
+
+    const tournamentStateConversion = (): React.JSX.Element => {
+        const stateInfo = getStateInfo()
+        
+        return (
+            <View style={[styles.stateContainer, { backgroundColor: `${stateInfo.color}20` }]}>
+                {/* @ts-ignore */}
+                <MaterialIcons name={stateInfo.icon} size={16} color={stateInfo.color} />
+                <Text style={[styles.stateTxt, { color: stateInfo.color }]}>{stateInfo.text}</Text>
+            </View>
+        )
     }
 
     const joinTournament = async () => {
@@ -69,6 +87,8 @@ export default function TournamentCard(
     }
 
     const handleCard = () => {
+        if (!tournamentUser) return
+        
         switch (tournamentUser.tournament_user_state) {
             case 0:
                 joinTournament()
@@ -78,13 +98,13 @@ export default function TournamentCard(
                 break
             case 2:
                 router.push({
-                    pathname: 'my-tournament', 
+                    pathname: 'my-tournament',
                     params: {
                         tournamentName: name,
                         tournamentId: tournamentId,
                         leagueId: leagueId,
-                        isAdmin: String(tournamentUser.user.email == adminEmail)
-                    }
+                        isAdmin: String(tournamentUser.user.email == adminEmail),
+                    },
                 })
                 break
             case 3:
@@ -94,60 +114,158 @@ export default function TournamentCard(
     }
 
     return (
-        <Pressable style={styles.container} onPress={handleCard}>
-            <Image 
-                source={{uri: `${logoUrl}`}}
-                style={styles.logoImg}
-            />
-            <View style={styles.textsContainer}>
-                <Text style={styles.tournamentNameTxt}>{name}</Text>
-                <Text style={styles.adminTxt}>ADMIN: {adminUsername}</Text>
-                {/*<Text style={styles.participantsTxt}>PARTICIPANTS: {nParticipants}</Text> */}
+        <Pressable 
+            style={({ pressed }) => [
+                styles.container,
+                pressed && styles.pressed
+            ]} 
+            onPress={handleCard}
+        >
+            <View style={styles.contentContainer}>
+                <View style={styles.logoContainer}>
+                    {
+                        logoUrl 
+                        ? 
+                        <Image source={{ uri: `${logoUrl}` }} style={styles.logoImg} /> 
+                        : 
+                        <View style={styles.placeholderLogo}>
+                            <Text style={styles.placeholderText}>{name.charAt(0)}</Text>
+                        </View>
+                    }
+                </View>
+                
+                <View style={styles.textsContainer}>
+                    <Text style={styles.tournamentNameTxt} numberOfLines={1} ellipsizeMode='tail'>
+                        {name}
+                    </Text>
+                    
+                    <View style={styles.adminContainer}>
+                        <MaterialIcons name='person' size={14} color='#555' style={styles.adminIcon} />
+                        <Text style={styles.adminTxt} numberOfLines={1} ellipsizeMode='tail'>
+                            {adminUsername}
+                        </Text>
+                    </View>
+                    
+                    <View style={styles.participantsContainer}>
+                        <MaterialIcons name='people' size={14} color='#555' style={styles.participantsIcon} />
+                        <Text style={styles.participantsTxt}>
+                            {nParticipants} {nParticipants === 1 ? 'participant' : 'participants'}
+                        </Text>
+                    </View>
+                </View>
             </View>
-            {
-                !isLoading
-                ?
-                tournamentStateConversion()
-                :
-                <ActivityIndicator size="large" color="#0000ff" />
-            }
+        
+            <View style={styles.stateWrapper}>
+                {
+                    !isLoading 
+                    ? 
+                    tournamentStateConversion()
+                    : 
+                    <ActivityIndicator size='small' color={MAIN_COLOR} />
+                }
+            </View>
         </Pressable>
     )
-} 
+}
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#d9d9d9',
+        backgroundColor: 'white',
         alignItems: 'center',
-        paddingVertical: 10,
-        borderRadius: 5,
-        marginBottom: 15,
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    pressed: {
+        opacity: 0.9,
+        backgroundColor: '#f8f8f8',
+    },
+    contentContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    logoContainer: {
+        marginRight: 12,
     },
     logoImg: {
-        width: 70,
-        height: 70,
-        borderRadius: 100,
-        objectFit: 'contain',
-        marginStart: 5
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        backgroundColor: '#f0f0f0',
     },
-    textsContainer: {},
+    placeholderLogo: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        backgroundColor: '#e0e0e0',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    placeholderText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#888',
+    },
+    textsContainer: {
+        flex: 1,
+        justifyContent: 'center',
+    },
     tournamentNameTxt: {
-        fontSize: 19,
-        fontWeight: '600'
+        fontSize: 18,
+        fontWeight: '700',
+        color: '#222',
+        marginBottom: 4,
+    },
+    adminContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 2,
+    },
+    adminIcon: {
+        marginRight: 4,
     },
     adminTxt: {
-        color: '#414141',
-        fontSize: 15,
-        fontWeight: '500'
+        color: '#555',
+        fontSize: 14,
+        fontWeight: '500',
+    },
+    participantsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    participantsIcon: {
+        marginRight: 4,
     },
     participantsTxt: {
-        fontSize: 15,
-        fontWeight: '500'
+        fontSize: 14,
+        color: '#555',
+        fontWeight: '400',
+    },
+    stateWrapper: {
+        marginLeft: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        minWidth: 80,
+    },
+    stateContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 16,
+        justifyContent: 'center',
     },
     stateTxt: {
-        marginEnd: 5
-    }
+        fontSize: 14,
+        fontWeight: '600',
+        marginLeft: 4,
+    },
 })
