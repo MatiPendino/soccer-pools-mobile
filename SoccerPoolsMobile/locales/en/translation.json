@@ -84,5 +84,8 @@
     "sending": "SENDING...",
     "send-reset-link": "SEND RESET LINK",
     "create-tournament-tapping-button": "Create a tournament by tapping the button below",
-    "loading-tournaments": "Loading tournaments..."
+    "loading-tournaments": "Loading tournaments...",
+    "of": "of",
+    "swipe-to-learn": "Swipe to learn te rules",
+    "rule": "Rule"
 }

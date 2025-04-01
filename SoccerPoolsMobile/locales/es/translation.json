@@ -84,5 +84,8 @@
     "sending": "ENVIANDO...",
     "send-reset-link": "ENVIAR",
     "create-tournament-tapping-button": "Crea un torneo presionando el botón de abajo",
-    "loading-tournaments": "Cargando torneos..."
+    "loading-tournaments": "Cargando torneos...",
+    "of": "de",
+    "swipe-to-learn": "Desliza para aprender las reglas",
+    "rule": "Regla"
 }
