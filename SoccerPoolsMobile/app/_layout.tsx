@@ -6,6 +6,7 @@ import mobileAds from 'react-native-google-mobile-ads';
 import * as Sentry from '@sentry/react-native';
 import { vexo } from 'vexo-analytics';
 import '../i18'
+import RateAppModal from "../components/RateAppModal";
 
 // Sentry initialization
 Sentry.init({
@@ -33,6 +34,7 @@ export default function Layout () {
                     headerShown: false,
                 }}
             />
+            <RateAppModal />
         </ToastProvider>
     )
 }
