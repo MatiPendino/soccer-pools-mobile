@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import mobileAds from 'react-native-google-mobile-ads';
 import * as Sentry from '@sentry/react-native';
 import { vexo } from 'vexo-analytics';
+import analytics from '@react-native-firebase/analytics';
 import '../i18'
 import RateAppModal from "../components/RateAppModal";
 
@@ -15,6 +16,9 @@ Sentry.init({
 
 // Vexo Analytics Setup
 vexo(process.env.VEXO_API_KEY);
+
+// Firebase Analytics Setup
+analytics().logAppOpen();
   
 export default function Layout () {
     useEffect(() => {
