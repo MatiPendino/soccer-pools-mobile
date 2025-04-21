@@ -1,13 +1,14 @@
 import { FlatList } from "react-native-gesture-handler"
 import RankedPlayer from "./RankedPlayer"
 import { StyleSheet } from "react-native"
-import { BetProps } from "../types"
+import { BetProps, CoinsPrizes } from "../types"
 
 interface Props {
     bets: BetProps[]
+    coinsPrizes?: CoinsPrizes
 }
 
-export default function RankedPlayersFlatList ({bets}: Props) {
+export default function RankedPlayersFlatList ({bets, coinsPrizes}: Props) {
 
     return (
         <FlatList
@@ -18,6 +19,7 @@ export default function RankedPlayersFlatList ({bets}: Props) {
                     username={item.username}
                     points={item.points}
                     profileImageUrl={item.profile_image}
+                    coinPrizes={coinsPrizes}
                 />
             )}
             keyExtractor={(item) => item.id.toString()}

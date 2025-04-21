@@ -2,6 +2,12 @@ export type Slug = string
 export type ISO8601DateString = string
 export type Email = string
 
+export interface CoinsPrizes {
+    coins_prize_first: number
+    coins_prize_second: number
+    coins_prize_third: number
+}
+
 export interface TeamProps {
     name: string
     acronym: string
@@ -16,6 +22,7 @@ export interface UserProps {
     email: Email
     username: string
     profile_image: string
+    coins: number
 }
 
 export interface MatchProps {
@@ -42,6 +49,8 @@ export interface LeagueProps {
     slug: Slug
     continent: number
     is_user_joined: Boolean
+    coins_cost: number
+    coins_prizes: CoinsPrizes
 }
 
 export interface RoundProps {
@@ -54,6 +63,7 @@ export interface RoundProps {
     slug: Slug
     start_date: ISO8601DateString
     has_bet_round: Boolean
+    coins_prizes: CoinsPrizes
 }
 
 export interface RoundsStateProps {

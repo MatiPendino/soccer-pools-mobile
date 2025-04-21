@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import { 
-  View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar, ActivityIndicator
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
+import * as Sentry from '@sentry/react-native';
 import { getToken } from '../../utils/storeToken';
-import { LeagueProps } from '../../types';
+import { LeagueProps, UserProps } from '../../types';
 import { leagueList } from '../../services/leagueService';
 import LeagueCard from './components/LeagueCard';
 import Continents from './components/Continents';
 import { MAIN_COLOR } from '../../constants';
+import { getFullUser } from '../../services/authService';
+import CoinsDisplay from '../../components/CoinsDisplay';
 
 interface ContinentProps {
     id: number
@@ -32,6 +33,8 @@ const LeagueSelectionScreen = () => {
     const [leagues, setLeagues] = useState<LeagueProps[]>([])
     const [selectedContinent, setSelectedContinent] = useState<ContinentProps>(CONTINENTS_DATA[0])
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [userCoins, setUserCoins] = useState<number>(0)
+    const [isLoadingCoins, setIsLoadingCoins] = useState<boolean>(true)
 
     useEffect(() => {
         const getLeagueList = async (): Promise<void> => {
@@ -49,11 +52,31 @@ const LeagueSelectionScreen = () => {
         getLeagueList()
     }, [selectedContinent])
 
+  useEffect(() => {
+    const getUserCoins = async (): Promise<void> => {
+      try {
+        const token = await getToken()
+        const user: UserProps = await getFullUser(token)
+        setUserCoins(user.coins)
+      } catch (error) {
+        Sentry.captureException(error);
+      } finally {
+        setIsLoadingCoins(false)
+      }
+    }
+    
+    getUserCoins()
+  }, [])
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4c3b8e" />
       
       <View style={styles.background}>
+        <View style={{marginEnd: 10}}>
+          <CoinsDisplay coins={isLoadingCoins ? '...' : (userCoins || 0)} />
+        </View>
+
         <View style={styles.header}>
           <Text style={styles.title}>{t('select-league')}</Text>
         </View>
@@ -108,9 +131,10 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: MAIN_COLOR,
+    paddingTop: 40,
   },
   header: {
-    paddingVertical: 16,
+    paddingBottom: 16,
     alignItems: 'center',
   },
   title: {
@@ -119,7 +143,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     letterSpacing: 1,
-    marginTop: 25
+    marginTop: 5
   },
   // Continent FlatList styles
   tabsContainer: {

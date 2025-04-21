@@ -1,13 +1,17 @@
 import { View, StyleSheet, Image, Text } from "react-native"
+import { Ionicons } from '@expo/vector-icons';
+import { CoinsPrizes } from "../types";
+import { BRONZE_COLOR, GOLD_COLOR, SILVER_COLOR } from "../constants";
 
 interface RankedPlayerProps {
   index: number
   profileImageUrl: string
   username: string
   points: number
+  coinPrizes?: CoinsPrizes
 }
 
-export default function RankedPlayer({ index, profileImageUrl, username, points }: RankedPlayerProps) {
+export default function RankedPlayer({ index, profileImageUrl, username, points, coinPrizes }: RankedPlayerProps) {
 
   // Special styling for top 3 ranks
   const rankStyles = (() => {
@@ -17,6 +21,8 @@ export default function RankedPlayer({ index, profileImageUrl, username, points 
         index: styles.goldIndex,
         medal: require("../assets/img/trophy-cup.png"),
         showMedal: true,
+        prize: coinPrizes?.coins_prize_first,
+        prizeColor: GOLD_COLOR, 
       }
     } else if (index === 2) {
       return {
@@ -24,6 +30,8 @@ export default function RankedPlayer({ index, profileImageUrl, username, points 
         index: styles.silverIndex,
         medal: require("../assets/img/silver-medal.png"),
         showMedal: true,
+        prize: coinPrizes?.coins_prize_second,
+        prizeColor: SILVER_COLOR, 
       }
     } else if (index === 3) {
       return {
@@ -31,12 +39,15 @@ export default function RankedPlayer({ index, profileImageUrl, username, points 
         index: styles.bronzeIndex,
         medal: require("../assets/img/bronze-medal.png"),
         showMedal: true,
+        prize: coinPrizes?.coins_prize_third,
+        prizeColor: BRONZE_COLOR
       }
     } else {
       return {
         container: styles.defaultContainer,
         index: styles.defaultIndex,
         showMedal: false,
+        prize: null,
       }
     }
   })()
@@ -67,6 +78,15 @@ export default function RankedPlayer({ index, profileImageUrl, username, points 
           <Text style={styles.pointsLabel}>Points:</Text>
           <Text style={styles.pointsTxt}>{points}</Text>
         </View>
+        
+        {rankStyles.prize && (
+          <View style={[styles.prizeContainer, { borderColor: rankStyles.prizeColor }]}>
+            <Ionicons name="wallet" size={14} color="#f59e0b" />
+            <Text style={styles.prizeTxt}>
+              {rankStyles.prize} coins
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   )
@@ -156,6 +176,7 @@ const styles = StyleSheet.create({
   pointsContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 4,
   },
   pointsLabel: {
     fontSize: 14,
@@ -166,5 +187,22 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16,
     color: "#2F2766",
+  },
+  prizeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignSelf: "flex-start",
+    marginTop: 2,
+  },
+  prizeTxt: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#f59e0b",
+    marginLeft: 4,
   },
 })

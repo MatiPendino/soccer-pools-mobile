@@ -4,7 +4,7 @@ import { useToast } from "react-native-toast-notifications";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { MAIN_COLOR } from "../../../constants";
-import { RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps } from "../../../types";
+import { RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps, CoinsPrizes } from "../../../types";
 import { getToken } from "../../../utils/storeToken";
 import RankedPlayersFlatList from "../../../components/RankedPlayersFlatList";
 import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../../utils/leagueRounds";
@@ -17,6 +17,7 @@ export default function Leaderboard ({}) {
     const [rounds, setRounds] = useState<RoundProps[]>([])
     const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
     const [bets, setBets] = useState<BetProps[]>([])
+    const [coinsPrizes, setCoinsPrizes] = useState<CoinsPrizes>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast = useToast()
 
@@ -26,6 +27,8 @@ export default function Leaderboard ({}) {
                 roundSlug, 0, roundsState
             )
             setBets(betLeaders)
+            const currentRound = rounds.find(round => round.id === roundId)
+            setCoinsPrizes(currentRound.coins_prizes)
             setRoundsState(newRoundsState)
         } catch (error) {
             toast.show('There`s been an error displaying the bets', {type: 'danger'})
@@ -40,7 +43,7 @@ export default function Leaderboard ({}) {
                 const roundsByLeague = await getRounds(token, temp_league.id)
                 setRounds(roundsByLeague)
                 setRoundsState(getRoundsState(roundsByLeague))
-
+                setCoinsPrizes(roundsByLeague[0].coins_prizes)
                 getFirstBetLeaders(token, roundsByLeague[0].slug)
             } catch (error) {
                 toast.show('There is been an error displaying league information', {type: 'danger'})
@@ -82,7 +85,7 @@ export default function Leaderboard ({}) {
                 ?
                 <LoadingCards cardHeight={80} nCards={5} cardColor='#d9d9d9' />
                 :
-                <RankedPlayersFlatList bets={bets} />
+                <RankedPlayersFlatList bets={bets} coinsPrizes={coinsPrizes} />
             }
             <Banner bannerId={process.env.LEADERBOARD_BANNER_ID} />
         </GestureHandlerRootView>

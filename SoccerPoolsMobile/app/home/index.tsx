@@ -12,10 +12,11 @@ import League from "./screens/League";
 import HowToPlay from "./screens/HowToPlay";
 import styles from "./styles"
 import { getToken } from "../../utils/storeToken";
-import { getUser } from "../../services/authService";
+import { getFullUser } from "../../services/authService";
 import { removeToken } from "../../services/api";
 import handleShare from "../../utils/handleShare";
 import { useTranslation } from "react-i18next";
+import CoinsDisplay from "../../components/CoinsDisplay";
 
 const Drawer = createDrawerNavigator()
 
@@ -31,7 +32,7 @@ export default function Home({}) {
       try {
         const token = await getToken()
         if (token) {
-          const user = await getUser(token)
+          const user = await getFullUser(token)
           setUser(user)
         }
       } catch (error) {
@@ -68,6 +69,12 @@ export default function Home({}) {
         },
         headerTintColor: 'white',
         headerShown: true,
+        headerRight: () => (
+          <CoinsDisplay coins={isLoading ? '...' : (user?.coins || 0)} />
+        ),
+        headerRightContainerStyle: {
+          paddingRight: 16,
+        }
       })}
       drawerContent={(props) => (
         <DrawerContentScrollView {...props} contentContainerStyle={{ justifyContent: "space-between" }} style={styles.container}>
