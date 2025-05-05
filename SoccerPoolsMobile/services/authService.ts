@@ -142,7 +142,7 @@ export const resetPassword = async (email: string) => {
 
 export const getFullUser = async (token) => {
     try {
-        const response = await api.get('/api/user/user/', {
+        const response = await api.get('/api/user/user/me/', {
             headers: {
                 Authorization: `Bearer ${token}`
             }

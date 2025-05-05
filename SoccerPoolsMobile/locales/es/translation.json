@@ -89,5 +89,7 @@
     "swipe-to-learn": "Desliza para aprender las reglas",
     "rule": "Regla",
     "coins": "monedas",
-    "tap-to-join": "Presiona Para Unirte"
+    "tap-to-join": "Presiona Para Unirte",
+    "ads-not-loaded": "Anuncios no cargados, intenta nuevamente en unos segundos",
+    "coins-added": "{{coins}} monedas agregadas correctamente!"
 }

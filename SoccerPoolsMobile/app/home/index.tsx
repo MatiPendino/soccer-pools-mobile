@@ -31,10 +31,8 @@ export default function Home({}) {
     const retrieveUser = async () => {
       try {
         const token = await getToken()
-        if (token) {
-          const user = await getFullUser(token)
-          setUser(user)
-        }
+        const user = await getFullUser(token)
+        setUser(user)
       } catch (error) {
         toast.show('There was an error retrieving the user details', {type: 'danger'})
       } finally {

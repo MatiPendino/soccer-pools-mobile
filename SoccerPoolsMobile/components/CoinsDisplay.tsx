@@ -1,17 +1,46 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons'; 
 import { useTranslation } from "react-i18next";
+import { useToast, ToastType } from 'react-native-toast-notifications';
+import { useRewardedAd } from './Ads';
+import { updateCoins } from '../services/userService';
+import { getToken } from '../utils/storeToken';
 
 export default function CoinsDisplay({ coins }) {
     const { t } = useTranslation();
-    
+    const toast: ToastType = useToast();
+    const [currentCoins, setCurrentCoins] = useState<number>(coins);
+
+    useEffect(() => {
+        setCurrentCoins(coins)
+    }, [coins])
+
+    const onEarnedReward = useCallback(async (amount: number) => {
+        try {
+            const token = await getToken()
+            const { coins } = await updateCoins(token, amount)
+            setCurrentCoins(coins)
+            toast.show(t('coins-added', { coins: amount }), {type: 'success'})
+        } catch (error) {
+            toast.show(error, {type: 'danger'})
+        }
+    }, [])
+
+    const { loaded, show } = useRewardedAd({onEarnedReward})
+
     return (
-        <View style={coinStyles.container}>
+        <Pressable onPress={() => 
+            loaded ? show() 
+            : toast.show(t('ads-not-loaded'), {type: 'warning'})
+        }  
+        style={coinStyles.container}>
             <View style={coinStyles.coinsContainer}>
                 <Ionicons name="wallet" size={18} color="#f59e0b" />
-                <Text style={coinStyles.text}>{coins} {t('coins')}</Text>
+                <Text style={coinStyles.text}>{currentCoins} {t('coins')}</Text>
+                <Text style={coinStyles.plusText}>+</Text>
             </View>
-        </View>
+        </Pressable>
     );
 }
 
@@ -34,5 +63,11 @@ const coinStyles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 6,
         fontSize: 14,
-    }
+    },
+    plusText: {
+        color: '#f59e0b',
+        fontWeight: 'bold',
+        marginLeft: 6,
+        fontSize: 16,
+    },
 });
