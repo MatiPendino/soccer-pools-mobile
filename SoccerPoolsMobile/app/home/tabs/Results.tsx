@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import * as Sentry from "@sentry/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, Pressable, StyleSheet, ActivityIndicator, AppState } from "react-native";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
 import { ToastType, useToast } from "react-native-toast-notifications";
@@ -92,9 +93,15 @@ export default function Results ({}) {
 
         const sendFCMToken = async () => {
             try {
-                const token = await getToken()
-                const fcmToken = await getFCMToken()
-                const response = registerPush(token, fcmToken)
+                const existingFCMToken = await AsyncStorage.getItem('FCMToken')
+                if (!existingFCMToken) {
+                    const token = await getToken()
+                    const fcmToken = await getFCMToken()
+                    const response = registerPush(token, fcmToken)    
+                    if (response) {
+                        await AsyncStorage.setItem('FCMToken', fcmToken)
+                    }
+                }
             } catch (error) {
                 Sentry.captureException(error)
             }

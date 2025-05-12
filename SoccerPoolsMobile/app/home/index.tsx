@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, Pressable } from "react-native";
 import { Link } from "expo-router";
 import 'react-native-gesture-handler'
@@ -46,6 +47,7 @@ export default function Home({}) {
   const logOut = async () => {
     try {
       await removeToken()
+      await AsyncStorage.removeItem('FCMToken')
       toast.show(t('session-finished'), {type: 'success'})
       router.replace('/')
     } catch (error) {
