@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useToast } from 'react-native-toast-notifications';
+import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import Login from '../screens/Login';
 import { getUserInLeague } from '../services/authService';
@@ -9,7 +9,6 @@ import { removeToken } from '../services/api';
 import InitialLoadingScreen from '../components/InitialLoadingScreen';
 
 export default function App() {
-  const toast = useToast()
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [checkingLeague, setCheckingLeague] = useState<boolean>(true);
@@ -24,7 +23,7 @@ export default function App() {
             router.replace('/select-league')
           }
         } catch (error) {
-          toast.show(handleError(error), {type: 'danger'})
+          Alert.alert('Error', handleError(error), [{ text: 'OK', onPress: () => {}}], {cancelable: false});
           await removeToken()
         } finally {
           setCheckingLeague(false)
