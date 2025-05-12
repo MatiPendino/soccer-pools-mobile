@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/react-native";
+
 interface ErrorProps {
     error_type: string
     status_code: number
@@ -11,6 +13,10 @@ export default function handleError(error: ErrorProps): string {
     if (error.details) {
         errorMessage = error.details
     } else {
+        if (!error.errors) {
+            Sentry.captureException(error)
+            return 'An unexpected error occurred. Please try again later.'
+        }
         let keys = Object.keys(error.errors);
         let lastKey = keys[keys.length - 1];
 
