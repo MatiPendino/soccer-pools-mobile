@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons'; 
+import { FontAwesome5 } from '@expo/vector-icons'
 import { useTranslation } from "react-i18next";
 import { useToast, ToastType } from 'react-native-toast-notifications';
 import { useRewardedAd } from './Ads';
@@ -36,8 +36,8 @@ export default function CoinsDisplay({ coins }) {
         }  
         style={coinStyles.container}>
             <View style={coinStyles.coinsContainer}>
-                <Ionicons name="wallet" size={18} color="#f59e0b" />
-                <Text style={coinStyles.text}>{currentCoins} {t('coins')}</Text>
+                <FontAwesome5 name="coins" size={16} color="#f59e0b" />
+                <Text style={coinStyles.text}>{currentCoins}</Text>
                 <Text style={coinStyles.plusText}>+</Text>
             </View>
         </Pressable>
@@ -62,12 +62,12 @@ const coinStyles = StyleSheet.create({
         color: '#f59e0b',
         fontWeight: 'bold',
         marginLeft: 6,
-        fontSize: 14,
+        fontSize: 16,
     },
     plusText: {
         color: '#f59e0b',
         fontWeight: 'bold',
         marginLeft: 6,
-        fontSize: 16,
+        fontSize: 20,
     },
 });
