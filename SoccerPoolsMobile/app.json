@@ -3,7 +3,7 @@
     "name": "Soccer Pools",
     "slug": "soccer-pools",
     "scheme": "com.soccer-pools-mobile.soccer-pools-mobile",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "orientation": "portrait",
     "icon": "./assets/icon.jpg",
     "userInterfaceStyle": "light",
