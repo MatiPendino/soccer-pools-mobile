@@ -91,5 +91,6 @@
     "coins": "coins",
     "tap-to-join": "Tap To Join",
     "ads-not-loaded": "Ads not loaded, try again in a few seconds",
-    "coins-added": "{{coins}} coins added successfully!"
+    "coins-added": "{{coins}} coins added successfully!",
+    "cost": "COST"
 }

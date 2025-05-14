@@ -1,5 +1,5 @@
 import { View, StyleSheet, Image, Text } from "react-native"
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons'
 import { CoinsPrizes } from "../types";
 import { BRONZE_COLOR, GOLD_COLOR, SILVER_COLOR } from "../constants";
 
@@ -81,9 +81,9 @@ export default function RankedPlayer({ index, profileImageUrl, username, points,
         
         {rankStyles.prize && (
           <View style={[styles.prizeContainer, { borderColor: rankStyles.prizeColor }]}>
-            <Ionicons name="wallet" size={14} color="#f59e0b" />
+            <FontAwesome5 name="coins" size={16} color="#f59e0b" />
             <Text style={styles.prizeTxt}>
-              {rankStyles.prize} coins
+              {rankStyles.prize}
             </Text>
           </View>
         )}
@@ -192,15 +192,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.7)",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    paddingHorizontal: 18,
+    paddingVertical: 5,
     borderRadius: 12,
     borderWidth: 1,
     alignSelf: "flex-start",
     marginTop: 2,
   },
   prizeTxt: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "600",
     color: "#f59e0b",
     marginLeft: 4,

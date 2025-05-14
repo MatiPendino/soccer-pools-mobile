@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons'; 
 import { Router, useRouter } from 'expo-router';
 import { getToken } from '../../../utils/storeToken';
 import { betsRegister } from '../../../services/betService';
@@ -43,7 +43,7 @@ export default function LeagueCard ({item, setIsLoading}) {
                 {item.coins_prizes.coins_prize_first && (
                     <View style={styles.prizeRibbon}>
                         <View style={styles.ribbonContainer}>
-                            <Ionicons name="trophy" size={16} color="white" />
+                            <FontAwesome5 name="coins" size={16} color="white" />
                             <Text style={styles.prizeText}>
                                 {item.coins_prizes.coins_prize_first}
                             </Text>
@@ -81,10 +81,10 @@ export default function LeagueCard ({item, setIsLoading}) {
                     :
                     <View style={styles.costContainer}>
                         <View style={styles.costBadge}>
-                            <Ionicons name="wallet-outline" size={14} color="#f59e0b" style={styles.costIcon} />
                             <Text style={styles.costText}>
-                                {item.coins_cost || 0} {t('coins')}
+                                {t('cost')}: {item.coins_cost || 0}
                             </Text>
+                            <FontAwesome5 name="coins" size={14} color="#f59e0b" style={styles.costIcon} />
                         </View>
                         <Text style={styles.joinText}>{t('tap-to-join')}</Text>
                     </View>
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
     },
     costIcon: {
-        marginRight: 4,
+        marginLeft: 4,
     },
     costText: {
         fontSize: 12,
