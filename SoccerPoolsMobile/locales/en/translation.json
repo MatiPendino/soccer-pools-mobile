@@ -28,6 +28,8 @@
     "pending": "PENDING",
     "finalized": "FINALIZED",
     "cancelled": "CANCELLED",
+    "postponed": "POSTPONED",
+    "preplayed": "PRE-PLAYED",
     "apply": "APPLY",
     "joined": "JOINED",
     "rejected": "REJECTED",

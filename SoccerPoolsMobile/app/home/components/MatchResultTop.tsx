@@ -42,6 +42,10 @@ export default function MatchResultTop({matchState, points, startDate}: MatchRes
                 return t('finalized')
             case 3:
                 return t('cancelled')
+            case 4:
+                return t('postponed')
+            case 5:
+                return t('preplayed')
         }
     }
     
