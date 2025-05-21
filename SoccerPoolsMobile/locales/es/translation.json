@@ -94,5 +94,9 @@
     "tap-to-join": "Presiona Para Unirte",
     "ads-not-loaded": "Anuncios no cargados, intenta nuevamente en unos segundos",
     "coins-added": "{{coins}} monedas agregadas correctamente!",
-    "cost": "COSTO"
+    "cost": "COSTO",
+    "enjoying-the-app": "Disfrutando la app?",
+    "left-review": "Deja una reseña y obtiene {{coins}} monedas!",
+    "rate-us": "Puntuanos",
+    "maybe-later": "Tal vez después"
 }

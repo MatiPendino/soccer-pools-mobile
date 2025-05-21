@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useTranslation } from "react-i18next";
@@ -7,20 +7,19 @@ import { useRewardedAd } from './Ads';
 import { updateCoins } from '../services/userService';
 import { getToken } from '../utils/storeToken';
 
-export default function CoinsDisplay({ coins }) {
+export default function CoinsDisplay({ setCoins, coins }) {
     const { t } = useTranslation();
     const toast: ToastType = useToast();
-    const [currentCoins, setCurrentCoins] = useState<number>(coins);
 
     useEffect(() => {
-        setCurrentCoins(coins)
+        setCoins(coins)
     }, [coins])
 
     const onEarnedReward = useCallback(async (amount: number) => {
         try {
             const token = await getToken()
             const { coins } = await updateCoins(token, amount)
-            setCurrentCoins(coins)
+            setCoins(coins)
             toast.show(t('coins-added', { coins: amount }), {type: 'success'})
         } catch (error) {
             toast.show(error, {type: 'danger'})
@@ -37,7 +36,7 @@ export default function CoinsDisplay({ coins }) {
         style={coinStyles.container}>
             <View style={coinStyles.coinsContainer}>
                 <FontAwesome5 name="coins" size={16} color="#f59e0b" />
-                <Text style={coinStyles.text}>{currentCoins}</Text>
+                <Text style={coinStyles.text}>{coins}</Text>
                 <Text style={coinStyles.plusText}>+</Text>
             </View>
         </Pressable>

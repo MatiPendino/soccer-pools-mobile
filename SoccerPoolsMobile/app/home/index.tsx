@@ -18,6 +18,7 @@ import { removeToken } from "../../services/api";
 import handleShare from "../../utils/handleShare";
 import { useTranslation } from "react-i18next";
 import CoinsDisplay from "../../components/CoinsDisplay";
+import RateAppModal from "../../components/RateAppModal";
 
 const Drawer = createDrawerNavigator()
 
@@ -25,6 +26,7 @@ export default function Home({}) {
   const { t } = useTranslation()
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [currentCoins, setCurrentCoins] = useState<number>(0);
   const toast = useToast()
   const router = useRouter()
 
@@ -33,6 +35,7 @@ export default function Home({}) {
       try {
         const token = await getToken()
         const user = await getFullUser(token)
+        setCurrentCoins(user.coins)
         setUser(user)
       } catch (error) {
         toast.show('There was an error retrieving the user details', {type: 'danger'})
@@ -70,7 +73,10 @@ export default function Home({}) {
         headerTintColor: 'white',
         headerShown: true,
         headerRight: () => (
-          <CoinsDisplay coins={isLoading ? '...' : (user?.coins || 0)} />
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <CoinsDisplay setCoins={setCurrentCoins} coins={isLoading ? '...' : (currentCoins || 0)} />
+            <RateAppModal setCoins={setCurrentCoins} />
+          </View>
         ),
         headerRightContainerStyle: {
           paddingRight: 16,

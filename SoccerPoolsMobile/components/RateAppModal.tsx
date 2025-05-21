@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { Modal, Pressable, Text, View, Platform, Linking } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
+import { getToken } from "../utils/storeToken";
+import { updateCoins } from "../services/userService";
+import { ANDROID_URL, REVIEW_APP_COINS_PRIZE } from "../constants";
 
-export default function RateAppModal ({}) {
+export default function RateAppModal ({setCoins}) {
     const [showRatingModal, setShowRatingModal] = useState<boolean>(false);
+    const { t } = useTranslation();
 
     const askForRatingIfNeeded = async () => {
         const hasAsked = await AsyncStorage.getItem('was_asked_review');
@@ -27,13 +32,17 @@ export default function RateAppModal ({}) {
         }
     }
 
-    const handleRateApp = () => {
+    const handleRateApp = async () => {
         const url = Platform.select({
-            android: `https://play.google.com/store/apps/details?id=com.matipendino2001.soccerpools`,
+            android: ANDROID_URL,
             ios: `itms-apps://itunes.apple.com/app/idYOUR_APP_ID`, //TODO Update
         });
         Linking.openURL(url);
         setShowRatingModal(false);
+
+        const token = await getToken()
+        const { coins } = await updateCoins(token, REVIEW_APP_COINS_PRIZE)
+        setCoins(coins)
     };
 
     useEffect(() => {
@@ -63,10 +72,10 @@ export default function RateAppModal ({}) {
                 }}
                 >
                     <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
-                        Enjoying the app?
+                        {t('enjoying-the-app')}
                     </Text>
                     <Text style={{ textAlign: 'center', marginBottom: 20 }}>
-                        If you like it, we’d love it if you left us a review!
+                        {t('left-review', { coins: REVIEW_APP_COINS_PRIZE })}
                     </Text>
                     <Pressable
                         onPress={handleRateApp}
@@ -78,11 +87,11 @@ export default function RateAppModal ({}) {
                             marginBottom: 10
                         }}
                     >
-                        <Text style={{ color: 'white' }}>Rate now</Text>
+                        <Text style={{ color: 'white' }}>{t('rate-us')}</Text>
                     </Pressable>
 
                     <Pressable onPress={() => setShowRatingModal(false)}>
-                        <Text style={{ color: '#888' }}>Maybe later</Text>
+                        <Text style={{ color: '#888' }}>{t('maybe-later')}</Text>
                     </Pressable>
                 </View>
             </View>
