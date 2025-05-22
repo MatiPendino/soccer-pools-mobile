@@ -74,7 +74,7 @@ const LeagueSelectionScreen = () => {
       
       <View style={styles.background}>
         <View style={{marginEnd: 10}}>
-          <CoinsDisplay coins={isLoadingCoins ? '...' : (userCoins || 0)} />
+          <CoinsDisplay setCoins={setUserCoins} coins={isLoadingCoins ? '...' : (userCoins || 0)} />
         </View>
 
         <View style={styles.header}>
