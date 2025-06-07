@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { useToast } from "react-native-toast-notifications";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { MAIN_COLOR } from "../../../constants";
 import { RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps, CoinsPrizes } from "../../../types";
@@ -10,8 +9,9 @@ import RankedPlayersFlatList from "../../../components/RankedPlayersFlatList";
 import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../../utils/leagueRounds";
 import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
 import { userLeague } from "../../../services/leagueService";
-import { Banner, interstitial } from "../../../components/Ads";
+import { Banner, interstitial } from "components/ads/Ads";
 import LoadingCards from "../../../components/LoadingCards";
+import { getWrapper } from "../../../utils/getWrapper";
 
 export default function Leaderboard ({}) {
     const [rounds, setRounds] = useState<RoundProps[]>([])
@@ -65,9 +65,10 @@ export default function Leaderboard ({}) {
     }, [])
 
     //interstitial(process.env.LEADERBOARD_INTERST_ID)
+    const Wrapper = getWrapper();
 
     return (
-        <GestureHandlerRootView style={styles.container}>
+        <Wrapper style={styles.container}>
             {
                 isLoading
                 ?
@@ -88,7 +89,7 @@ export default function Leaderboard ({}) {
                 <RankedPlayersFlatList bets={bets} coinsPrizes={coinsPrizes} />
             }
             <Banner bannerId={process.env.LEADERBOARD_BANNER_ID} />
-        </GestureHandlerRootView>
+        </Wrapper>
     )
 }
 

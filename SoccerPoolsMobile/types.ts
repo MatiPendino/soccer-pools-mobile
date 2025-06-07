@@ -87,6 +87,7 @@ export interface TournamentProps {
     league: LeagueProps
     admin_tournament: UserProps
     n_participants: number
+    is_current_user_admin: boolean
 }
 
 export interface TournamentUserProps {

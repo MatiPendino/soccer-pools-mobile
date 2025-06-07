@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { 
+    View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView
+} from "react-native";
 import { FloatingAction } from "react-native-floating-action";
 import { useRouter } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
@@ -118,25 +119,23 @@ export default function Tournaments ({}) {
                 : 
                 (tournaments && tournaments.length > 0 
                     ? 
-                    <FlatList
-                    data={tournaments}
-                    renderItem={({ item }) => (
-                        <TournamentCard
-                        name={item.name}
-                        logoUrl={item.logo}
-                        adminUsername={item.admin_tournament.username}
-                        adminEmail={item.admin_tournament.email}
-                        nParticipants={item.n_participants}
-                        tournamentId={item.id}
-                        leagueId={item.league.id}
-                        />
-                    )}
-                    horizontal={false}
-                    keyExtractor={(item) => item.id.toString()}
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.tournamentsContainer}
-                    />
+                    <ScrollView 
+                        contentContainerStyle={styles.tournamentsContainer} 
+                        showsVerticalScrollIndicator={true}
+                    >
+                        {tournaments.map((tournament) => (
+                            <TournamentCard
+                                key={tournament.id}
+                                name={tournament.name}
+                                logoUrl={tournament.logo}
+                                adminUsername={tournament.admin_tournament.username}
+                                adminEmail={tournament.admin_tournament.email}
+                                nParticipants={tournament.n_participants}
+                                tournamentId={tournament.id}
+                                leagueId={tournament.league.id}
+                            />
+                        ))}
+                    </ScrollView>
                     : 
                     renderEmptyState()
                 )

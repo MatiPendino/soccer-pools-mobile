@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
 import * as ImagePicker from "expo-image-picker"
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable, KeyboardAvoidingView,
-  Platform, ScrollView, Image, } from "react-native"
+import { 
+    View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable, KeyboardAvoidingView,
+    Platform, ScrollView, Image
+} from "react-native"
 import { type Router, useRouter } from "expo-router"
 import { Entypo, MaterialIcons, Feather } from "@expo/vector-icons"
 import { MAIN_COLOR } from "../constants"
 import { useTranslation } from "react-i18next"
-import { Banner, interstitial } from "./Ads"
+import { Banner, interstitial } from "components/ads/Ads"
 import { ActivityIndicator } from "react-native-paper"
 
 interface TournamentFormProps {

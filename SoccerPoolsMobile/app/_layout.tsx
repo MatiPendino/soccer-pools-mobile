@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { ToastProvider } from "react-native-toast-notifications";
 import { StatusBar } from "expo-status-bar";
-import mobileAds from 'react-native-google-mobile-ads';
 import * as Sentry from '@sentry/react-native';
-import { vexo } from 'vexo-analytics';
-import analytics from '@react-native-firebase/analytics';
+import initializeMobileAds from "utils/initialize_mobile_ads/initializeMobileAds";
+import initializeAnalytics from "utils/analytics/initializeAnalytics";
+import initializeVexo from "utils/initialize_vexo/initializeVexo";
 import '../i18'
 
 // Sentry initialization
@@ -14,19 +14,15 @@ Sentry.init({
 })
 
 // Vexo Analytics Setup
-vexo(process.env.VEXO_API_KEY);
+initializeVexo();
 
 // Firebase Analytics Setup
-analytics().logAppOpen();
+initializeAnalytics();
   
 export default function Layout () {
     useEffect(() => {
         // Admob initialization
-        mobileAds()
-            .initialize()
-            .then(adapterStatuses => {
-            // Initialization complete!
-            })
+        initializeMobileAds();
     }, []);
 
     return (

@@ -4,7 +4,7 @@ import { Entypo } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import { ToastType, useToast } from "react-native-toast-notifications"
 import { useEffect, useState } from "react"
-import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
+import { ScrollView } from "react-native-gesture-handler"
 import { ActivityIndicator } from "react-native-paper"
 import { MAIN_COLOR } from "../../constants"
 import { getToken } from "../../utils/storeToken"
@@ -12,7 +12,8 @@ import { listPendingTournamentUsers } from "../../services/tournamentService"
 import { TournamentUserProps } from "../../types"
 import PendingInviteCard from "./components/PendingInviteCard"
 import { useTranslation } from "react-i18next"
-import { Banner } from "../../components/Ads"
+import { getWrapper } from "../../utils/getWrapper"
+import { Banner } from "components/ads/Ads"
 
 export default function PendingInvites () {
     const { t } = useTranslation()
@@ -40,8 +41,10 @@ export default function PendingInvites () {
         getPendingInvites()
     }, [])
 
+    const Wrapper = getWrapper();
+
     return (
-        <GestureHandlerRootView style={styles.container}>
+        <Wrapper style={styles.container}>
             <View style={styles.topBar}>
                 <Pressable onPress={() => router.back()}>
                     <Entypo name="chevron-left" color="white" size={30} />
@@ -56,22 +59,22 @@ export default function PendingInvites () {
                 :
                     pendingTournamentUsers.length > 0
                     ?
-                        <FlatList
-                            data={pendingTournamentUsers}
-                            renderItem={({item}) => (
+                        <ScrollView 
+                            contentContainerStyle={styles.invitesContainer} 
+                            showsVerticalScrollIndicator={true}
+                        >
+                            {pendingTournamentUsers.map((pendingUser) => (
                                 <PendingInviteCard
-                                    id={item.id}
+                                    key={pendingUser.id}
+                                    id={pendingUser.id}
                                     token={token}
-                                    username={item.user.username}
-                                    userLogoUrl={item.user.profile_image}
+                                    username={pendingUser.user.username}
+                                    userLogoUrl={pendingUser.user.profile_image}
                                     setPendingTournamentUsers={setPendingTournamentUsers}
                                     pendingTournamentUsers={pendingTournamentUsers}
                                 />
-                            )}
-                            horizontal={false}
-                            keyExtractor={(item) => item.id.toString()}
-                            contentContainerStyle={styles.invitesContainer}
-                        />
+                            ))}
+                        </ScrollView>
                     :
                         <View style={styles.noPendingInvites}>
                             <Text style={styles.noPendingInvitesTxt}>{t('no-pending-invites')}</Text>
@@ -79,7 +82,7 @@ export default function PendingInvites () {
             }
 
             <Banner bannerId={process.env.PENDING_INVITES_BANNER_ID} />
-        </GestureHandlerRootView>
+        </Wrapper>
     )
 }
 

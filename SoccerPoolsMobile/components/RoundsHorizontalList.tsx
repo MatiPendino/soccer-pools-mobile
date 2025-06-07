@@ -1,5 +1,4 @@
-import { StyleSheet } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { RoundProps, RoundsStateProps, Slug } from "../types";
 import RoundItem from "./RoundItem";
 
@@ -14,24 +13,25 @@ export default function RoundsHorizontalList({
     rounds, handleRoundSwap, roundsState, isResultsTab=false
 }: Props) {
     return (
-        <FlatList
-            data={rounds}
-            renderItem={({item}) => (
-                <RoundItem
-                    roundId={item.id}
-                    roundSlug={item.slug}
-                    roundName={item.name}
-                    roundsState={roundsState}
-                    hasBetRound={isResultsTab ? item.has_bet_round : true}
-                    handleRoundSwap={handleRoundSwap}
-                />
-            )}
-            horizontal={true}
-            keyExtractor={(item) => item.slug}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.leaguesContainer}
-        />
+        <View>
+            <ScrollView 
+                contentContainerStyle={styles.leaguesContainer} 
+                horizontal={true} 
+                showsHorizontalScrollIndicator={true}
+            >
+                {rounds.map((round) => (
+                    <RoundItem
+                        key={round.id}
+                        roundId={round.id}
+                        roundSlug={round.slug}
+                        roundName={round.name}
+                        roundsState={roundsState}
+                        hasBetRound={isResultsTab ? round.has_bet_round : true}
+                        handleRoundSwap={handleRoundSwap}
+                    />
+                ))}
+            </ScrollView>
+        </View>
     )
 }
 

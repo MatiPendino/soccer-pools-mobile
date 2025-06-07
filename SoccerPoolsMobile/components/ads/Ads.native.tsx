@@ -4,7 +4,7 @@ import {
 } from 'react-native-google-mobile-ads';
 
 export const Banner = ({bannerId}: {bannerId: string}) => {
-    const adUnitIdBanner: string = Boolean(Number(process.env.TEST_ADS)) ? TestIds.BANNER : bannerId
+    const adUnitIdBanner: string = Boolean(Number(process.env.TEST_ADS)) ? TestIds.BANNER : bannerId;
 
     return (
         <BannerAd
@@ -21,7 +21,7 @@ export const Banner = ({bannerId}: {bannerId: string}) => {
 }
 
 export const interstitial = (interstitialId: string) => {
-    const adUnitIdInterst: string = Boolean(Number(process.env.TEST_ADS)) ? TestIds.INTERSTITIAL : interstitialId
+    const adUnitIdInterst: string = Boolean(Number(process.env.TEST_ADS)) ? TestIds.INTERSTITIAL : interstitialId;
     const interstitial = InterstitialAd.createForAdRequest(adUnitIdInterst);
 
     useEffect(() => {
@@ -40,7 +40,7 @@ export const interstitial = (interstitialId: string) => {
 }
   
 export const showOpenAppAd = async (openAppId): Promise<void> => {
-    const openAdUnitId: string = Boolean(Number(process.env.TEST_ADS)) ? TestIds.APP_OPEN : openAppId
+    const openAdUnitId: string = Boolean(Number(process.env.TEST_ADS)) ? TestIds.APP_OPEN : openAppId;
     const openApp = AppOpenAd.createForAdRequest(openAdUnitId, {
         requestNonPersonalizedAdsOnly: true,
     });
@@ -67,10 +67,9 @@ interface UseRewardedAdOptions {
 
 export function useRewardedAd({onEarnedReward}: UseRewardedAdOptions) {
   const [loaded, setLoaded] = useState(false)
-
   const adUnitIdRewarded: string = 
     Boolean(Number(process.env.TEST_ADS)) ? TestIds.REWARDED
-    : process.env.REWARDED_AD_ID
+    : process.env.REWARDED_AD_ID;
 
   // Create the ad instance exactly once
   const rewardedAdRef = useRef(
@@ -78,7 +77,7 @@ export function useRewardedAd({onEarnedReward}: UseRewardedAdOptions) {
       requestNonPersonalizedAdsOnly: true,
     })
   )
-  const rewardedAd = rewardedAdRef.current
+  const rewardedAd = rewardedAdRef.current;
 
   useEffect(() => {
     const subs = [

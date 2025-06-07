@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import * as Sentry from "@sentry/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text, Pressable, StyleSheet, ActivityIndicator, AppState } from "react-native";
-import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler"
+import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
 import { ToastType, useToast } from "react-native-toast-notifications";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
+import { showOpenAppAd } from "components/ads/Ads";
 import { MAIN_COLOR } from "../../../constants";
 import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
@@ -17,7 +17,7 @@ import { userLeague } from "../../../services/leagueService";
 import { getNextRoundId } from "../../../utils/getNextRound";
 import handleError from "../../../utils/handleError";
 import { registerPush, getFCMToken } from "../../../services/pushNotificationService";
-import { showOpenAppAd } from "../../../components/Ads";
+import { getWrapper } from "../../../utils/getWrapper";
 
 
 export default function Results ({}) {
@@ -123,8 +123,10 @@ export default function Results ({}) {
         return <ActivityIndicator size="large" color="#0000ff" />
     }
 
+    const Wrapper = getWrapper();
+
     return (
-        <GestureHandlerRootView style={styles.container}>
+        <Wrapper style={styles.container}>
             {
                 isLoading
                 ?
@@ -143,20 +145,19 @@ export default function Results ({}) {
                 ?
                     <ActivityIndicator style={{paddingBottom: 250}} size="large" color="#fff" />
                 :
-                <FlatList
-                    data={matchResults}
-                    renderItem={({item}) => (
-                        <MatchResult 
-                            currentMatchResult={item} 
-                            matchResults={matchResults} 
-                            setMatchResults={setMatchResults} 
-                        />
-                    )}
-                    keyExtractor={(item) => item.id.toString()}
-                    contentContainerStyle={styles.matchResultsContainer}
-                    horizontal={false} 
-                    showsVerticalScrollIndicator={true}
-                />
+                    <ScrollView 
+                        contentContainerStyle={styles.matchResultsContainer} 
+                        showsVerticalScrollIndicator={true}
+                    >
+                        {matchResults.map((matchResult) => (
+                            <MatchResult 
+                                key={matchResult.id}
+                                currentMatchResult={matchResult} 
+                                matchResults={matchResults} 
+                                setMatchResults={setMatchResults} 
+                            />
+                        ))}
+                    </ScrollView>
             }
 
             <Pressable
@@ -173,7 +174,7 @@ export default function Results ({}) {
                     <Text style={styles.saveTxt}>{t('save-predictions')}</Text>
                 }
             </Pressable>
-        </GestureHandlerRootView>
+        </Wrapper>
     )
 }
 

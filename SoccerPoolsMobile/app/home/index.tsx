@@ -61,7 +61,7 @@ export default function Home({}) {
   return (
     <Drawer.Navigator
       id={undefined}
-      initialRouteName="Home"
+      initialRouteName="home"
       screenOptions={({ navigation }) => ({
         drawerStyle: {
           backgroundColor: MAIN_COLOR,
@@ -121,9 +121,10 @@ export default function Home({}) {
       )}
     >
       <Drawer.Screen
-        name="Home"
+        name="home"
         component={League}
         options={{
+          drawerLabel: t('home'),
           drawerLabelStyle: {
             color: "white",
             fontSize: 24,
@@ -132,9 +133,10 @@ export default function Home({}) {
         }}
       />
       <Drawer.Screen
-        name={t('how-to-play')}
+        name='how-to-play'
         component={HowToPlay}
         options={{
+          drawerLabel: t('how-to-play'),
           drawerLabelStyle: {
             color: "white",
             fontSize: 24,

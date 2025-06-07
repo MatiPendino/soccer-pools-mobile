@@ -8,7 +8,7 @@ import { getToken } from "../../utils/storeToken"
 import handleError from "../../utils/handleError"
 import { editPassword } from "../../services/authService"
 import { useTranslation } from "react-i18next"
-import { Banner } from "../../components/Ads"
+import { Banner } from "components/ads/Ads"
 
 export default function UpdatePassword({}) {
     const { t } = useTranslation()

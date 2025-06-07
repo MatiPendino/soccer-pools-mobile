@@ -56,6 +56,7 @@ export default function CreateAccount({}) {
 
     const [request, response, promptAsync] = Google.useAuthRequest({
         androidClientId: process.env.ANDROID_CLIENT_ID,
+        webClientId: process.env.WEB_CLIENT_ID,
         redirectUri: AuthSession.makeRedirectUri({
             scheme: 'com.matipendino2001.soccerpools',
         }),

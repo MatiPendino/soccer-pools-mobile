@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, View, Pressable } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { StyleSheet, Text, View, Pressable } from "react-native";
 import { ToastType, useToast } from "react-native-toast-notifications";
 import { BetProps, RoundProps, RoundsStateProps, Slug } from "../../types";
 import { Router, useLocalSearchParams } from "expo-router";
@@ -13,14 +12,19 @@ import RankedPlayersFlatList from "../../components/RankedPlayersFlatList";
 import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../utils/leagueRounds";
 import handleShare from "../../utils/handleShare";
 import { useTranslation } from "react-i18next";
+import { TournamentProps } from "../../types";
 import RoundsHorizontalList from "../../components/RoundsHorizontalList";
-import { Banner, interstitial } from "../../components/Ads";
+import { Banner, interstitial } from "components/ads/Ads";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import LoadingCards from "../../components/LoadingCards";
+import { retrieveTournament } from "../../services/tournamentService";
+import handleError from "../../utils/handleError";
+import { getWrapper } from "../../utils/getWrapper";
 
 export default function MyTournament({}) {
     const { t } = useTranslation()
-    const { tournamentName, tournamentId, leagueId, isAdmin } = useLocalSearchParams()
+    const { tournamentId } = useLocalSearchParams()
+    const [tournament, setTournament] = useState<TournamentProps>(null)
     const [bets, setBets] = useState<BetProps[]>(null)
     const [rounds, setRounds] = useState<RoundProps[]>([])
     const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
@@ -32,9 +36,25 @@ export default function MyTournament({}) {
     //interstitial(process.env.MY_TOURNAMENT_INTERST_ID)
 
     useEffect(() => {
-        const getFirstBetLeaders = async (): Promise<void> => {
+        const getTournament = async (): Promise<void> => {
             try {
                 const token = await getToken()
+                const myTnt = await retrieveTournament(token, Number(tournamentId))
+                if (!myTnt) {
+                    toast.show('There is been an error getting the tournament', {type: 'danger'})
+                    router.replace('/home')
+                    return;
+                } 
+                setTournament(myTnt)
+                getFirstBetLeaders(token, myTnt.league.id)
+            } catch (error) {
+                toast.show(handleError(error), {type: 'danger'})
+                router.replace('/home')
+            } 
+        }
+
+        const getFirstBetLeaders = async (token: string, leagueId: number): Promise<void> => {
+            try {
                 const roundsByLeague = await getRounds(token, leagueId)
                 setRounds(roundsByLeague)
                 setRoundsState(getRoundsState(roundsByLeague)) 
@@ -50,7 +70,7 @@ export default function MyTournament({}) {
             }
         }
         
-        getFirstBetLeaders()
+        getTournament()
     }, [])
 
     const swapRoundBetLeaders = async (roundId: number, roundSlug: Slug) => {
@@ -67,59 +87,60 @@ export default function MyTournament({}) {
     }
 
     const handleTournamentClick = (pathname: string) => {
-        router.push({
-            pathname: pathname,
-            params: {
-                tournamentId: tournamentId
-            }
-        })
+        router.push(`${pathname}/${tournamentId}/`)
     }
+
+    const Wrapper = getWrapper();
 
     return (
         <PaperProvider>
-            <GestureHandlerRootView style={styles.container}>
+            <Wrapper style={styles.container}>
                 <View style={styles.topBar}>
                     <View style={styles.arrowNameContainer}>
                         <Pressable onPress={() => router.replace('/home')}>
                             <Entypo name="chevron-left" color="white" size={30} />   
                         </Pressable>
 
-                        <Text style={styles.tntNameTxt}>{tournamentName.toString().toUpperCase()}</Text>
+                        <Text style={styles.tntNameTxt}>
+                            {tournament ? tournament.name.toUpperCase() : '...'}
+                        </Text>
                     </View>
                     
-                    <View>
-                        <Menu
-                            visible={isMenuVisible}
-                            onDismiss={() => setIsMenuVisible(false)}
-                            anchor={
-                                <Pressable onPress={() => setIsMenuVisible(true)}>
-                                    <Entypo name="dots-three-vertical" color="white" size={30} />   
-                                </Pressable>
-                            }
-                        >
-                            <Menu.Item onPress={handleShare} title={t('invite-friends')} />
-                            {
-                                Boolean(isAdmin)
-                                ?
-                                <View>
-                                    <Menu.Item 
-                                        onPress={
-                                            () => handleTournamentClick('pending-invites')
-                                        } 
-                                        title={t('pending-invites')}
-                                    />
-                                    <Menu.Item 
-                                        onPress={
-                                            () => handleTournamentClick('edit-tournament')
-                                        } 
-                                        title={t('tournament-settings')}
-                                    />
-                                </View>
-                                :
-                                <View></View>
-                            }
-                        </Menu>
-                    </View>
+                    {tournament &&
+                        <View>
+                            <Menu
+                                visible={isMenuVisible}
+                                onDismiss={() => setIsMenuVisible(false)}
+                                anchor={
+                                    <Pressable onPress={() => setIsMenuVisible(true)}>
+                                        <Entypo name="dots-three-vertical" color="white" size={30} />   
+                                    </Pressable>
+                                }
+                            >
+                                <Menu.Item onPress={handleShare} title={t('invite-friends')} />
+                                {
+                                    tournament.is_current_user_admin
+                                    ?
+                                    <View>
+                                        <Menu.Item 
+                                            onPress={
+                                                () => handleTournamentClick('pending-invites')
+                                            } 
+                                            title={t('pending-invites')}
+                                        />
+                                        <Menu.Item 
+                                            onPress={
+                                                () => handleTournamentClick('edit-tournament')
+                                            } 
+                                            title={t('tournament-settings')}
+                                        />
+                                    </View>
+                                    :
+                                    <View></View>
+                                }
+                            </Menu>
+                        </View>
+                    }
                 </View>
 
                 {
@@ -147,7 +168,7 @@ export default function MyTournament({}) {
                 }
 
                 <Banner bannerId={process.env.MY_TOURNAMENT_BANNER_ID} />
-            </GestureHandlerRootView>
+            </Wrapper>
         </PaperProvider>
     )
 }

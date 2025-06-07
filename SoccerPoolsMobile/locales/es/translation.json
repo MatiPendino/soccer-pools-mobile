@@ -98,5 +98,6 @@
     "enjoying-the-app": "Disfrutando la app?",
     "left-review": "Deja una reseña y obtiene {{coins}} monedas!",
     "rate-us": "Puntuanos",
-    "maybe-later": "Tal vez después"
+    "maybe-later": "Tal vez después",
+    "wrong-tournament-id": "El ID de torneo es incorrecto"
 }

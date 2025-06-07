@@ -1,6 +1,5 @@
-import { FlatList } from "react-native-gesture-handler"
 import RankedPlayer from "./RankedPlayer"
-import { StyleSheet } from "react-native"
+import { StyleSheet, ScrollView } from "react-native"
 import { BetProps, CoinsPrizes } from "../types"
 
 interface Props {
@@ -11,22 +10,19 @@ interface Props {
 export default function RankedPlayersFlatList ({bets, coinsPrizes}: Props) {
 
     return (
-        <FlatList
-            data={bets}
-            renderItem={({item, index}) => (
+        <ScrollView contentContainerStyle={styles.betResultsContainer} showsVerticalScrollIndicator={true}>
+            {bets.map((item, index) => (
                 <RankedPlayer 
+                    key={item.id}
                     index={index+1} 
                     username={item.username}
                     points={item.points}
                     profileImageUrl={item.profile_image}
                     coinPrizes={coinsPrizes}
                 />
-            )}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={styles.betResultsContainer}
-            horizontal={false} 
-            showsVerticalScrollIndicator={true}
-        />
+            ))}
+        </ScrollView>
+            
     )
 }
 

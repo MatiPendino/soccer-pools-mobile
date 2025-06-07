@@ -97,15 +97,7 @@ export default function TournamentCard({
                 toast.show(t('already-request-sent'), {type: 'warning'})
                 break
             case 2:
-                router.push({
-                    pathname: 'my-tournament',
-                    params: {
-                        tournamentName: name,
-                        tournamentId: tournamentId,
-                        leagueId: leagueId,
-                        isAdmin: String(tournamentUser.user.email == adminEmail),
-                    },
-                })
+                router.push(`my-tournament/${tournamentId}`)
                 break
             case 3:
                 toast.show(t('request-rejected'), {type: 'error'})

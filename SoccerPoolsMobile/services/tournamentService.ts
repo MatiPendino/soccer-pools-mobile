@@ -1,3 +1,4 @@
+import { generateTournamentFormData } from "../utils/generateTournamentFormData";
 import api from "./api";
 
 export const listTournaments = async (token: string, leagueId: number, searchText: string) => {
@@ -28,36 +29,11 @@ export const retrieveTournament = async (token: string, tournamentId: number) =>
     }
 }
 
-const generateTournamentFormData = (
-    name: string, description: string, logo: string, leagueId?: number
-) => {
-    const formData = new FormData()
-
-    if (logo){
-        const logoFile = {
-            uri: logo,
-            name: logo.split('/').pop(),
-            type: 'image/jpeg', 
-        }
-        // @ts-ignore
-        formData.append('logo', logoFile)   
-    } else {
-        formData.append('logo', null)
-    }
-    formData.append('name', name)
-    formData.append('description', description)
-    if (leagueId) {
-        formData.append('league', String(leagueId))
-    }
-
-    return formData
-}
-
 export const createTournament = async (
     token: string, name: string, description: string, logo: string, leagueId: number
 ) => {
     try {
-        const formData = generateTournamentFormData(name, description, logo, leagueId)
+        const formData: FormData = generateTournamentFormData(name, description, logo, leagueId);
         const response = await api.post('/api/tournaments/tournament/', 
             formData,
             {
@@ -77,7 +53,7 @@ export const editTournament = async (
     token: string, name: string, description: string, logo: string, tournamentId: number
 ) => {
     try {
-        const formData = generateTournamentFormData(name, description, logo)
+        const formData: FormData = generateTournamentFormData(name, description, logo);
         const response = await api.patch(`/api/tournaments/tournament/${tournamentId}/`, 
             formData,
             {

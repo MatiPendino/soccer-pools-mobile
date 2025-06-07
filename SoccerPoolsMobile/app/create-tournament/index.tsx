@@ -23,15 +23,7 @@ export default function CreateTournament () {
             )
             if (tournament) {
                 toast.show(t('tournament-created-successfully'))
-                router.push({
-                    pathname: 'my-tournament',
-                    params: {
-                        tournamentName: data.name,
-                        tournamentId: tournament.id,
-                        leagueId: leagueId,
-                        isAdmin: 'true'
-                    }
-                })    
+                router.push(`my-tournament/${tournament.id}`)    
             }
         } catch (error) {
             toast.show(handleError(error), {type: 'danger'})

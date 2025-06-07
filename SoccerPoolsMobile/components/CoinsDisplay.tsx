@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useTranslation } from "react-i18next";
 import { useToast, ToastType } from 'react-native-toast-notifications';
-import { useRewardedAd } from './Ads';
+import { useRewardedAd } from 'components/ads/Ads';
 import { updateCoins } from '../services/userService';
 import { getToken } from '../utils/storeToken';
 
@@ -28,18 +28,27 @@ export default function CoinsDisplay({ setCoins, coins }) {
 
     const { loaded, show } = useRewardedAd({onEarnedReward})
 
+    const handlePress = () => {
+        if (loaded) {
+            show();
+        } else {
+            toast.show(t('ads-not-loaded'), {type: 'warning'});
+        }
+    }
+
+    const Wrapper = 
+        Platform.OS === 'web' ? View : Pressable;
+
     return (
-        <Pressable onPress={() => 
-            loaded ? show() 
-            : toast.show(t('ads-not-loaded'), {type: 'warning'})
-        }  
-        style={coinStyles.container}>
+        <Wrapper style={coinStyles.container} onPress={handlePress}>
             <View style={coinStyles.coinsContainer}>
                 <FontAwesome5 name="coins" size={16} color="#f59e0b" />
                 <Text style={coinStyles.text}>{coins}</Text>
-                <Text style={coinStyles.plusText}>+</Text>
+                {Platform.OS === 'android' && (
+                    <Text style={coinStyles.plusText}>+</Text>
+                )}
             </View>
-        </Pressable>
+        </Wrapper>
     );
 }
 

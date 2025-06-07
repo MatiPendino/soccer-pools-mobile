@@ -6,7 +6,6 @@ import { getToken } from "../../utils/storeToken"
 import handleError from "../../utils/handleError"
 import { editTournament, retrieveTournament } from "../../services/tournamentService"
 import { TournamentProps } from "../../types"
-import { ActivityIndicator } from "react-native"
 import { useTranslation } from "react-i18next"
 
 export default function EditTournament () {
@@ -17,6 +16,11 @@ export default function EditTournament () {
     const router: Router = useRouter()
     const toast: ToastType = useToast()
 
+    if (!tournamentId || isNaN(Number(tournamentId))) {
+        toast.show(t('wrong-tournament-id'), {type: 'danger'})
+        router.replace('/home')
+    }
+
     useEffect(() => {
         const getTournament = async () => {
             try {
@@ -24,7 +28,7 @@ export default function EditTournament () {
                 const tournament = await retrieveTournament(token, Number(tournamentId))
                 setTournament(tournament)  
             } catch (error) {
-                toast.show('There is been an error loading the tournament details', {type: 'dangee'})
+                toast.show('There is been an error loading the tournament details', {type: 'danger'})
             } finally {
                 setIsLoading(false)
             }
@@ -43,15 +47,7 @@ export default function EditTournament () {
             )
             if (updatedTournament) {
                 toast.show(t('tournament-updated-successfully'))
-                router.push({
-                    pathname: 'my-tournament',
-                    params: {
-                        tournamentName: data.name,
-                        tournamentId: tournamentId,
-                        leagueId: leagueId,
-                        isAdmin: 'true'
-                    }
-                })    
+                router.push(`my-tournament/${tournament.id}`)    
             }
         } catch (error) {
             toast.show(handleError(error), {type: 'danger'})

@@ -98,5 +98,6 @@
     "enjoying-the-app": "Are you enjoying the app?",
     "left-review": "Left us a review and get {{coins}} coins!",
     "rate-us": "Rate us",
-    "maybe-later": "Maybe later"
+    "maybe-later": "Maybe later",
+    "wrong-tournament-id": "The Tournament ID is wrong"
 }
