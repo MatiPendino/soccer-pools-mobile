@@ -1,10 +1,12 @@
-import { Pressable, ScrollView, Text, Image, ActivityIndicator, View } from "react-native";
+import { Pressable, ScrollView, Text, Image, ActivityIndicator, View, Platform } from "react-native";
 import { Link } from "expo-router";
 import { useState, useEffect } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
+import * as Sentry from '@sentry/react-native';
 import handleError from "../../utils/handleError";
 import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
@@ -12,6 +14,11 @@ import { register, login, googleOauth2SignIn, getUserInLeague } from "../../serv
 import styles from "./styles";
 import { Email } from "../../types";
 import { useTranslation } from "react-i18next";
+
+// This is crucial for web OAuth to work properly
+if (Platform.OS === 'web') {
+    WebBrowser.maybeCompleteAuthSession();
+}
 
 export default function CreateAccount({}) {
     const { t, i18n } = useTranslation()
@@ -21,6 +28,7 @@ export default function CreateAccount({}) {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
     const toast = useToast()
     const router = useRouter()
 
@@ -58,26 +66,68 @@ export default function CreateAccount({}) {
         androidClientId: process.env.ANDROID_CLIENT_ID,
         webClientId: process.env.WEB_CLIENT_ID,
         redirectUri: AuthSession.makeRedirectUri({
-            scheme: 'com.matipendino2001.soccerpools',
+            // For web, use the current origin. For mobile, use custom scheme
+            scheme: Platform.OS !== 'web' ? 'com.matipendino2001.soccerpools' : undefined,
+            // @ts-ignore
+            useProxy: Platform.OS === 'web'
         }),
+        responseType: Platform.OS === 'web' ? AuthSession.ResponseType.Token : AuthSession.ResponseType.Code
     })
 
     useEffect(() => {
         googleAuth();
     }, [response])
 
-    const googleAuth = async () => {    
-        if (response) {
-            if (response.type === "success") { 
-                try {
-                   const {access, refresh} = await googleOauth2SignIn(response.authentication.accessToken)
-                    await userInLeague(access) 
-                } catch (error) {
-                    toast.show('There`s been an error signing in. Please try again or use a different authentication method', {type: 'danger'})
+    const googleAuth = async () => {
+        if (response?.type === 'success') {
+            setIsGoogleLoading(true)
+            try {
+                const accessToken = response.authentication?.accessToken
+                if (accessToken) {
+                    const { access, refresh } = await googleOauth2SignIn(accessToken)
+                    await userInLeague(access)
+                } else {
+                    Sentry.captureException('No access token received from Google')
+                    toast.show('No access token received from Google', { type: 'danger' })
                 }
-            } else {
-                toast.show("Google login cancelled!", { type: "warning" })
+            } catch (error) {
+                Sentry.captureException(error)
+                toast.show('There is been an error signing in. Please try again or use another method', {
+                    type: 'danger',
+                })
+            } finally {
+                setIsGoogleLoading(false)
             }
+        } else if (response?.type === 'error') {
+            Sentry.captureException(response.error?.message || 'Google login error')
+            toast.show(`Google login failed: ${response.error?.message || 'Unknown error'}`, { type: 'danger' })
+        } else if (response?.type === 'cancel') {
+            toast.show('Google login cancelled!', { type: 'warning' })
+        }
+    }
+
+    const handleGoogleSignIn = async () => {
+        if (!request) {
+            toast.show('Google sign-in is not ready yet. Please wait a moment and try again.', { type: 'warning' })
+            return
+        }
+
+        setIsGoogleLoading(true)
+        try {
+            const result = await promptAsync({
+                // @ts-ignore
+                useProxy: Platform.OS === 'web',
+                showInRecents: false,
+            })
+
+            // The response will be handled by the useEffect above
+            if (result.type === 'dismiss') {
+                setIsGoogleLoading(false)
+            }
+        } catch (error) {
+            console.error('Error initiating Google sign-in:', error)
+            toast.show('Failed to start Google sign-in. Please try again.', { type: 'danger' })
+            setIsGoogleLoading(false)
         }
     }
 
@@ -88,15 +138,16 @@ export default function CreateAccount({}) {
                     {t('create-your-account')}
                 </Text>
 
-                <Pressable 
-                    onPress={() => promptAsync()}
-                    style={styles.googleBtn}
+                <Pressable
+                    onPress={handleGoogleSignIn}
+                    disabled={isGoogleLoading || !request}
+                    style={[styles.googleBtn, (isGoogleLoading || !request) && styles.googleContainerDisabled]}
                 >
                     <View style={styles.googleContainer}>
                         <Text style={styles.googleTxt}>{t('sign-up-with')}</Text>
                         <Image
                             source={require('../../assets/img/google-icon.webp')}
-                            style={styles.googleImg}
+                            style={[styles.googleImg, (isGoogleLoading || !request) && styles.googleImgDisabled]}
                         />
                     </View>
                 </Pressable>
