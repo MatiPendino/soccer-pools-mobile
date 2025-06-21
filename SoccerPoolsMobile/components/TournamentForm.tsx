@@ -147,10 +147,10 @@ export default function TournamentForm({
                         ? 
                         <ActivityIndicator color="#fff" size="small" />
                         : 
-                        <>
+                        <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
                             <Text style={styles.buttonText}>{buttonLabel}</Text>
                             <Feather name="arrow-right" size={20} color="white" style={styles.buttonIcon} />
-                        </>
+                        </View>
                     }
                 </TouchableOpacity>
             </ScrollView>
@@ -167,6 +167,8 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         flex: 1,
+        width: Platform.OS === 'web' ? '70%' : '97%',
+        marginHorizontal: 'auto',
     },
     topBar: {
         backgroundColor: "#2F2766",
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingVertical: 16,
         paddingHorizontal: 16,
-        marginTop: Platform.OS === "ios" ? 50 : 20,
+        marginTop: Platform.OS === 'web' ? 0 : 20,
         borderBottomWidth: 1,
         borderBottomColor: "rgba(255,255,255,0.1)",
     },
@@ -249,12 +251,13 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         position: "relative",
-        height: 180,
+        height: Platform.OS === 'web' ? 400 : 220,
+        width: Platform.OS === 'web' ? 400 : 220,
         borderRadius: 12,
-        overflow: "hidden",
+        //overflow: "hidden",
     },
     logoPreview: {
-        width: "100%",
+        objectFit: 'cover',
         height: "100%",
         borderRadius: 12,
     },

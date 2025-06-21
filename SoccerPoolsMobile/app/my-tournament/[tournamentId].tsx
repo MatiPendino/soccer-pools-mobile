@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable, Platform } from "react-native";
 import { ToastType, useToast } from "react-native-toast-notifications";
 import { BetProps, RoundProps, RoundsStateProps, Slug } from "../../types";
 import { Router, useLocalSearchParams } from "expo-router";
 import Entypo from '@expo/vector-icons/Entypo';
-import { Menu, PaperProvider } from 'react-native-paper';
+import { PaperProvider } from 'react-native-paper';
 import { useRouter } from "expo-router";
 import { MAIN_COLOR } from "../../constants";
 import { getToken } from "../../utils/storeToken";
@@ -20,6 +20,8 @@ import LoadingCards from "../../components/LoadingCards";
 import { retrieveTournament } from "../../services/tournamentService";
 import handleError from "../../utils/handleError";
 import { getWrapper } from "../../utils/getWrapper";
+import MenuWeb from "./components/MenuWeb";
+import MenuMobile from "./components/MenuMobile";
 
 export default function MyTournament({}) {
     const { t } = useTranslation()
@@ -107,39 +109,23 @@ export default function MyTournament({}) {
                     </View>
                     
                     {tournament &&
-                        <View>
-                            <Menu
-                                visible={isMenuVisible}
-                                onDismiss={() => setIsMenuVisible(false)}
-                                anchor={
-                                    <Pressable onPress={() => setIsMenuVisible(true)}>
-                                        <Entypo name="dots-three-vertical" color="white" size={30} />   
-                                    </Pressable>
-                                }
-                            >
-                                <Menu.Item onPress={handleShare} title={t('invite-friends')} />
-                                {
-                                    tournament.is_current_user_admin
-                                    ?
-                                    <View>
-                                        <Menu.Item 
-                                            onPress={
-                                                () => handleTournamentClick('pending-invites')
-                                            } 
-                                            title={t('pending-invites')}
-                                        />
-                                        <Menu.Item 
-                                            onPress={
-                                                () => handleTournamentClick('edit-tournament')
-                                            } 
-                                            title={t('tournament-settings')}
-                                        />
-                                    </View>
-                                    :
-                                    <View></View>
-                                }
-                            </Menu>
-                        </View>
+                        Platform.OS !== 'web'
+                        ?
+                        <MenuMobile
+                            tournament={tournament}
+                            t={t}
+                            handleTournamentClick={handleTournamentClick}
+                            isMenuVisible={isMenuVisible}
+                            setIsMenuVisible={setIsMenuVisible}
+                            handleShare={handleShare}
+                        />
+                        :
+                        <MenuWeb
+                            tournament={tournament}
+                            t={t}
+                            handleTournamentClick={handleTournamentClick}
+                            handleShare={handleShare}
+                        />
                     }
                 </View>
 
@@ -189,7 +175,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingVertical: 15,
-        marginTop: 20,
+        marginTop: Platform.OS === 'web' ? 0 : 20,
         paddingHorizontal: 5
     },
     arrowNameContainer: {

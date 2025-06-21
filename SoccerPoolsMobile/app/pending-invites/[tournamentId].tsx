@@ -1,10 +1,9 @@
 import { Router, useLocalSearchParams } from "expo-router"
-import { StyleSheet, View, Text, Pressable } from "react-native"
+import { StyleSheet, View, Text, Pressable, Platform, ScrollView } from "react-native"
 import { Entypo } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import { ToastType, useToast } from "react-native-toast-notifications"
 import { useEffect, useState } from "react"
-import { ScrollView } from "react-native-gesture-handler"
 import { ActivityIndicator } from "react-native-paper"
 import { MAIN_COLOR } from "../../constants"
 import { getToken } from "../../utils/storeToken"
@@ -46,7 +45,7 @@ export default function PendingInvites () {
     return (
         <Wrapper style={styles.container}>
             <View style={styles.topBar}>
-                <Pressable onPress={() => router.back()}>
+                <Pressable onPress={() => router.push(`/my-tournament/${tournamentId}`)}>
                     <Entypo name="chevron-left" color="white" size={30} />
                 </Pressable>
                 <Text style={styles.topBarTxt}>{t('pending-invites')}</Text>
@@ -95,7 +94,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#2F2766',
         flexDirection: 'row',
         paddingVertical: 15,
-        marginTop: 20,
+        marginTop: Platform.OS === 'web' ? 0 : 20,
+        marginBottom: 10,
         paddingHorizontal: 5
     },
     topBarTxt: {
@@ -105,7 +105,9 @@ const styles = StyleSheet.create({
         marginStart: 5
     },
     invitesContainer: {
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        marginHorizontal: 'auto',
+        width: Platform.OS === 'web' ? '45%' : '97%'
     },
     noPendingInvites: {
         marginVertical: 'auto'

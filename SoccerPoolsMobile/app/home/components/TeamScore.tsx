@@ -74,6 +74,7 @@ export default function TeamScore({
             <Pressable 
                 onPress={() => handleTeamGoals(true)}
                 style={styles.goalsBtn}
+                accessibilityRole='button'
             >
                 <Text style={styles.goalsTxt}>+</Text>
             </Pressable>

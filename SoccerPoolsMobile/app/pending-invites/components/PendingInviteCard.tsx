@@ -1,10 +1,9 @@
 import { SetStateAction, useState } from "react"
-import { StyleSheet, View, Text, Image, Pressable } from "react-native"
+import { StyleSheet, View, Text, Image, Pressable, Platform, ActivityIndicator } from "react-native"
 import { ToastType, useToast } from "react-native-toast-notifications"
 import { updateStateTournamentUser } from "../../../services/tournamentService"
 import { TournamentUserProps } from "../../../types"
 import handleError from "../../../utils/handleError"
-import { ActivityIndicator } from "react-native-paper"
 import { useTranslation } from "react-i18next"
 
 interface PendingInviteCardProps {
@@ -48,7 +47,7 @@ export default function PendingInviteCard({
                 ?
                     <ActivityIndicator size="large" color="#0000ff" />
                 :
-                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                    <View style={styles.btnsContainer}>
                         <Pressable 
                             style={[styles.btn, styles.acceptBtn]} 
                             onPress={() => handlePendingInvite(true)}
@@ -77,18 +76,24 @@ const styles = StyleSheet.create({
         borderRadius: 7
     },
     userLogoImg: {
-        width: 30,
-        height: 30,
+        width: Platform.OS === 'web' ? 60 : 45,
+        height: Platform.OS === 'web' ? 60 : 45,
         borderRadius: 100,
         objectFit: 'cover'
     },
     usernameTxt: {
         marginVertical: 'auto',
-        fontSize: 15,
+        fontSize: Platform.OS === 'web' ? 18 : 15,
+    },
+    btnsContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginVertical: 'auto',
+        gap: 10,
     },
     btn: {
         borderRadius: 4,
-        padding: 7
+        padding: 7,
     },
     acceptBtn: {
         backgroundColor: '#0C9A24'
@@ -98,8 +103,7 @@ const styles = StyleSheet.create({
     },
     btnTxt: {
         color: 'white',
-        fontSize: 16,
+        fontSize: Platform.OS === 'web' ? 16 : 13,
         fontWeight: '500',
     },
-
 })

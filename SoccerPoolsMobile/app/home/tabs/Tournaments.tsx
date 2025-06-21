@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
-    View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView
+    View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView,
+    Platform
 } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
 import { useRouter } from "expo-router";
@@ -208,6 +209,8 @@ const styles = StyleSheet.create({
     },
     tournamentsContainer: {
         paddingBottom: 80,
+        width: Platform.OS === 'web' ? '60%' : '100%',
+        marginHorizontal: 'auto',
     },
     emptyStateContainer: {
         flex: 1,

@@ -2,18 +2,14 @@ import { StyleSheet } from "react-native"
 import { MAIN_COLOR } from "../../constants"
 
 const styles = StyleSheet.create({
-    viewContainer: {
-        backgroundColor: MAIN_COLOR,
-        height: '100%'
-    },
     container: {
         width: '100%',
         flex: 1,
+        backgroundColor: MAIN_COLOR,
         marginHorizontal: 'auto',
-        marginTop: 50,
-        marginBottom: 15,
         paddingHorizontal: 10,
-        paddingVertical: 0,
+        paddingTop: 35,
+        paddingBottom: 15,
         borderRadius: 6
     },
     contentContainer: {
@@ -73,7 +69,13 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 14,
         fontStyle: 'italic'
-    }
+    },
+    googleContainerDisabled: {
+        opacity: 0.5,
+    },
+    googleImgDisabled: {
+        opacity: 0.5,
+    },
 })
 
 export default styles

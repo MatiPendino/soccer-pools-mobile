@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as Sentry from "@sentry/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView, Platform } from "react-native";
 import { ToastType, useToast } from "react-native-toast-notifications";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { showOpenAppAd } from "components/ads/Ads";
@@ -214,6 +214,9 @@ const styles = StyleSheet.create({
     },
     matchResultsContainer: {
         paddingBottom: 70,
+        marginTop: Platform.OS === 'web' ? 20 : 0,
+        width: Platform.OS === 'web' ? '50%' : '100%',
+        marginHorizontal: 'auto',
         flexGrow: 1
     },
     saveBtn: {

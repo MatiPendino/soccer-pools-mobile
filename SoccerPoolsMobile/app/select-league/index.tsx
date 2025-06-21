@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
+import { 
+  View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar, ActivityIndicator, Platform
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import * as Sentry from '@sentry/react-native';
@@ -112,7 +114,7 @@ const LeagueSelectionScreen = () => {
                     />
                 )}
                 keyExtractor={item => item.id.toString()}
-                numColumns={2}
+                numColumns={Platform.OS === 'web' ? 4 : 2}
                 contentContainerStyle={styles.listContainer}
                 showsVerticalScrollIndicator={false}
                 columnWrapperStyle={styles.columnWrapper}
@@ -151,6 +153,7 @@ const styles = StyleSheet.create({
   },
   tabsList: {
     paddingHorizontal: 16,
+    marginHorizontal: 'auto'
   },
   // League FlatList styles
   listContainer: {

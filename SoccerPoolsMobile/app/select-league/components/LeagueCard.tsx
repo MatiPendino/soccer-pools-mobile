@@ -1,13 +1,13 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons'; 
+import { FontAwesome5 } from '@expo/vector-icons'; 
 import { Router, useRouter } from 'expo-router';
 import { getToken } from '../../../utils/storeToken';
 import { betsRegister } from '../../../services/betService';
 
 const { width } = Dimensions.get('window');
-const cardWidth = width * 0.44;
+const cardWidth = Platform.OS === 'web' ? width*0.23 : width*0.44;
 
 export default function LeagueCard ({item, setIsLoading}) {
     const { t } = useTranslation()
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         width: cardWidth,
-        height: cardWidth * 1.3,
+        height: Platform.OS === 'web' ? cardWidth*1.1 : cardWidth*1.3,
         borderRadius: 16,
         overflow: 'hidden',
         elevation: 4,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         width: '80%',
-        height: '50%', 
+        height: '50%',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',

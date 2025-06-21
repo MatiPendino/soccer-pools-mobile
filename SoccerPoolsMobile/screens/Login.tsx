@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { ToastType, useToast } from "react-native-toast-notifications"
-import { View, Image, Pressable, StyleSheet, Text, TouchableOpacity, Platform } from "react-native"
+import { View, Image, Pressable, StyleSheet, Text, TouchableOpacity, Platform, ScrollView } from "react-native"
 import { Link, Router, useRouter } from 'expo-router';
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
@@ -118,37 +118,46 @@ export default function Login({}) {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView 
+            style={styles.container}
+            contentContainerStyle={styles.contentContainer}
+            showsVerticalScrollIndicator={true}
+        >
             <Image 
                 source={require("../assets/icon-no-bg.png")}
                 style={styles.image}
             />
     
-            <CustomInputSign
-                value={username}
-                setValue={setUsername}
-                placeholder={t('username')}
-            />
+            <View style={styles.inputContainer}>
+                <CustomInputSign
+                    value={username}
+                    setValue={setUsername}
+                    placeholder={t('username')}
+                />
 
-            <CustomInputSign
-                value={password}
-                setValue={setPassword}
-                placeholder={t('password')}
-                isSecureTextEntry={true}
-            />
+                <CustomInputSign
+                    value={password}
+                    setValue={setPassword}
+                    placeholder={t('password')}
+                    isSecureTextEntry={true}
+                />    
+            </View>
+            
             
             <CustomButton callable={logIn} btnText={t('log-in')} btnColor='#2F2766' />
-
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Text style={styles.forgotCreateText}>{t('forgot-password')}</Text>
-            </TouchableOpacity>
 
             <ForgotPasswordModal
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
             />
 
-            <Link href='/create-account' style={styles.forgotCreateText}>{t('create-account')}</Link>
+            <View style={styles.forgotCreateContainer}>
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <Text style={styles.forgotCreateText}>{t('forgot-password')}</Text>
+                </TouchableOpacity>
+
+                <Link href='/create-account' style={styles.forgotCreateText}>{t('create-account')}</Link>
+            </View>
 
             <Pressable
                 onPress={handleGoogleSignIn}
@@ -161,7 +170,7 @@ export default function Login({}) {
                 />
                 {isGoogleLoading && <Text style={styles.loadingText}>Signing in...</Text>}
             </Pressable>
-        </View>   
+        </ScrollView>   
     )
 }
 
@@ -169,12 +178,24 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: MAIN_COLOR,
+    },
+    contentContainer: {
         alignItems: 'center',
         justifyContent: 'center',
     },
     image: {
         width: 320,
         height: 320
+    },
+    inputContainer: {
+        width: Platform.OS === 'web' ? '60%' : '95%',
+    },
+    forgotCreateContainer: { 
+        flexDirection: Platform.OS === 'web' ? 'row' : 'column',
+        width: Platform.OS === 'web' ? '40%' : '50%',
+        textAlign: 'center',
+        alignItems: 'center',
+        justifyContent: 'space-around'
     },
     forgotCreateText: {
         color: '#fff',
@@ -185,12 +206,12 @@ const styles = StyleSheet.create({
     googleImg: {
         width: 67,
         height: 67,
-        marginTop: 30
+        marginVertical: 10
     },
     googleContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 30,
+        marginVertical: 10,
     },
     googleContainerDisabled: {
         opacity: 0.5,

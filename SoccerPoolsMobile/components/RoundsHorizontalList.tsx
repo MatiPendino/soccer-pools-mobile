@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, Platform } from "react-native";
 import { RoundProps, RoundsStateProps, Slug } from "../types";
 import RoundItem from "./RoundItem";
 
@@ -17,7 +17,7 @@ export default function RoundsHorizontalList({
             <ScrollView 
                 contentContainerStyle={styles.leaguesContainer} 
                 horizontal={true} 
-                showsHorizontalScrollIndicator={true}
+                showsHorizontalScrollIndicator={Platform.OS === 'web'}
             >
                 {rounds.map((round) => (
                     <RoundItem
@@ -43,6 +43,6 @@ const styles = StyleSheet.create({
         paddingTop: 7,
         backgroundColor: '#d9d9d9',
         height: 50,
-        marginBottom: 15
+        marginBottom: Platform.OS === 'web' ? 0 : 10
     }
 })

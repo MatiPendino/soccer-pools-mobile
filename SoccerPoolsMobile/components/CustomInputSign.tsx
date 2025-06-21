@@ -1,6 +1,6 @@
-import { View, TextInput, Pressable, StyleSheet } from "react-native"
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useState } from "react"
+import { View, TextInput, Pressable, StyleSheet, Platform } from "react-native"
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 interface Props {
     inputMode?: 'text' | 'email'
@@ -20,29 +20,32 @@ export default function CustomInputSign({
 
     return (
         <View style={styles.container}>
-            <TextInput
-                style={[styles.input, {color: isActive ? '#fff' : '#ddd'}]}
-                placeholder={placeholder}
-                placeholderTextColor='#ddd'
-                value={value}
-                autoCapitalize={isCapitalized ? 'words' : 'none'}
-                onChangeText={setValue}
-                secureTextEntry={isPasswordHidden && isSecureTextEntry}
-                inputMode={inputMode}
-                editable={isActive}
-            />
-            {isSecureTextEntry &&
-                <Pressable
-                onPress={() => setIsPasswordHidden(!isPasswordHidden)}
-                style={styles.eyeIcon}
-                >
-                    <FontAwesome
-                        size={18}
-                        name={isPasswordHidden ? 'eye' : 'eye-slash'}
-                        color='#ddd'
-                    />  
-                </Pressable>
-            }
+            <View style={styles.innerContainer}>
+                <TextInput
+                    style={[styles.input, {color: isActive ? '#fff' : '#ddd'}]}
+                    placeholder={placeholder}
+                    placeholderTextColor='#ddd'
+                    value={value}
+                    autoCapitalize={isCapitalized ? 'words' : 'none'}
+                    onChangeText={setValue}
+                    secureTextEntry={isPasswordHidden && isSecureTextEntry}
+                    inputMode={inputMode}
+                    editable={isActive}
+                />
+                {isSecureTextEntry &&
+                    <Pressable
+                    onPress={() => setIsPasswordHidden(!isPasswordHidden)}
+                    style={styles.eyeIcon}
+                    >
+                        <FontAwesome
+                            size={18}
+                            name={isPasswordHidden ? 'eye' : 'eye-slash'}
+                            color='#ddd'
+                        />  
+                    </Pressable>
+                }    
+            </View>
+            
         </View>   
     )
    
@@ -52,7 +55,11 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'center',
         position: 'relative'
+    },
+    innerContainer: {
+        width: Platform.OS === 'web' ? '40%' : '95%'
     },
     input: {
         fontSize: 15,
@@ -62,12 +69,12 @@ const styles = StyleSheet.create({
         paddingStart: 10,
         paddingVertical: 8,
         marginBottom: 20,
-        width: 350,
+        width: Platform.OS === 'web' ? '100%' : '95%',
         marginHorizontal: 'auto'
     },
     eyeIcon: {
         position: 'absolute',
-        top: 12,
+        top: Platform.OS === 'web' ? 9 : 13,
         right: 35
     },
 })

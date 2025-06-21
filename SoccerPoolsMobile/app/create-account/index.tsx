@@ -10,7 +10,7 @@ import * as Sentry from '@sentry/react-native';
 import handleError from "../../utils/handleError";
 import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
-import { register, login, googleOauth2SignIn, getUserInLeague } from "../../services/authService";
+import { register, googleOauth2SignIn, getUserInLeague } from "../../services/authService";
 import styles from "./styles";
 import { Email } from "../../types";
 import { useTranslation } from "react-i18next";
@@ -132,76 +132,78 @@ export default function CreateAccount({}) {
     }
 
     return (
-        <View style={styles.viewContainer}>
-            <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-                <Text style={styles.createTxt}>
-                    {t('create-your-account')}
-                </Text>
+        <ScrollView 
+            style={styles.container} 
+            contentContainerStyle={styles.contentContainer}
+            showsVerticalScrollIndicator={true}
+        >
+            <Text style={styles.createTxt}>
+                {t('create-your-account')}
+            </Text>
 
-                <Pressable
-                    onPress={handleGoogleSignIn}
-                    disabled={isGoogleLoading || !request}
-                    style={[styles.googleBtn, (isGoogleLoading || !request) && styles.googleContainerDisabled]}
-                >
-                    <View style={styles.googleContainer}>
-                        <Text style={styles.googleTxt}>{t('sign-up-with')}</Text>
-                        <Image
-                            source={require('../../assets/img/google-icon.webp')}
-                            style={[styles.googleImg, (isGoogleLoading || !request) && styles.googleImgDisabled]}
-                        />
-                    </View>
-                </Pressable>
-
-                <View style={styles.separationContainer}>
-                    <View style={styles.whiteLine}></View>
-                    <Text style={styles.orTxt}>{t('or')}</Text>
-                    <View style={styles.whiteLine}></View>
+            <Pressable
+                onPress={handleGoogleSignIn}
+                disabled={isGoogleLoading || !request}
+                style={[styles.googleBtn, (isGoogleLoading || !request) && styles.googleContainerDisabled]}
+            >
+                <View style={styles.googleContainer}>
+                    <Text style={styles.googleTxt}>{t('sign-up-with')}</Text>
+                    <Image
+                        source={require('../../assets/img/google-icon.webp')}
+                        style={[styles.googleImg, (isGoogleLoading || !request) && styles.googleImgDisabled]}
+                    />
                 </View>
+            </Pressable>
 
-                <CustomInputSign
-                    placeholder={t('first-name')}
-                    value={firstName}
-                    setValue={setFirstName}
-                    isCapitalized={true}
-                />
+            <View style={styles.separationContainer}>
+                <View style={styles.whiteLine}></View>
+                <Text style={styles.orTxt}>{t('or')}</Text>
+                <View style={styles.whiteLine}></View>
+            </View>
 
-                <CustomInputSign
-                    placeholder={t('last-name')}
-                    value={lastName}
-                    setValue={setLastName}
-                    isCapitalized={true}
-                />
+            <CustomInputSign
+                placeholder={t('first-name')}
+                value={firstName}
+                setValue={setFirstName}
+                isCapitalized={true}
+            />
 
-                <CustomInputSign
-                    placeholder={t('username')}
-                    value={username}
-                    setValue={setUsername}
-                />
+            <CustomInputSign
+                placeholder={t('last-name')}
+                value={lastName}
+                setValue={setLastName}
+                isCapitalized={true}
+            />
 
-                <CustomInputSign
-                    placeholder={t('email')}
-                    value={email}
-                    setValue={setEmail}
-                    inputMode="email"
-                />
+            <CustomInputSign
+                placeholder={t('username')}
+                value={username}
+                setValue={setUsername}
+            />
 
-                <CustomInputSign
-                    placeholder={t('password')}
-                    value={password}
-                    setValue={setPassword}
-                    isSecureTextEntry={true}
-                />
+            <CustomInputSign
+                placeholder={t('email')}
+                value={email}
+                setValue={setEmail}
+                inputMode="email"
+            />
 
-                {
-                    isLoading
-                    ?
-                    <ActivityIndicator size="large" color="#0000ff" />
-                    :
-                    <CustomButton callable={createAccount} btnText={t('create-account')} btnColor='#2F2766' />
-                }
+            <CustomInputSign
+                placeholder={t('password')}
+                value={password}
+                setValue={setPassword}
+                isSecureTextEntry={true}
+            />
 
-                <Link href='/' style={styles.alreadyTxt}>{t('already-account')}</Link>
-            </ScrollView>    
-        </View>
+            {
+                isLoading
+                ?
+                <ActivityIndicator size="large" color="#0000ff" />
+                :
+                <CustomButton callable={createAccount} btnText={t('create-account')} btnColor='#2F2766' />
+            }
+
+            <Link href='/' style={styles.alreadyTxt}>{t('already-account')}</Link>
+        </ScrollView>    
     )
 }

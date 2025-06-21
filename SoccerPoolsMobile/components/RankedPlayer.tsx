@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Text } from "react-native"
+import { View, StyleSheet, Image, Text, Platform } from "react-native"
 import { FontAwesome5 } from '@expo/vector-icons'
 import { CoinsPrizes } from "../types";
 import { BRONZE_COLOR, GOLD_COLOR, SILVER_COLOR } from "../constants";
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
-    marginHorizontal: 15,
+    marginHorizontal: 'auto',
     borderRadius: 12,
     marginVertical: 8,
     shadowColor: "#000",
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    width: Platform.OS === 'web' ? '50%' : '95%'
   },
   defaultContainer: {
     backgroundColor: "#ffffff",
