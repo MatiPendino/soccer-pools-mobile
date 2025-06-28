@@ -40,17 +40,15 @@ export default function LeagueCard ({item, setIsLoading}) {
                 styles.card,
                 { backgroundColor: item.is_user_joined ? '#e6f7ef' : '#f0f0f0' }
             ]}>
-                {item.coins_prizes.coins_prize_first && (
-                    <View style={styles.prizeRibbon}>
-                        <View style={styles.ribbonContainer}>
-                            <FontAwesome5 name="coins" size={16} color="white" />
-                            <Text style={styles.prizeText}>
-                                {item.coins_prizes.coins_prize_first}
-                            </Text>
-                        </View>
-                        <View style={styles.ribbonTail} />
+                <View style={styles.prizeRibbon}>
+                    <View style={styles.ribbonContainer}>
+                        <FontAwesome5 name="coins" size={16} color="white" />
+                        <Text style={styles.prizeText}>
+                            {item.coins_prizes.coins_prize_first}
+                        </Text>
                     </View>
-                )}
+                    <View style={styles.ribbonTail} />
+                </View>
                 
                 <View style={[
                     styles.cardHeader,
