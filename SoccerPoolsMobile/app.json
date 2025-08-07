@@ -27,7 +27,8 @@
         "com.google.android.gms.permission.AD_ID"
       ],
       "googleServicesFile": "./google-services.json",
-      "package": "com.matipendino2001.soccerpools"
+      "package": "com.matipendino2001.soccerpools",
+      "targetSdkVersion": 35
     },
     "web": {
       "favicon": "./assets/favicon.png"
