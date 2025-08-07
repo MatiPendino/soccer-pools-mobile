@@ -1,7 +1,46 @@
-
 export const MAIN_COLOR: string = '#6860A1'
 export const GOLD_COLOR: string = '#FFD700'
 export const SILVER_COLOR: string = '#C0C0C0'
 export const BRONZE_COLOR: string = '#CD7F32'
+export const DARK_PURPLE_COLOR: string = '#25223b'
+export const PURPLE_COLOR: string = '#362B6F'
 export const REVIEW_APP_COINS_PRIZE: number = 2000
 export const ANDROID_URL: string= 'https://play.google.com/store/apps/details?id=com.matipendino2001.soccerpools'
+export const PORTFOLIO_URL: string = 'https://matiaspendino.com'
+export const TWITTER_URL: string = 'https://x.com/tuprodefutbol'
+export const INSTAGRAM_URL: string = 'https://www.instagram.com/tuprodefutbol'
+
+export const getHowItWorks = (t) => {
+    return [
+        {
+            id: 1,
+            icon: require('./assets/img/cup.png'),
+            title: t('hiw-1-title'),
+            text: t('hiw-1-description'),
+        },
+        {
+            id: 2,
+            icon: require('./assets/img/predict.png'),
+            title: t('hiw-2-title'),
+            text: t('hiw-2-description'),
+        },
+        {
+            id: 3,
+            icon: require('./assets/img/sum-points.png'),
+            title: t('hiw-3-title'),
+            text: t('hiw-3-description'),
+        },
+        {
+            id: 4,
+            icon: require('./assets/img/leagues_world.png'),
+            title: t('hiw-4-title'),
+            text: t('hiw-4-description'),
+        },
+        {
+            id: 5,
+            icon: require('./assets/img/tournaments.png'),
+            title: t('hiw-5-title'),
+            text: t('hiw-5-description'),
+        },
+    ];
+} 
