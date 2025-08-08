@@ -52,7 +52,8 @@
     "react-native-web": "0.20.0",
     "typescript": "~5.3.3",
     "vexo-analytics": "^1.4.6",
-    "expo-linear-gradient": "~14.0.2"
+    "expo-linear-gradient": "~14.0.2",
+    "expo-build-properties": "~0.13.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

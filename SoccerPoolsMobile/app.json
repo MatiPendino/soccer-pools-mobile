@@ -27,8 +27,7 @@
         "com.google.android.gms.permission.AD_ID"
       ],
       "googleServicesFile": "./google-services.json",
-      "package": "com.matipendino2001.soccerpools",
-      "targetSdkVersion": 35
+      "package": "com.matipendino2001.soccerpools"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -49,6 +48,16 @@
           "url": "https://sentry.io/",
           "project": "soccer-pools-mobile",
           "organization": "mappek"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          }
         }
       ]
     ],
