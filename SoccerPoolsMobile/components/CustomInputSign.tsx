@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { View, TextInput, Pressable, StyleSheet, Platform } from "react-native"
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface Props {
     inputMode?: 'text' | 'email'
@@ -17,10 +18,11 @@ export default function CustomInputSign({
     isCapitalized=false
 }: Props) {
     const [isPasswordHidden, setIsPasswordHidden] = useState(true)
+    const { isLG } = useBreakpoint();
 
     return (
         <View style={styles.container}>
-            <View style={styles.innerContainer}>
+            <View style={{width: isLG ? '40%' : '95%'}}>
                 <TextInput
                     style={[styles.input, {color: isActive ? '#fff' : '#ddd'}]}
                     placeholder={placeholder}
@@ -57,9 +59,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         position: 'relative'
-    },
-    innerContainer: {
-        width: Platform.OS === 'web' ? '40%' : '95%'
     },
     input: {
         fontSize: 15,

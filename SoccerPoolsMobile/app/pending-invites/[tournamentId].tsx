@@ -12,6 +12,7 @@ import { TournamentUserProps } from "../../types"
 import PendingInviteCard from "./components/PendingInviteCard"
 import { useTranslation } from "react-i18next"
 import { getWrapper } from "../../utils/getWrapper"
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { Banner } from "components/ads/Ads"
 
 export default function PendingInvites () {
@@ -20,6 +21,7 @@ export default function PendingInvites () {
     const [pendingTournamentUsers, setPendingTournamentUsers] = useState<TournamentUserProps[]>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [token, setToken] = useState<string>('')
+    const { isLG } = useBreakpoint();
     const router: Router = useRouter()
     const toast: ToastType = useToast()
 
@@ -59,7 +61,9 @@ export default function PendingInvites () {
                     pendingTournamentUsers.length > 0
                     ?
                         <ScrollView 
-                            contentContainerStyle={styles.invitesContainer} 
+                            contentContainerStyle={[
+                                styles.invitesContainer, { width: isLG ? '45%' : '97%'}
+                            ]} 
                             showsVerticalScrollIndicator={true}
                         >
                             {pendingTournamentUsers.map((pendingUser) => (
@@ -107,7 +111,6 @@ const styles = StyleSheet.create({
     invitesContainer: {
         paddingHorizontal: 10,
         marginHorizontal: 'auto',
-        width: Platform.OS === 'web' ? '45%' : '97%'
     },
     noPendingInvites: {
         marginVertical: 'auto'

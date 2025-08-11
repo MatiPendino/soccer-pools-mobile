@@ -13,6 +13,7 @@ import { Email } from "../../types";
 import { useTranslation } from "react-i18next";
 import { Entypo } from "@expo/vector-icons";
 import GoogleAuthButton from "components/GoogleAuthButton";
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -30,6 +31,7 @@ export default function CreateAccount({}) {
     const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
     const toast = useToast()
     const router = useRouter()
+    const { isLG } = useBreakpoint();
 
     const createAccount = async (): Promise<void> => {
         setIsLoading(true)
@@ -58,7 +60,7 @@ export default function CreateAccount({}) {
             contentContainerStyle={styles.contentContainer}
             showsVerticalScrollIndicator={true}
         >
-            <Link href='/' style={{width: Platform.OS === 'web' ? '50%' : '90%'}}>
+            <Link href='/' style={{width: isLG ? '50%' : '90%'}}>
                 <Entypo name="chevron-left" color="white" size={30} />   
             </Link>
                 

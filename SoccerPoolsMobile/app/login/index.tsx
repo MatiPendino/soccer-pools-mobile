@@ -13,6 +13,7 @@ import handleError from 'utils/handleError';
 import ForgotPasswordModal from '../../modals/ForgotPasswordModal'
 import { Entypo } from '@expo/vector-icons';
 import GoogleAuthButton from 'components/GoogleAuthButton';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -26,6 +27,7 @@ export default function Login({}) {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const router: Router = useRouter();
     const toast: ToastType = useToast();
+    const { isLG } = useBreakpoint();
 
     const userInLeague = async (token: string): Promise<void> => {
         const inLeague = await getUserInLeague(token)
@@ -52,7 +54,7 @@ export default function Login({}) {
             contentContainerStyle={styles.contentContainer}
             showsVerticalScrollIndicator={true}
         >
-            <Link href='/' style={{width: Platform.OS === 'web' ? '40%' : '80%', marginTop: 25}}>
+            <Link href='/' style={{width: isLG ? '40%' : '80%', marginTop: 25}}>
                 <Entypo name='chevron-left' color='white' size={30} />   
             </Link>
 
@@ -61,7 +63,7 @@ export default function Login({}) {
                 style={styles.image}
             />
     
-            <View style={styles.inputContainer}>
+            <View style={{width: isLG ? '60%' : '95%'}}>
                 <CustomInputSign
                     value={username}
                     setValue={setUsername}
@@ -84,7 +86,12 @@ export default function Login({}) {
                 onClose={() => setModalVisible(false)}
             />
 
-            <View style={styles.forgotCreateContainer}>
+            <View 
+                style={[styles.forgotCreateContainer, {
+                    flexDirection: isLG ? 'row' : 'column',
+                    width: isLG ? '40%' : '50%'
+                }]}
+            >
                 <TouchableOpacity onPress={() => setModalVisible(true)}>
                     <Text style={styles.forgotCreateText}>{t('forgot-password')}</Text>
                 </TouchableOpacity>
@@ -112,12 +119,7 @@ const styles = StyleSheet.create({
         width: 240,
         height: 240
     },
-    inputContainer: {
-        width: Platform.OS === 'web' ? '60%' : '95%',
-    },
     forgotCreateContainer: { 
-        flexDirection: Platform.OS === 'web' ? 'row' : 'column',
-        width: Platform.OS === 'web' ? '40%' : '50%',
         textAlign: 'center',
         alignItems: 'center',
         justifyContent: 'space-around'

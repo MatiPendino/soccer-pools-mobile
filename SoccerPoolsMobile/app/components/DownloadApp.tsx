@@ -2,15 +2,19 @@ import { View, Text, Image, StyleSheet } from 'react-native'
 import { useTranslation } from 'react-i18next';
 import { Link } from 'expo-router'
 import { ANDROID_URL } from '../../constants'
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 export default function DownloadApp () {
     const { t } = useTranslation();
+    const { isLG } = useBreakpoint();
 
     return (
-        <View style={styles.container}>
+        <View 
+            style={[styles.container, { flexDirection: isLG ? 'row' : 'column' }]}
+        >
             <Image
                 source={require('../../assets/img/wireframe_mobile.png')}
-                style={styles.wireframeImg}
+                style={[styles.wireframeImg, {marginHorizontal: isLG ? 0 : 'auto'}]}
                 resizeMode='contain'
             />
 
@@ -32,9 +36,9 @@ export default function DownloadApp () {
 const styles = StyleSheet.create({
     container: {
         display: 'flex', 
-        flexDirection: 'row', 
         justifyContent: 'center', 
-        gap: 20
+        gap: 20,
+        marginBottom: 40,
     },
     wireframeImg: {
         width: 340,

@@ -1,13 +1,12 @@
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-    View, Text, StyleSheet, Dimensions, ScaledSize, Animated, ScrollView, Platform
-} from 'react-native';
+import { View, Text, StyleSheet, Animated, ScrollView } from 'react-native';
 import { MAIN_COLOR } from '../../../constants';
 import RuleCard from '../components/RuleCard';
 import RuleNavigation from '../components/RuleNavigation';
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
-const { width: screenWidth }: ScaledSize = Dimensions.get('window');
+//const { width: screenWidth }: ScaledSize = Dimensions.get('window');
 
 export default function HowToPlay({}) {
     const { t } = useTranslation()
@@ -15,6 +14,7 @@ export default function HowToPlay({}) {
     const flatListRef = useRef<any>(null)
     const scrollViewRef = useRef<ScrollView>(null)
     const scrollX = useRef(new Animated.Value(0)).current
+    const { isLG, width } = useBreakpoint();
 
     // Icons for each rule 
     const icons = [
@@ -35,7 +35,7 @@ export default function HowToPlay({}) {
 
     const handleScroll = (event: any) => {
         const contentOffsetX = event.nativeEvent.contentOffset.x
-        const index = Math.round(contentOffsetX / screenWidth)
+        const index = Math.round(contentOffsetX / width)
 
         // Update active slide based on scroll position
         if (index !== activeSlide && index >= 0 && index < data.length) {
@@ -48,7 +48,7 @@ export default function HowToPlay({}) {
             <RuleCard
                 item={item}
                 index={index}
-                screenWidth={screenWidth}
+                screenWidth={width}
                 scrollX={scrollX}
                 t={t}
             />
@@ -61,7 +61,7 @@ export default function HowToPlay({}) {
                 key={item.id}
                 item={item}
                 index={index}
-                screenWidth={screenWidth}
+                screenWidth={width}
                 scrollX={scrollX}
                 t={t}
             />
@@ -73,11 +73,11 @@ export default function HowToPlay({}) {
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>{t('how-to-play')}</Text>
                 <Text style={styles.headerSubtitle}>
-                    {Platform.OS === 'web' ? t('click-arrows-to-navigate') : t('swipe-to-learn')}
+                    {isLG ? t('click-arrows-to-navigate') : t('swipe-to-learn')}
                 </Text>
             </View>
 
-            {Platform.OS === 'web' ? (
+            {isLG ? (
                 <ScrollView
                     ref={scrollViewRef}
                     horizontal
@@ -86,7 +86,7 @@ export default function HowToPlay({}) {
                     onScroll={handleScroll}
                     scrollEventThrottle={16}
                     decelerationRate='fast'
-                    snapToInterval={screenWidth}
+                    snapToInterval={width}
                     snapToAlignment='start'
                     style={styles.scrollContainer}
                 >
@@ -108,10 +108,10 @@ export default function HowToPlay({}) {
                     keyExtractor={(item) => item.id.toString()}
                     scrollEventThrottle={16}
                     decelerationRate='fast'
-                    snapToInterval={screenWidth}
+                    snapToInterval={width}
                     getItemLayout={(data, index) => ({
-                        length: screenWidth,
-                        offset: screenWidth * index,
+                        length: width,
+                        offset: width * index,
                         index,
                     })}
                 />
@@ -123,7 +123,7 @@ export default function HowToPlay({}) {
                 setActiveSlide={setActiveSlide}
                 scrollViewRef={scrollViewRef}
                 flatListRef={flatListRef}
-                screenWidth={screenWidth}
+                screenWidth={width}
                 scrollX={scrollX}
             />
 

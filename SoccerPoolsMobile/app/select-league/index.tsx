@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import { 
-  View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar, ActivityIndicator, Platform
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import * as Sentry from '@sentry/react-native';
@@ -13,6 +11,7 @@ import Continents from './components/Continents';
 import { MAIN_COLOR } from '../../constants';
 import { getFullUser } from '../../services/authService';
 import CoinsDisplay from '../../components/CoinsDisplay';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 interface ContinentProps {
     id: number
@@ -37,6 +36,7 @@ const LeagueSelectionScreen = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [userCoins, setUserCoins] = useState<number>(0)
     const [isLoadingCoins, setIsLoadingCoins] = useState<boolean>(true)
+    const { isLG } = useBreakpoint();
 
     useEffect(() => {
         const getLeagueList = async (): Promise<void> => {
@@ -114,7 +114,7 @@ const LeagueSelectionScreen = () => {
                     />
                 )}
                 keyExtractor={item => item.id.toString()}
-                numColumns={Platform.OS === 'web' ? 4 : 2}
+                numColumns={isLG ? 4 : 2}
                 contentContainerStyle={styles.listContainer}
                 showsVerticalScrollIndicator={false}
                 columnWrapperStyle={styles.columnWrapper}

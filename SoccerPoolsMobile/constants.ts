@@ -9,6 +9,7 @@ export const ANDROID_URL: string= 'https://play.google.com/store/apps/details?id
 export const PORTFOLIO_URL: string = 'https://matiaspendino.com'
 export const TWITTER_URL: string = 'https://x.com/tuprodefutbol'
 export const INSTAGRAM_URL: string = 'https://www.instagram.com/tuprodefutbol'
+export const breakpoints = { sm: 550, md: 768, lg: 1024, xl: 1280 }
 
 export const getHowItWorks = (t) => {
     return [

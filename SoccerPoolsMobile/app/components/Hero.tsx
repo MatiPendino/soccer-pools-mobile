@@ -4,13 +4,15 @@ import { Link } from 'expo-router';
 import GoogleAuthButton from 'components/GoogleAuthButton';
 import Header from 'components/header/Header';
 import { toCapitalCase } from 'utils/helper';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 export default function Hero () {
     const { t } = useTranslation();
+    const { isLG } = useBreakpoint();
 
     return (
         <View style={styles.hero}>
-            <View>
+            <View style={{width: isLG ? 'auto' : '100%'}}>
                 <Header />
 
                 <Text style={styles.heroTitle}>
@@ -19,21 +21,31 @@ export default function Hero () {
 
                 <Text style={styles.heroSub}>{t('compete-with-friends')}</Text>
 
-                <View style={{paddingHorizontal: Platform.OS === 'web' ? 0 : 10, width: Platform.OS === 'web' ? '80%' : '100%', flexDirection: 'column', justifyContent: 'space-between'}}>
+                <View 
+                  style={[styles.btnsContainer,
+                    { paddingHorizontal: isLG ? 0 : 10, width: isLG ? '80%' : '100%' }
+                  ]}
+                >
                     <GoogleAuthButton />
                     
-                    <Link style={[styles.cta, styles.signUpCta]} href='/create-account'>
-                    <Text style={styles.ctaText}>{t('register-now')}</Text>
+                    <Link 
+                      style={[styles.cta, styles.signUpCta, {width: isLG ? 310 : '100%'}]} 
+                      href='/create-account'
+                    >
+                      <Text style={styles.ctaText}>{t('register-now')}</Text>
                     </Link>  
 
-                    <Link style={[styles.cta, styles.logInCta]} href='/login'>
-                    <Text style={styles.ctaText}>{toCapitalCase(t('log-in'))}</Text>
+                    <Link 
+                      style={[styles.cta, styles.logInCta, {width: isLG ? 310 : '100%'}]} 
+                      href='/login'
+                    >
+                      <Text style={styles.ctaText}>{toCapitalCase(t('log-in'))}</Text>
                     </Link>  
                 </View>
                 
             </View>
 
-            {Platform.OS === 'web' &&
+            {isLG &&
                 <Image
                     source={require('../../assets/img/wireframe-landing.png')}
                     style={styles.heroImage}
@@ -45,7 +57,7 @@ export default function Hero () {
 }
 
 const styles = StyleSheet.create({
-    hero: {
+  hero: {
     alignItems: Platform.OS === 'web' ? 'flex-start' : 'stretch',
     marginBottom: Platform.OS === 'web' ? 48 : 26,
     flexDirection: Platform.OS === 'web' ? 'row' : 'column',
@@ -65,12 +77,15 @@ const styles = StyleSheet.create({
     width: '90%',
     paddingHorizontal: 10,
   },
+  btnsContainer: {
+    flexDirection: 'column', 
+    justifyContent: 'space-between'
+  },
   cta: {
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
     marginTop: 24,
-    width: Platform.OS === 'web' ? 310 : '100%',
     textAlign: 'center',
   },
   logInCta: {

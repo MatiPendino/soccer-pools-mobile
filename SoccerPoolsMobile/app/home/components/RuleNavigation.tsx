@@ -1,16 +1,18 @@
-import { View, TouchableOpacity, StyleSheet, Platform, Animated } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
 
 export default function RuleNavigation({ 
     data, activeSlide, setActiveSlide, flatListRef, scrollViewRef, screenWidth, scrollX
 }) {
+    const { isLG, isXL } = useBreakpoint();
 
     const goToPrevSlide = () => {
         if (activeSlide > 0) {
             const prevIndex = activeSlide - 1
 
-            if (Platform.OS === 'web') {
+            if (isLG) {
                 scrollViewRef.current?.scrollTo({
                     x: prevIndex * screenWidth,
                     animated: true,
@@ -36,7 +38,7 @@ export default function RuleNavigation({
         if (activeSlide < data.length - 1) {
             const nextIndex = activeSlide + 1
 
-            if (Platform.OS === 'web') {
+            if (isLG) {
                 scrollViewRef.current?.scrollTo({
                     x: nextIndex * screenWidth,
                     animated: true,
@@ -76,7 +78,7 @@ export default function RuleNavigation({
                     let scale;
                     let opacity;
 
-                    if (Platform.OS !== 'web') {
+                    if (!isXL) {
                         const inputRange = 
                             [(index - 1) * screenWidth, index * screenWidth, (index + 1) * screenWidth];
 
@@ -102,7 +104,7 @@ export default function RuleNavigation({
                             key={index}
                             style={[
                                 styles.paginationDot,
-                                Platform.OS === 'web' 
+                                isLG
                                 ? 
                                     {opacity, transform: [{ scale }]}
                                 : 

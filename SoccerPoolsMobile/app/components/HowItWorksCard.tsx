@@ -1,5 +1,6 @@
 import { StyleSheet, View, Text, Image, Platform } from 'react-native'
 import { PURPLE_COLOR } from '../../constants';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 interface HowItWorksCardProps {
     id: number;
@@ -9,19 +10,31 @@ interface HowItWorksCardProps {
 }
 
 export default function HowItWorksCard ({ id, icon, title, text }: HowItWorksCardProps) {
+    const { isLG } = useBreakpoint();
+
     return (
         <View
             key={title}
             style={[
                 styles.card,
-                Platform.OS === 'web'
-                ? { width: id <= 3 ? '28%' : '45%' }
-                : { width: id !== 5 ? '47%' : '75%' }
+                isLG ? { width: id <= 3 ? '28%' : '45%' } : { width: id !== 5 ? '47%' : '75%' },
+                { paddingVertical: isLG ? 20 : 10, paddingHorizontal: isLG ? 20 : 5 }
             ]}
         >
-            <Image source={icon} style={styles.cardIcon} />
-            <Text style={styles.cardTitle}>{title}</Text>
-            <Text style={styles.cardText}>{text}</Text>
+            <Image 
+                source={icon} 
+                style={[
+                    styles.cardIcon,
+                    { width: isLG ? 68 : 47, height: isLG ? 68 : 47 }
+                ]} 
+            />
+            <Text style={[styles.cardTitle, { fontSize: isLG ? 24 : 16 }]}>
+                {title}
+            </Text>
+
+            <Text style={[styles.cardText, { fontSize: isLG ? 18 : 14 }]}>
+                {text}
+            </Text>
         </View>
     )
 }
@@ -29,25 +42,19 @@ export default function HowItWorksCard ({ id, icon, title, text }: HowItWorksCar
 const styles = StyleSheet.create({
     card: {
         backgroundColor: '#EFEBE9',
-        paddingVertical: Platform.OS === 'web' ? 20 : 10,
-        paddingHorizontal: Platform.OS === 'web' ? 20 : 5,
         borderRadius: 7,
         alignItems: 'center',
         marginBottom: 10
     },
     cardIcon: {
-        width: Platform.OS === 'web' ? 68 : 47,
-        height: Platform.OS === 'web' ? 68 : 47,
         marginBottom: 12,
     },
     cardTitle: {
-        fontSize: Platform.OS === 'web' ? 24 : 16,
         fontWeight: '600',
         color: PURPLE_COLOR,
         marginBottom: 8,
     },
     cardText: {
-        fontSize: Platform.OS === 'web' ? 18 : 14,
         color: PURPLE_COLOR,
     },
 })

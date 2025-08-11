@@ -9,6 +9,7 @@ import * as Sentry from '@sentry/react-native';
 import { googleOauth2SignIn, login } from 'services/authService';
 import { getUserInLeague } from 'services/authService';
 import { toCapitalCase } from 'utils/helper';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface GoogleAuthButtonProps {
     isLogIn?: boolean;
@@ -19,6 +20,7 @@ export default function GoogleAuthButton ({isLogIn=true}: GoogleAuthButtonProps)
     const toast: ToastType = useToast();
     const router: Router = useRouter();
     const { t } = useTranslation();
+    const { isLG } = useBreakpoint();
 
     const userInLeague = async (token: string): Promise<void> => {
         const inLeague = await getUserInLeague(token)
@@ -103,7 +105,11 @@ export default function GoogleAuthButton ({isLogIn=true}: GoogleAuthButtonProps)
         <Pressable
             onPress={handleGoogleSignIn}
             disabled={isGoogleLoading || !request}
-            style={[styles.googleBtn, (isGoogleLoading || !request) && styles.googleContainerDisabled]}
+            style={[
+                styles.googleBtn, 
+                (isGoogleLoading || !request) && styles.googleContainerDisabled,
+                { width: isLG ? 310 : '100%' }
+            ]}
         >
             <View style={styles.googleContainer}>
                 <Text style={styles.googleTxt}>
@@ -134,7 +140,6 @@ const styles = StyleSheet.create({
     googleBtn: {
         backgroundColor: 'white',
         borderRadius: 10,
-        width: Platform.OS === 'web' ? 310 : '100%',
         marginTop: 20
     },
     googleContainer: {

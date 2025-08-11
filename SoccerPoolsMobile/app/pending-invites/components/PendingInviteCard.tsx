@@ -1,10 +1,11 @@
 import { SetStateAction, useState } from "react"
-import { StyleSheet, View, Text, Image, Pressable, Platform, ActivityIndicator } from "react-native"
+import { StyleSheet, View, Text, Image, Pressable, ActivityIndicator } from "react-native"
 import { ToastType, useToast } from "react-native-toast-notifications"
 import { updateStateTournamentUser } from "../../../services/tournamentService"
 import { TournamentUserProps } from "../../../types"
 import handleError from "../../../utils/handleError"
 import { useTranslation } from "react-i18next"
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
 interface PendingInviteCardProps {
     id: number
@@ -21,6 +22,7 @@ export default function PendingInviteCard({
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const toast: ToastType = useToast()
+    const { isLG } = useBreakpoint();
 
     const handlePendingInvite = async (isAccept: boolean) => {
         setIsLoading(true)
@@ -39,9 +41,12 @@ export default function PendingInviteCard({
         <View style={styles.container}>
             <Image 
                 source={{uri: `${userLogoUrl}`}}
-                style={styles.userLogoImg}
+                style={[styles.userLogoImg, {
+                    width: isLG ? 60 : 45,
+                    height: isLG ? 60 : 45
+                }]}
             />
-            <Text style={styles.usernameTxt}>{username}</Text>
+            <Text style={[styles.usernameTxt, {fontSize: isLG ? 18 : 15,}]}>{username}</Text>
             {
                 isLoading
                 ?
@@ -58,7 +63,9 @@ export default function PendingInviteCard({
                             style={[styles.btn, styles.rejectBtn]} 
                             onPress={() => handlePendingInvite(false)}
                         >
-                            <Text style={[styles.btnTxt]}>{t('reject')}</Text>
+                            <Text style={[styles.btnTxt, { fontSize: isLG ? 16 : 13 }]}>
+                                {t('reject')}
+                            </Text>
                         </Pressable>
                     </View>
             }
@@ -76,14 +83,11 @@ const styles = StyleSheet.create({
         borderRadius: 7
     },
     userLogoImg: {
-        width: Platform.OS === 'web' ? 60 : 45,
-        height: Platform.OS === 'web' ? 60 : 45,
         borderRadius: 100,
         objectFit: 'cover'
     },
     usernameTxt: {
         marginVertical: 'auto',
-        fontSize: Platform.OS === 'web' ? 18 : 15,
     },
     btnsContainer: {
         display: 'flex',
@@ -103,7 +107,6 @@ const styles = StyleSheet.create({
     },
     btnTxt: {
         color: 'white',
-        fontSize: Platform.OS === 'web' ? 16 : 13,
         fontWeight: '500',
     },
 })

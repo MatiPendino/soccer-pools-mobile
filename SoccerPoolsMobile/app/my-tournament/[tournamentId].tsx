@@ -20,6 +20,7 @@ import LoadingCards from "../../components/LoadingCards";
 import { retrieveTournament } from "../../services/tournamentService";
 import handleError from "../../utils/handleError";
 import { getWrapper } from "../../utils/getWrapper";
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import MenuWeb from "./components/MenuWeb";
 import MenuMobile from "./components/MenuMobile";
 
@@ -32,6 +33,7 @@ export default function MyTournament({}) {
     const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
+    const { isXL } = useBreakpoint();
     const toast: ToastType = useToast()
     const router: Router = useRouter()
 
@@ -109,7 +111,7 @@ export default function MyTournament({}) {
                     </View>
                     
                     {tournament &&
-                        Platform.OS !== 'web'
+                        !isXL
                         ?
                         <MenuMobile
                             tournament={tournament}

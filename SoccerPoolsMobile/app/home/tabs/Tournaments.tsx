@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { 
     View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView,
-    Platform
 } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
 import { useRouter } from "expo-router";
@@ -14,6 +13,7 @@ import { getToken } from "../../../utils/storeToken";
 import { listTournaments } from "../../../services/tournamentService";
 import { useTranslation } from "react-i18next";
 import { userLeague } from "../../../services/leagueService";
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
 
 export default function Tournaments ({}) {
@@ -22,6 +22,7 @@ export default function Tournaments ({}) {
     const [tournaments, setTournaments] = useState<TournamentProps[]>(null)
     const [leagueId, setLeagueId] = useState<number>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const { isLG } = useBreakpoint();
     const router = useRouter()
     const toast = useToast()
 
@@ -121,7 +122,10 @@ export default function Tournaments ({}) {
                 (tournaments && tournaments.length > 0 
                     ? 
                     <ScrollView 
-                        contentContainerStyle={styles.tournamentsContainer} 
+                        contentContainerStyle={[
+                            styles.tournamentsContainer,
+                            { width: isLG ? '60%' : '100%' }
+                        ]} 
                         showsVerticalScrollIndicator={true}
                     >
                         {tournaments.map((tournament) => (
@@ -209,7 +213,6 @@ const styles = StyleSheet.create({
     },
     tournamentsContainer: {
         paddingBottom: 80,
-        width: Platform.OS === 'web' ? '60%' : '100%',
         marginHorizontal: 'auto',
     },
     emptyStateContainer: {

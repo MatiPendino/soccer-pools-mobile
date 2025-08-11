@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as Sentry from "@sentry/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView, Platform } from "react-native";
+import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
 import { ToastType, useToast } from "react-native-toast-notifications";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { showOpenAppAd } from "components/ads/Ads";
@@ -18,6 +18,7 @@ import { getNextRoundId } from "../../../utils/getNextRound";
 import handleError from "../../../utils/handleError";
 import { registerPush, getFCMToken } from "../../../services/pushNotificationService";
 import { getWrapper } from "../../../utils/getWrapper";
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
 
 export default function Results ({}) {
@@ -28,6 +29,7 @@ export default function Results ({}) {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isRoundLoading, setIsRoundLoading] = useState<boolean>(false)
     const [isSavePredLoading, setIsSavePredLoading] = useState<boolean>(false)
+    const { isXL } = useBreakpoint();
     const toast: ToastType = useToast()
 
     const getMatchResults = async (token: string, roundId: number): Promise<void> => {
@@ -146,7 +148,12 @@ export default function Results ({}) {
                     <ActivityIndicator style={{paddingBottom: 250}} size="large" color="#fff" />
                 :
                     <ScrollView 
-                        contentContainerStyle={styles.matchResultsContainer} 
+                        contentContainerStyle={[
+                            styles.matchResultsContainer, {
+                                marginTop: isXL ? 20 : 0,
+                                width: isXL ? '50%' : '100%'
+                            }
+                        ]} 
                         showsVerticalScrollIndicator={true}
                     >
                         {matchResults.map((matchResult) => (
@@ -214,8 +221,6 @@ const styles = StyleSheet.create({
     },
     matchResultsContainer: {
         paddingBottom: 70,
-        marginTop: Platform.OS === 'web' ? 20 : 0,
-        width: Platform.OS === 'web' ? '50%' : '100%',
         marginHorizontal: 'auto',
         flexGrow: 1
     },

@@ -17,6 +17,7 @@ import handleShare from "../../utils/handleShare";
 import { useTranslation } from "react-i18next";
 import CoinsDisplay from "../../components/CoinsDisplay";
 import RateAppModal from "../../components/RateAppModal";
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 const Drawer = createDrawerNavigator()
 
@@ -27,9 +28,7 @@ export default function Home () {
   const [currentCoins, setCurrentCoins] = useState<number>(0);
   const toast = useToast();
   const router = useRouter();
-  const { width } = useWindowDimensions();
-
-  const isLargeScreen = Platform.OS === 'web' && width >= 800;
+  const { isLG } = useBreakpoint();
 
   useEffect(() => {
     (async () => {
@@ -63,8 +62,8 @@ export default function Home () {
       initialRouteName="home"
       // Permanent on web, slide on mobile
       screenOptions={{
-        drawerType: isLargeScreen ? 'permanent' : 'slide',
-        swipeEnabled: !isLargeScreen,
+        drawerType: isLG ? 'permanent' : 'slide',
+        swipeEnabled: !isLG,
         overlayColor: 'transparent',
         drawerStyle: {
           backgroundColor: MAIN_COLOR,
@@ -72,7 +71,7 @@ export default function Home () {
         headerStyle: { backgroundColor: '#2F2766' },
         headerTintColor: 'white',
         // Hide the hamburger toggle when permanent
-        headerLeft: isLargeScreen ? () => null : undefined,
+        headerLeft: isLG ? () => null : undefined,
         headerRight: () => (
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <CoinsDisplay setCoins={setCurrentCoins} coins={isLoading ? '...' : currentCoins} />

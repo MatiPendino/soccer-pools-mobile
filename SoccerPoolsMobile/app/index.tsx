@@ -11,6 +11,7 @@ import handleError from 'utils/handleError';
 import { removeToken } from 'services/api';
 import { getToken } from 'utils/storeToken';
 import InitialLoadingScreen from 'components/InitialLoadingScreen';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import HowItWorksCard from './components/HowItWorksCard';
 import DownloadApp from './components/DownloadApp';
 import Hero from './components/Hero';
@@ -22,6 +23,7 @@ if (Platform.OS === 'web') {
 
 export default function LandingScreen() {
   const [checkingLeague, setCheckingLeague] = useState<boolean>(true);
+  const { isLG } = useBreakpoint();
   const router: Router = useRouter();
   const {t} = useTranslation(); 
 
@@ -68,11 +70,13 @@ export default function LandingScreen() {
     >
     <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scroll}>
-          <View style={{paddingHorizontal: Platform.OS === 'web' ? 45 : 7}}>
+          <View style={{paddingHorizontal: isLG ? 45 : 7}}>
             <Hero />
  
             {/* HOW TO PLAY */}
-            <Text style={styles.howToPlayTxt}>{t('how-to-play')}</Text>
+            <Text style={[styles.howToPlayTxt, {marginBottom: isLG ? 24 : 16}]}>
+              {t('how-to-play')}
+            </Text>
             <View style={styles.cardsWrapper}>
               <View style={styles.columnWrapper}>
                 {HOW_IT_WORKS.map(item => (
@@ -108,7 +112,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: '#FFFFFF',
-    marginBottom: Platform.OS === 'web' ? 24 : 16,
     paddingHorizontal: 10,
   },
   cardsWrapper: {

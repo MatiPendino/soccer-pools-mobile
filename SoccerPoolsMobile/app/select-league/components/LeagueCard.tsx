@@ -5,14 +5,15 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Router, useRouter } from 'expo-router';
 import { getToken } from '../../../utils/storeToken';
 import { betsRegister } from '../../../services/betService';
-
-const { width } = Dimensions.get('window');
-const cardWidth = Platform.OS === 'web' ? width*0.23 : width*0.44;
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
 export default function LeagueCard ({item, setIsLoading}) {
     const { t } = useTranslation()
+    const { width, isLG } = useBreakpoint();
     const toast: ToastType = useToast()
     const router: Router = useRouter()
+
+    const cardWidth = isLG ? width*0.23 : width*0.44;
 
     const selectLeague = async (): Promise<void> => {
         setIsLoading(true)
@@ -32,7 +33,10 @@ export default function LeagueCard ({item, setIsLoading}) {
 
     return (
         <TouchableOpacity
-            style={styles.cardContainer}
+            style={[styles.cardContainer, {
+                height: isLG ? cardWidth*1.1 : cardWidth*1.3,
+                width: cardWidth,
+            }]}
             onPress={() => selectLeague()}
             activeOpacity={0.7}
         >
@@ -106,8 +110,6 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     cardContainer: {
-        width: cardWidth,
-        height: Platform.OS === 'web' ? cardWidth*1.1 : cardWidth*1.3,
         borderRadius: 16,
         overflow: 'hidden',
         elevation: 4,

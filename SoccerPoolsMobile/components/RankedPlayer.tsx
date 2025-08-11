@@ -2,6 +2,7 @@ import { View, StyleSheet, Image, Text, Platform } from "react-native"
 import { FontAwesome5 } from '@expo/vector-icons'
 import { CoinsPrizes } from "../types";
 import { BRONZE_COLOR, GOLD_COLOR, SILVER_COLOR } from "../constants";
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface RankedPlayerProps {
   index: number
@@ -12,7 +13,8 @@ interface RankedPlayerProps {
 }
 
 export default function RankedPlayer({ index, profileImageUrl, username, points, coinPrizes }: RankedPlayerProps) {
-
+  const { isLG } = useBreakpoint();
+  
   // Special styling for top 3 ranks
   const rankStyles = (() => {
     if (index === 1) {
@@ -53,7 +55,7 @@ export default function RankedPlayer({ index, profileImageUrl, username, points,
   })()
 
   return (
-    <View style={[styles.container, rankStyles.container]}>
+    <View style={[styles.container, rankStyles.container, {width: isLG ? '50%' : '95%'}]}>
       <View style={styles.rankContainer}>
         {rankStyles.showMedal ? (
           <Image source={rankStyles.medal} style={styles.medalIcon} />
@@ -106,7 +108,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    width: Platform.OS === 'web' ? '50%' : '95%'
   },
   defaultContainer: {
     backgroundColor: "#ffffff",

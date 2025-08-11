@@ -6,17 +6,16 @@ import {
   ANDROID_URL, INSTAGRAM_URL, MAIN_COLOR, PORTFOLIO_URL, PURPLE_COLOR, TWITTER_URL
 } from '../../constants';
 import { toCapitalCase } from 'utils/helper';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 export default function Footer() {
+  const { isSM, isLG } = useBreakpoint();
   const { t } = useTranslation();
   const year = new Date().getFullYear();
 
   const QUICK_LINKS = [
     { label: toCapitalCase(t('log-in')), href: '/login' },
     { label: toCapitalCase(t('create-account')), href: '/create-account' },
-    //{ label: 'Cómo jugar', href: '#how' },
-    //{ label: 'Ligas', href: '#leagues' },
-    //{ label: 'FAQ', href: '#faq' },
     { label: t('download-app'), href: ANDROID_URL },
   ];
 
@@ -27,11 +26,11 @@ export default function Footer() {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.row, Platform.OS === 'web' ? styles.rowWeb : styles.rowMobile]}>
+      <View style={[styles.row, isLG ? styles.rowWeb : styles.rowMobile]}>
         <View style={styles.brandCol}>
           <Image source={require('../../assets/img/icon-no-bg2.png')} style={styles.logo} />
           <Text style={styles.brandName}>ProdeApp</Text>
-          <Text style={styles.tagline}>
+          <Text style={[styles.tagline, { marginBottom: isSM ? 40 : 0}]}>
             {t('compete-predict-climb')}
           </Text>
         </View>

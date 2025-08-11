@@ -1,7 +1,9 @@
-import { Animated, View, Text, StyleSheet, Platform } from 'react-native';
+import { Animated, View, Text, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
 export default function RuleCard ({item, index, screenWidth, scrollX, t}) {
+    const { isLG } = useBreakpoint();
     const inputRange = [ (index - 1) * screenWidth, index * screenWidth, (index + 1) * screenWidth ];
 
     const scale = scrollX.interpolate({
@@ -16,10 +18,10 @@ export default function RuleCard ({item, index, screenWidth, scrollX, t}) {
         extrapolate: 'clamp',
     });
 
-    if (Platform.OS === 'web') {
+    if (isLG) {
         return (
             <View key={item.id} style={[styles.slide, {width: screenWidth}]}>
-                <View style={styles.ruleCard}>
+                <View style={[styles.ruleCard, {width: '50%'}]}>
                     <View style={styles.iconContainer}>
                         <MaterialIcons name={item.icon as any} size={48} color='#fff' />
                     </View>
@@ -39,7 +41,7 @@ export default function RuleCard ({item, index, screenWidth, scrollX, t}) {
                 {width: screenWidth, transform: [{ scale }], opacity},
             ]}
         >
-            <View style={styles.ruleCard}>
+            <View style={[styles.ruleCard, {width: '90%'}]}>
                 <View style={styles.iconContainer}>
                     <MaterialIcons name={item.icon} size={48} color='#fff' />
                 </View>
@@ -60,7 +62,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#2F2766',
         borderRadius: 20,
         padding: 30,
-        width: Platform.OS === 'web' ? '50%' : '90%',
         alignItems: 'center',
         shadowColor: '#000',
         shadowOpacity: 0.3,

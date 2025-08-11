@@ -9,6 +9,7 @@ import { Entypo, MaterialIcons, Feather } from "@expo/vector-icons"
 import { MAIN_COLOR } from "../constants"
 import { useTranslation } from "react-i18next"
 import { Banner, interstitial } from "components/ads/Ads"
+import { useBreakpoint } from '../hooks/useBreakpoint'
 import { ActivityIndicator } from "react-native-paper"
 
 interface TournamentFormProps {
@@ -26,6 +27,7 @@ export default function TournamentForm({
     const [tournamentName, setTournamentName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
     const [logo, setLogo] = useState<string>("")
+    const { isLG } = useBreakpoint();
     const router: Router = useRouter()
 
     const pickImage = async () => {
@@ -84,7 +86,7 @@ export default function TournamentForm({
             </View>
 
             <ScrollView
-                style={styles.scrollView}
+                style={[styles.scrollView, {width: isLG ? '70%' : '97%',}]}
                 contentContainerStyle={styles.contentContainer}
                 showsVerticalScrollIndicator={false}
             >
@@ -107,7 +109,11 @@ export default function TournamentForm({
                     {
                         logo 
                         ? 
-                        <View style={styles.logoContainer}>
+                        <View style={[styles.logoContainer, {
+                            height: isLG ? 400 : 220,
+                            width: isLG ? 400 : 220
+                            }]}
+                        >
                             <Image source={{ uri: logo }} style={styles.logoPreview} />
                             <TouchableOpacity style={styles.changeImageButton} onPress={pickImage}>
                                 <Feather name="edit-2" size={16} color="white" />
@@ -167,7 +173,6 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         flex: 1,
-        width: Platform.OS === 'web' ? '70%' : '97%',
         marginHorizontal: 'auto',
     },
     topBar: {
@@ -251,10 +256,7 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         position: "relative",
-        height: Platform.OS === 'web' ? 400 : 220,
-        width: Platform.OS === 'web' ? 400 : 220,
         borderRadius: 12,
-        //overflow: "hidden",
     },
     logoPreview: {
         objectFit: 'cover',
