@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Soccer Pools",
-    "slug": "soccer-pools",
+    "name": "ProdeApp",
+    "slug": "prode-app",
     "scheme": "com.soccer-pools-mobile.soccer-pools-mobile",
     "version": "1.6.2",
     "orientation": "portrait",
