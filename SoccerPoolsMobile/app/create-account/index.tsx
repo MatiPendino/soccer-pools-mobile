@@ -1,6 +1,6 @@
-import { ScrollView, Text, ActivityIndicator, View, Platform } from "react-native";
+import { ScrollView, Text, ActivityIndicator, View, Platform, Alert } from "react-native";
 import { Link } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
@@ -11,9 +11,12 @@ import { register } from "../../services/authService";
 import styles from "./styles";
 import { Email } from "../../types";
 import { useTranslation } from "react-i18next";
+import { removeToken } from 'services/api';
+import { getToken } from 'utils/storeToken';
 import { Entypo } from "@expo/vector-icons";
 import GoogleAuthButton from "components/GoogleAuthButton";
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { getUserLeagueRoute } from "utils/getUserLeagueRoute";
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -28,10 +31,29 @@ export default function CreateAccount({}) {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
     const toast = useToast()
     const router = useRouter()
     const { isLG } = useBreakpoint();
+
+    useEffect(() => {
+        const checkUserLeagueStatus = async (token): Promise<void> => {
+            try {
+               router.replace(await getUserLeagueRoute(token));
+            } catch (error) {
+                Alert.alert('Error', handleError(error), [{ text: 'OK', onPress: () => {}}], {cancelable: false});
+                await removeToken()
+            }
+        }
+    
+        const checkAuth = async (): Promise<void> => {
+            const token = await getToken();
+            if (!!token) {
+                checkUserLeagueStatus(token)
+            }
+        }
+        
+        checkAuth();
+    }, []);
 
     const createAccount = async (): Promise<void> => {
         setIsLoading(true)

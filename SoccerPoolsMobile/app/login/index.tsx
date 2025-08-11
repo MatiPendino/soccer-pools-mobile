@@ -1,19 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ToastType, useToast } from 'react-native-toast-notifications'
-import { View, Image, StyleSheet, Text, TouchableOpacity, Platform, ScrollView } from 'react-native'
+import { View, Image, StyleSheet, Text, TouchableOpacity, Platform, ScrollView, Alert } from 'react-native'
 import { Link, Router, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useTranslation } from 'react-i18next';
 import { MAIN_COLOR } from '../../constants';
 import { login } from 'services/authService';
-import { getUserInLeague } from 'services/authService';
 import CustomInputSign from 'components/CustomInputSign';
 import CustomButton from 'components/CustomButton';
 import handleError from 'utils/handleError';
 import ForgotPasswordModal from '../../modals/ForgotPasswordModal'
 import { Entypo } from '@expo/vector-icons';
 import GoogleAuthButton from 'components/GoogleAuthButton';
+import { removeToken } from 'services/api';
+import { getToken } from 'utils/storeToken';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -29,13 +31,28 @@ export default function Login({}) {
     const toast: ToastType = useToast();
     const { isLG } = useBreakpoint();
 
-    const userInLeague = async (token: string): Promise<void> => {
-        const inLeague = await getUserInLeague(token)
-        if (inLeague.in_league) {
-            router.replace('/home')
-        } else {
-            router.replace('/select-league')
+    useEffect(() => {
+        const checkUserLeagueStatus = async (token): Promise<void> => {
+            try {
+               router.replace(await getUserLeagueRoute(token));
+            } catch (error) {
+                Alert.alert('Error', handleError(error), [{ text: 'OK', onPress: () => {}}], {cancelable: false});
+                await removeToken()
+            }
         }
+    
+        const checkAuth = async (): Promise<void> => {
+            const token = await getToken();
+            if (!!token) {
+                checkUserLeagueStatus(token)
+            }
+        }
+        
+        checkAuth();
+    }, []);
+
+    const userInLeague = async (token: string): Promise<void> => {
+        router.replace(await getUserLeagueRoute(token));
     }
 
     const logIn = async (): Promise<void> => {

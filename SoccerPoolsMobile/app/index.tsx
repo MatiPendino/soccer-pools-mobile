@@ -15,6 +15,7 @@ import { useBreakpoint } from '../hooks/useBreakpoint';
 import HowItWorksCard from './components/HowItWorksCard';
 import DownloadApp from './components/DownloadApp';
 import Hero from './components/Hero';
+import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -32,12 +33,7 @@ export default function LandingScreen() {
   useEffect(() => {
     const checkUserLeagueStatus = async (token): Promise<void> => {
         try {
-          const inLeague = await getUserInLeague(token)
-          if (inLeague.in_league) {
-            router.replace('/home')
-          } else {
-            router.replace('/select-league')
-          }
+         router.replace(await getUserLeagueRoute(token));
         } catch (error) {
           Alert.alert('Error', handleError(error), [{ text: 'OK', onPress: () => {}}], {cancelable: false});
           await removeToken()
