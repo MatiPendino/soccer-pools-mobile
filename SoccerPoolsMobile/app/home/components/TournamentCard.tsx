@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { MAIN_COLOR } from '../../../constants'
 import { getToken } from '../../../utils/storeToken'
-import { patchTournamentUser, retrieveTournamentUser } from '../../../services/tournamentService'
+import { retrieveTournamentUser, updateStateTournamentUser } from '../../../services/tournamentService'
 import { Email, TournamentUserProps } from '../../../types'
 
 interface TournamentCardProps {
@@ -77,7 +77,7 @@ export default function TournamentCard({
         setIsLoading(true)
         try {
             const token: string = await getToken()
-            await patchTournamentUser(token, 1, tournamentUser.id)
+            await updateStateTournamentUser(token, tournamentUser.id, 1)
             toast.show(t('join-request-sent'), {type: 'success'})
         } catch (error) {
             toast.show('There is been an error trying to send the join request', {type: 'error'})

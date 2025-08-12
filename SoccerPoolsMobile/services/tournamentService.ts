@@ -82,22 +82,6 @@ export const retrieveTournamentUser = async (token: string, tournamentId: number
     }
 }
 
-export const patchTournamentUser = async (
-        token: string, tournamentUserState: number, tournamentUserId: number
-    ) => {
-    try {
-        const response = await api.patch(`/api/tournaments/tournament_user/${tournamentUserId}/`, {
-            tournament_user_state: tournamentUserState,
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        return response.data
-    } catch (error) {
-        throw error.response.data
-    }
-}
-
 export const listPendingTournamentUsers = async (token, tournamentId) => {
     try {
         const response = await api.get(
