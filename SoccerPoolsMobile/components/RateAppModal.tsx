@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import { getToken } from "../utils/storeToken";
 import { updateCoins } from "../services/userService";
-import { ANDROID_URL, REVIEW_APP_COINS_PRIZE } from "../constants";
+import { ANDROID_URL, REVIEW_APP_COINS_PRIZE, REWARD_APP_REVIEW } from "../constants";
 
 export default function RateAppModal ({setCoins}) {
     const [showRatingModal, setShowRatingModal] = useState<boolean>(false);
@@ -41,7 +41,7 @@ export default function RateAppModal ({setCoins}) {
         setShowRatingModal(false);
 
         const token = await getToken()
-        const { coins } = await updateCoins(token, REVIEW_APP_COINS_PRIZE)
+        const { coins } = await updateCoins(token, REVIEW_APP_COINS_PRIZE, REWARD_APP_REVIEW);
         setCoins(coins)
     };
 

@@ -6,6 +6,7 @@ import { useToast, ToastType } from 'react-native-toast-notifications';
 import { useRewardedAd } from 'components/ads/Ads';
 import { updateCoins } from '../services/userService';
 import { getToken } from '../utils/storeToken';
+import { REWARD_AD_REWARD } from '../constants';
 
 export default function CoinsDisplay({ setCoins, coins }) {
     const { t } = useTranslation();
@@ -18,7 +19,7 @@ export default function CoinsDisplay({ setCoins, coins }) {
     const onEarnedReward = useCallback(async (amount: number) => {
         try {
             const token = await getToken()
-            const { coins } = await updateCoins(token, amount)
+            const { coins } = await updateCoins(token, amount, REWARD_AD_REWARD);
             setCoins(coins)
             toast.show(t('coins-added', { coins: amount }), {type: 'success'})
         } catch (error) {

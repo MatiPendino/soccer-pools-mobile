@@ -11,6 +11,12 @@ export const TWITTER_URL: string = 'https://x.com/tuprodefutbol'
 export const INSTAGRAM_URL: string = 'https://www.instagram.com/tuprodefutbol'
 export const breakpoints = { sm: 550, md: 768, lg: 1024, xl: 1280 }
 
+export const REWARD_AD_REWARD = 0
+export const REWARD_APP_REVIEW = 1
+export const REWARD_DAILY = 2
+export const REWARD_REFERRAL = 3
+export const REWARD_LEAGUE_WINNER = 4
+
 export const getHowItWorks = (t) => {
     return [
         {
