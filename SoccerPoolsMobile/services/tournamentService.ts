@@ -1,4 +1,4 @@
-import { generateTournamentFormData } from "../utils/generateTournamentFormData";
+import { generateTournamentFormData } from '../utils/generateFormData';
 import api from "./api";
 
 export const listTournaments = async (token: string, leagueId: number, searchText: string) => {

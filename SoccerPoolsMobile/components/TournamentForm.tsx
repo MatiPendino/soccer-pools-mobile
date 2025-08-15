@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
-import * as ImagePicker from "expo-image-picker"
 import { 
     View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable, KeyboardAvoidingView,
-    Platform, ScrollView, Image
+    Platform, ScrollView
 } from "react-native"
 import { type Router, useRouter } from "expo-router"
 import { Entypo, MaterialIcons, Feather } from "@expo/vector-icons"
@@ -11,6 +10,7 @@ import { useTranslation } from "react-i18next"
 import { Banner, interstitial } from "components/ads/Ads"
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { ActivityIndicator } from "react-native-paper"
+import ImageFormComponent from './ImageFormComponent';
 
 interface TournamentFormProps {
     initialData?: any
@@ -29,28 +29,6 @@ export default function TournamentForm({
     const [logo, setLogo] = useState<string>("")
     const { isLG } = useBreakpoint();
     const router: Router = useRouter()
-
-    const pickImage = async () => {
-        // Request permission to access the media library
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-        if (status !== "granted") {
-            alert(t("permission-media-required"))
-            return
-        }
-
-        // Launch the image picker
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            quality: 1,
-        })
-
-        if (!result.canceled) {
-            setLogo(result.assets[0].uri)
-        } else {
-            alert(t("no-image-selected"))
-        }
-    }
 
     const handleSubmit = () => {
         onSubmit({ name: tournamentName, description: description, logo: logo })
@@ -104,28 +82,7 @@ export default function TournamentForm({
                     </View>
                 </View>
 
-                <View style={styles.formGroup}>
-                    <Text style={styles.label}>{t("add-tournament-image")}</Text>
-                    {
-                        logo 
-                        ? 
-                        <View style={[styles.logoContainer, {
-                            height: isLG ? 400 : 220,
-                            width: isLG ? 400 : 220
-                            }]}
-                        >
-                            <Image source={{ uri: logo }} style={styles.logoPreview} />
-                            <TouchableOpacity style={styles.changeImageButton} onPress={pickImage}>
-                                <Feather name="edit-2" size={16} color="white" />
-                            </TouchableOpacity>
-                        </View>
-                        : 
-                        <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
-                            <Feather name="image" size={24} color="white" />
-                            <Text style={styles.imagePickerText}>{t("add-tournament-image")}</Text>
-                        </TouchableOpacity>
-                    }
-                </View>
+                <ImageFormComponent image={logo} setImage={setLogo} />
 
                 <View style={styles.formGroup}>
                     <Text style={styles.label}>{t("description")}</Text>
@@ -238,41 +195,6 @@ const styles = StyleSheet.create({
     },
     textArea: {
         height: "100%",
-    },
-    imagePickerButton: {
-        height: 120,
-        borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.2)",
-        borderRadius: 12,
-        backgroundColor: "rgba(255,255,255,0.05)",
-        borderStyle: "dashed",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    imagePickerText: {
-        color: "white",
-        marginTop: 8,
-        opacity: 0.8,
-    },
-    logoContainer: {
-        position: "relative",
-        borderRadius: 12,
-    },
-    logoPreview: {
-        objectFit: 'cover',
-        height: "100%",
-        borderRadius: 12,
-    },
-    changeImageButton: {
-        position: "absolute",
-        bottom: 12,
-        right: 12,
-        backgroundColor: "rgba(47, 39, 102, 0.8)",
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        justifyContent: "center",
-        alignItems: "center",
     },
     button: {
         backgroundColor: "#2F2766",

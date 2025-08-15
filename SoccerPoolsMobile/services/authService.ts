@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "./api";
 import {storeToken} from "../utils/storeToken"
+import { generateUserFormData } from '../utils/generateFormData';
 
 export const register = async(name, last_name, username, email, password) => {
     try {
@@ -36,7 +37,7 @@ export const login = async(username, password) => {
 
 export const getUser = async (token) => {
     try {
-        const response = await api.get('/api/users/me/', {
+        const response = await api.get('/api/user/user_editable/', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -47,15 +48,18 @@ export const getUser = async (token) => {
     }
 }
 
-export const updateUser = async (token, firstName, lastName) => {
+export const updateUser = async (token, userData, profileImage) => {
     try {
-        const response = await api.patch('/api/users/me/', {
-            name: firstName,
-            last_name: lastName,
-            headers: {
-                Authorization: `Bearer ${token}`
+        const formData: FormData = generateUserFormData(userData, profileImage);
+        const response = await api.put('/api/user/user_editable/', 
+            formData, 
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart-form-data'
+                }
             }
-        })
+        );
         return response.data
     } catch (error) {
         throw error.response.data

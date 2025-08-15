@@ -8,7 +8,7 @@ interface Props {
     placeholder: string
     isSecureTextEntry?: boolean
     value: string
-    setValue: React.Dispatch<React.SetStateAction<string>>
+    setValue: (value: string) => void
     isActive?: boolean
     isCapitalized?: boolean
 }

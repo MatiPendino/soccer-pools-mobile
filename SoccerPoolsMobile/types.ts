@@ -25,6 +25,14 @@ export interface UserProps {
     coins: number
 }
 
+export interface UserEditableProps {
+    email: Email
+    name: string
+    last_name: string
+    profile_image?: string
+    username: string
+}
+
 export interface MatchProps {
     id: number
     team_1: TeamProps

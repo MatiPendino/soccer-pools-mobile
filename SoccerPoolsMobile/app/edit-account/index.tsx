@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Text, ActivityIndicator, ScrollView } from 'react-native';
 import { Link } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
 import { MAIN_COLOR } from "../../constants";
 import CustomInputSign from "../../components/CustomInputSign";
 import CustomButton from "../../components/CustomButton";
-import { Email } from "../../types";
+import { UserEditableProps } from '../../types';
 import { getToken } from "../../utils/storeToken";
 import handleError from "../../utils/handleError";
 import { deleteUser, getUser, updateUser } from "../../services/authService";
 import { removeToken } from "../../services/api";
 import { useTranslation } from "react-i18next";
 import { Banner, interstitial } from "components/ads/Ads";
+import ImageFormComponent from '../../components/ImageFormComponent';
 
 export default function EditAccount({}) {
     const { t } = useTranslation()
-    const [firstName, setFirstName] = useState<string>('')
-    const [lastName, setLastName] = useState<string>('')
-    const [email, setEmail] = useState<Email>('')
+    const [userInfo, setUserInfo] = useState<UserEditableProps>(null)
+    const [profileImage, setProfileImage] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast = useToast()
     const router = useRouter()
@@ -27,14 +27,8 @@ export default function EditAccount({}) {
         setIsLoading(true)
         try {
             const token = await getToken()
-            if (token) {
-                const {name, last_name} = await updateUser(token, firstName.trim(), lastName.trim())
-                if (name && last_name) {
-                    toast.show(t('user-updated-successfully'), {type: 'success'})
-                } else {
-                    toast.show('There was an error updating the user', {type: 'danger'})
-                }
-            }
+            await updateUser(token, userInfo, profileImage);
+            toast.show(t('user-updated-successfully'), {type: 'success'})
         } catch (error) {
             toast.show(handleError(error), {type: 'danger'})
         } finally {
@@ -63,12 +57,15 @@ export default function EditAccount({}) {
         const retrieveUserDetails = async () => {
             try {
                 const token = await getToken()
-                if (token) {
-                    const userData = await getUser(token)
-                    setEmail(userData.email)
-                    setFirstName(userData.name)
-                    setLastName(userData.last_name)
-                } 
+                const userData = await getUser(token)
+
+                setUserInfo({
+                    name: userData.name, 
+                    last_name: userData.last_name, 
+                    email: userData.email, 
+                    username: userData.username, 
+                })
+                setProfileImage(userData.profile_image)
             } catch (error) {
                 toast.show('There was an error retrieving the user', {type: 'danger'})
             } finally {
@@ -82,29 +79,42 @@ export default function EditAccount({}) {
     //interstitial(process.env.UPDATE_ACCOUNT_INTERST_ID)
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.editTxt}>
                 {t('edit-your-account')}
             </Text>
 
+            {!isLoading &&
+                <View style={{marginHorizontal: 'auto'}}>
+                    <ImageFormComponent image={profileImage} setImage={setProfileImage} />  
+                </View>
+            }
+
+            <CustomInputSign
+                placeholder={t('username')}
+                value={isLoading ? '...' : userInfo.username}
+                setValue={(text) => setUserInfo(prev => ({...prev, username: text}))}
+                isCapitalized={true}
+            />
+
             <CustomInputSign
                 placeholder={t('first-name')}
-                value={firstName}
-                setValue={setFirstName}
+                value={isLoading ? '...' : userInfo.name}
+                setValue={(text) => setUserInfo(prev => ({...prev, name: text}))}
                 isCapitalized={true}
             />
 
             <CustomInputSign
                 placeholder={t('last-name')}
-                value={lastName}
-                setValue={setLastName}
+                value={isLoading ? '...' : userInfo.last_name}
+                setValue={(text) => setUserInfo(prev => ({...prev, last_name: text}))}
                 isCapitalized={true}
             />
 
             <CustomInputSign
                 placeholder={t('email')}
-                value={email}
-                setValue={setEmail}
+                value={isLoading ? '...' : userInfo.email}
+                setValue={(text) => setUserInfo(prev => ({...prev, email: text}))}
                 isActive={false}
                 inputMode="email"
             />
@@ -128,7 +138,7 @@ export default function EditAccount({}) {
             }
 
             <Banner bannerId={process.env.UPDATE_ACCOUNT_BANNER_ID} />
-        </View>
+        </ScrollView>
     )
 }
 
