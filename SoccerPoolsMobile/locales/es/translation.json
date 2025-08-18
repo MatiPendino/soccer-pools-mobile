@@ -40,7 +40,7 @@
     "already-request-sent": "Ya has enviado una solicitud para unirte a este torneo. Por favor espera a ser aprobado o contacta al administrador del torneo.",
     "request-rejected": "Ya has sido rechazado para unirte a este torneo, y no puedes solicitar unirte nuevamente",
     "look-for-tournament": "Busca un torneo...",
-    "not-tournament-yet": "Aun no estas en un torneo! Busca un torneo en la barra de búsqueda o crea el tuyo",
+    "not-tournament-yet": "Aún no estas en un torneo! Busca un torneo en la barra de búsqueda o crea el tuyo",
     "htp-1": "Podrás completar el resultado de un partido antes de que comience. No olvides hacer clic en GUARDAR PREDICCIONES para actualizar los resultados.",
     "htp-2": "Los partidos suspendidos/cancelados en ligas no serán considerados. Los partidos de copa aplazados se considerarán una vez que se jueguen.",
     "htp-3": "Si aciertas al ganador o empate, obtendrás 1 punto. Si aciertas el resultado exacto, obtendrás 3 puntos. 0 puntos si fallas el resultado.",
@@ -125,5 +125,8 @@
     "all-rights-reserved": "Todos los derechos reservados.",
     "developed-by": "Desarrollado por",
     "compete-predict-climb": "Compite con amigos, Predice resultados y Sube en el Ranking",
-    "download-app": "Descargar la app"
+    "download-app": "Descargar la app",
+    "you-havent-saved": "No guardaste tus predicciones",
+    "saving": "Guardando...",
+    "dont-save": "No Guardar"
 }

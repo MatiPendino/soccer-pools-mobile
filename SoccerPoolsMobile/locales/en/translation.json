@@ -125,5 +125,8 @@
     "all-rights-reserved": "All rights reserved.",
     "developed-by": "Developed by",
     "compete-predict-climb": "Compete with friends, Predict results and Climb the Leaderboard",
-    "download-app": "Download the app"
+    "download-app": "Download the app",
+    "you-havent-saved": "You haven't saved your predictions yet",
+    "saving": "Saving...",
+    "dont-save": "Don't Save"
 }

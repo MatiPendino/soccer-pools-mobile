@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { View, Pressable, Text, StyleSheet } from "react-native"
+import { useResultsContext } from '../contexts/ResultsContext';
 import { MAIN_COLOR } from "../../../constants"
 import { MatchResultProps } from "../../../types"
 
@@ -10,9 +11,9 @@ interface TeamScoreProps {
     setMatchResults: React.Dispatch<React.SetStateAction<MatchResultProps[]>>
 }
 
-export default function TeamScore({
-    currentMatchResult, teamNum, matchResults, setMatchResults
-}: TeamScoreProps) {
+export default function TeamScore({currentMatchResult, teamNum, matchResults, setMatchResults}: TeamScoreProps) {
+    const { arePredictionsSaved, setArePredictionsSaved } = useResultsContext();
+    
     const [teamGoals, setTeamGoals] = useState<number>(
         teamNum === 1 ? currentMatchResult.goals_team_1 : currentMatchResult.goals_team_2
     )
@@ -51,6 +52,9 @@ export default function TeamScore({
                     return matchResult
                 })
             }
+            if (arePredictionsSaved) {
+                setArePredictionsSaved(false)
+            }
         } else {
             if (teamGoals > 0) {
                 newMatchResults = matchResults.map((matchResult) => {
@@ -64,6 +68,9 @@ export default function TeamScore({
                     return matchResult
                 })
                 setTeamGoals(teamGoals - 1)
+                if (arePredictionsSaved) {
+                    setArePredictionsSaved(false)
+                }
             }
         }
         setMatchResults(newMatchResults)

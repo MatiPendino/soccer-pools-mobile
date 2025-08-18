@@ -5,10 +5,12 @@ import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView } from "reac
 import { ToastType, useToast } from "react-native-toast-notifications";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { showOpenAppAd } from "components/ads/Ads";
+import SaveChanges from '../../../modals/SaveChanges';
 import { MAIN_COLOR } from "../../../constants";
 import { getToken } from "../../../utils/storeToken";
 import { matchResultsList, matchResultsUpdate } from "../../../services/matchService";
 import MatchResult from "../components/MatchResult";
+import { ResultsProvider, useResultsContext } from '../contexts/ResultsContext';
 import { LeagueProps, MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
 import { getRounds, getRoundsState, updateActiveRound } from "../../../utils/leagueRounds";
 import { useTranslation } from "react-i18next";
@@ -21,7 +23,7 @@ import { getWrapper } from "../../../utils/getWrapper";
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
 
-export default function Results ({}) {
+function Results({}) {
     const { t } = useTranslation()
     const [rounds, setRounds] = useState<RoundProps[]>([])
     const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
@@ -29,8 +31,13 @@ export default function Results ({}) {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isRoundLoading, setIsRoundLoading] = useState<boolean>(false)
     const [isSavePredLoading, setIsSavePredLoading] = useState<boolean>(false)
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [nextRoundId, setNextRoundId] = useState<number>(0);
+    const [nextRoundSlug, setNextRoundSlug] = useState<Slug>('');
     const { isXL } = useBreakpoint();
     const toast: ToastType = useToast()
+
+    const { arePredictionsSaved, setArePredictionsSaved } = useResultsContext();
 
     const getMatchResults = async (token: string, roundId: number): Promise<void> => {
         setIsRoundLoading(true)
@@ -50,6 +57,7 @@ export default function Results ({}) {
             const token = await getToken()
             const response = await matchResultsUpdate(token, matchResults)
             toast.show(t('matches-saved-successfully'), {type: 'success'})
+            setArePredictionsSaved(true);
         } catch (error) {
             toast.show(handleError(error), {type: 'danger'})
         } finally {
@@ -57,11 +65,23 @@ export default function Results ({}) {
         }
     }
 
-    const swapRoundMatchResults = async (roundId: number, roundSlug: Slug): Promise<void> => {
+    const swapRoundMatchResults = async (
+        roundId: number, roundSlug: Slug, alreadyShowedModal?: boolean
+    ): Promise<void> => {
         try {
             const token = await getToken()
-            getMatchResults(token, roundId)  
-            setRoundsState(updateActiveRound(roundSlug, roundsState))
+            /* 
+                If predictions ARE NOT saved, show modal.
+                If they are saved or the modal has already been shown, swap the round
+            */
+            if (alreadyShowedModal || arePredictionsSaved) {
+                getMatchResults(token, roundId);  
+                setRoundsState(updateActiveRound(roundSlug, roundsState));
+            } else if (!arePredictionsSaved) {
+                setModalVisible(true);
+                setNextRoundId(roundId);
+                setNextRoundSlug(roundSlug);
+            }
         } catch (error) {
             toast.show('There´s been an error getting the matches', {type: 'danger'})
         } 
@@ -142,6 +162,16 @@ export default function Results ({}) {
                 />
             }
 
+            <SaveChanges
+                visible={modalVisible}
+                savePredictions={savePredictions}
+                onClose={() => setModalVisible(false)}
+                isLoading={isSavePredLoading}
+                nextRoundId={nextRoundId}
+                nextRoundSlug={nextRoundSlug}
+                handleRoundSwap={swapRoundMatchResults}
+            />
+
             {
                 isRoundLoading
                 ?
@@ -182,6 +212,14 @@ export default function Results ({}) {
                 }
             </Pressable>
         </Wrapper>
+    )
+}
+
+export default function ResultsContextWrapper({}) {
+    return (
+        <ResultsProvider>
+            <Results />
+        </ResultsProvider>
     )
 }
 
