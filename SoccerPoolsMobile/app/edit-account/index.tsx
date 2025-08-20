@@ -64,6 +64,8 @@ export default function EditAccount({}) {
                     last_name: userData.last_name, 
                     email: userData.email, 
                     username: userData.username, 
+                    instagram_username: userData.instagram_username,
+                    twitter_username: userData.twitter_username
                 })
                 setProfileImage(userData.profile_image)
             } catch (error) {
@@ -115,8 +117,19 @@ export default function EditAccount({}) {
                 placeholder={t('email')}
                 value={isLoading ? '...' : userInfo.email}
                 setValue={(text) => setUserInfo(prev => ({...prev, email: text}))}
-                isActive={false}
                 inputMode="email"
+            />
+
+            <CustomInputSign
+                placeholder={t('instagram-username-optional')}
+                value={isLoading ? '...' : userInfo.instagram_username}
+                setValue={(text) => setUserInfo(prev => ({...prev, instagram_username: text}))}
+            />
+
+            <CustomInputSign
+                placeholder={t('twitter-username-optional')}
+                value={isLoading ? '...' : userInfo.twitter_username}
+                setValue={(text) => setUserInfo(prev => ({...prev, twitter_username: text}))}
             />
 
             {

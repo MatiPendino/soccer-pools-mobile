@@ -79,6 +79,8 @@ export const generateUserFormData = (userData: UserEditableProps, profileImage: 
     formData.append('last_name', userData.last_name.trim());
     formData.append('username', userData.username.trim());
     formData.append('email', userData.email.trim());
+    formData.append('instagram_username', userData.instagram_username.trim() || '');
+    formData.append('twitter_username', userData.twitter_username.trim() || '');
 
     return formData;
 }

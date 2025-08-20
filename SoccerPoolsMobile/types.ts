@@ -31,6 +31,8 @@ export interface UserEditableProps {
     last_name: string
     profile_image?: string
     username: string
+    instagram_username?: string
+    twitter_username?: string
 }
 
 export interface MatchProps {

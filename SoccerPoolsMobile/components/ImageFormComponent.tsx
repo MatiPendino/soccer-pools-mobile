@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         height: 120,
         borderWidth: 1,
         borderColor: 'rgba(255,255,255,0.2)',
-        borderRadius: '100%',
+        borderRadius: 200,
         backgroundColor: 'rgba(255,255,255,0.05)',
         borderStyle: 'dashed',
         justifyContent: 'center',
@@ -84,12 +84,12 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         position: 'relative',
-        borderRadius: '100%',
+        borderRadius: 200,
     },
     logoPreview: {
         objectFit: 'cover',
         height: '100%',
-        borderRadius: '100%',
+        borderRadius: 200,
     },
     changeImageButton: {
         position: 'absolute',

@@ -128,5 +128,7 @@
     "download-app": "Descargar la app",
     "you-havent-saved": "No guardaste tus predicciones",
     "saving": "Guardando...",
-    "dont-save": "No Guardar"
+    "dont-save": "No Guardar",
+    "instagram-username-optional": "Usuario de Instagram (opcional)",
+    "twitter-username-optional": "Usuario de Twitter (opcional)"
 }
