@@ -130,5 +130,7 @@
     "saving": "Saving...",
     "dont-save": "Don't Save",
     "instagram-username-optional": "Instagram Username (optional)",
-    "twitter-username-optional": "Twitter Username (optional)"
+    "twitter-username-optional": "Twitter Username (optional)",
+    "select-round": "Select Round",
+    "no-rounds-available": "No rounds available"
 }

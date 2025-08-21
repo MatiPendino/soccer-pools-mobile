@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text, ActivityIndicator, ScrollView } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { Link } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
@@ -14,6 +14,7 @@ import { removeToken } from "../../services/api";
 import { useTranslation } from "react-i18next";
 import { Banner, interstitial } from "components/ads/Ads";
 import ImageFormComponent from '../../components/ImageFormComponent';
+import TopBar from '../../components/TopBar';
 
 export default function EditAccount({}) {
     const { t } = useTranslation()
@@ -82,12 +83,10 @@ export default function EditAccount({}) {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.editTxt}>
-                {t('edit-your-account')}
-            </Text>
+            <TopBar text={t('edit-your-account')} url='/home' />
 
             {!isLoading &&
-                <View style={{marginHorizontal: 'auto'}}>
+                <View style={styles.imageContainer}>
                     <ImageFormComponent image={profileImage} setImage={setProfileImage} />  
                 </View>
             }
@@ -162,10 +161,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flex: 1,
         marginHorizontal: 'auto',
-        paddingTop: 50,
-        paddingHorizontal: 10,
         paddingVertical: 0,
-        borderRadius: 6
     },
     editTxt: {
         color: '#fff',
@@ -181,5 +177,9 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         textAlign: 'center',
         marginBottom: 70
-    }
-})
+    },
+    imageContainer: {
+        marginHorizontal: 'auto',
+        marginTop: 15
+    },
+});

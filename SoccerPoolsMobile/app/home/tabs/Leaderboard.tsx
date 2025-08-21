@@ -7,7 +7,7 @@ import { RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps, CoinsPrizes 
 import { getToken } from "../../../utils/storeToken";
 import RankedPlayersFlatList from "../../../components/RankedPlayersFlatList";
 import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../../utils/leagueRounds";
-import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
+import RoundsPicker from 'components/RoundPicker';
 import { userLeague } from "../../../services/leagueService";
 import { Banner, interstitial } from "components/ads/Ads";
 import LoadingCards from "../../../components/LoadingCards";
@@ -74,7 +74,7 @@ export default function Leaderboard ({}) {
                 ?
                 <ShimmerPlaceholder style={styles.roundsListLoading} />
                 :
-                <RoundsHorizontalList
+                <RoundsPicker
                     rounds={rounds}
                     handleRoundSwap={swapRoundBetLeaders}
                     roundsState={roundsState}

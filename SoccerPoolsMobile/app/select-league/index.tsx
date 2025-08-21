@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
+import { 
+  View, Text, StyleSheet, FlatList, SafeAreaView, ActivityIndicator, Platform
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
+import { Entypo } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import { getToken } from '../../utils/storeToken';
 import { LeagueProps, UserProps } from '../../types';
@@ -70,15 +74,31 @@ const LeagueSelectionScreen = () => {
     getUserCoins()
   }, [])
 
+  const renderHomeLink = () => {
+    // If the user is not loading and has joined at least one league, show the home link
+    // Otherwise return an empty view
+    if (!isLoading && leagues.some(league => league.is_user_joined)) {
+      return (
+        <Link href='/home'>
+          <Entypo name='chevron-left' color='white' size={30} />
+        </Link>
+      );
+    }
+
+    return <View></View>;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#4c3b8e" />
-      
-      <View style={styles.background}>
+      <View style={styles.topBar}>
+        {renderHomeLink()}
+
         <View style={{marginEnd: 10}}>
           <CoinsDisplay setCoins={setUserCoins} coins={isLoadingCoins ? '...' : (userCoins || 0)} />
         </View>
-
+      </View>
+      
+      <View style={styles.background}>
         <View style={styles.header}>
           <Text style={styles.title}>{t('select-league')}</Text>
         </View>
@@ -126,14 +146,23 @@ const LeagueSelectionScreen = () => {
 }
 
 const styles = StyleSheet.create({
+  topBar: {
+    backgroundColor: '#2F2766',
+    flexDirection: 'row',
+    paddingVertical: 15,
+    justifyContent: 'space-between',
+    marginTop: Platform.OS === 'web' ? 0 : 20,
+    marginBottom: 10,
+    paddingHorizontal: 5,
+    width: '100%'
+  },
   container: {
     flex: 1,
+    backgroundColor: MAIN_COLOR
   },
   background: {
     flex: 1,
     width: '100%',
-    backgroundColor: MAIN_COLOR,
-    paddingTop: 40,
   },
   header: {
     paddingBottom: 16,

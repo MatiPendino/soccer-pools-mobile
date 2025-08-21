@@ -14,7 +14,7 @@ import { ResultsProvider, useResultsContext } from '../contexts/ResultsContext';
 import { LeagueProps, MatchResultProps, RoundProps, RoundsStateProps, Slug } from "../../../types";
 import { getRounds, getRoundsState, updateActiveRound } from "../../../utils/leagueRounds";
 import { useTranslation } from "react-i18next";
-import RoundsHorizontalList from "../../../components/RoundsHorizontalList";
+import RoundsPicker from 'components/RoundPicker';
 import { userLeague } from "../../../services/leagueService";
 import { getNextRoundId } from "../../../utils/getNextRound";
 import handleError from "../../../utils/handleError";
@@ -154,7 +154,7 @@ function Results({}) {
                 ?
                 <ShimmerPlaceholder style={styles.roundsListLoading} />
                 :
-                <RoundsHorizontalList
+                <RoundsPicker
                     rounds={rounds}
                     handleRoundSwap={swapRoundMatchResults}
                     roundsState={roundsState}

@@ -10,12 +10,12 @@ import CustomInputSign from 'components/CustomInputSign';
 import CustomButton from 'components/CustomButton';
 import handleError from 'utils/handleError';
 import ForgotPasswordModal from '../../modals/ForgotPasswordModal'
-import { Entypo } from '@expo/vector-icons';
 import GoogleAuthButton from 'components/GoogleAuthButton';
 import { removeToken } from 'services/api';
 import { getToken } from 'utils/storeToken';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
+import TopBar from 'components/TopBar';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -71,9 +71,7 @@ export default function Login({}) {
             contentContainerStyle={styles.contentContainer}
             showsVerticalScrollIndicator={true}
         >
-            <Link href='/' style={{width: isLG ? '40%' : '80%', marginTop: 25}}>
-                <Entypo name='chevron-left' color='white' size={30} />   
-            </Link>
+            <TopBar url='/' text={t('log-in')} />
 
             <Image 
                 source={require('../../assets/icon-no-bg.png')}
@@ -126,7 +124,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: MAIN_COLOR,
         paddingBottom: 20,
-        paddingHorizontal: 20,
     },
     contentContainer: {
         alignItems: 'center',

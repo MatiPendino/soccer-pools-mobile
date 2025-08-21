@@ -26,7 +26,7 @@ export default function Hero () {
                     { paddingHorizontal: isLG ? 0 : 10, width: isLG ? '80%' : '100%' }
                   ]}
                 >
-                    <GoogleAuthButton />
+                    <GoogleAuthButton isHome={true} />
                     
                     <Link 
                       style={[styles.cta, styles.signUpCta, {width: isLG ? 310 : '100%'}]} 

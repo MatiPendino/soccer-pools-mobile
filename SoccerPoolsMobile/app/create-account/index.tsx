@@ -13,10 +13,10 @@ import { Email } from "../../types";
 import { useTranslation } from "react-i18next";
 import { removeToken } from 'services/api';
 import { getToken } from 'utils/storeToken';
-import { Entypo } from "@expo/vector-icons";
 import GoogleAuthButton from "components/GoogleAuthButton";
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { getUserLeagueRoute } from "utils/getUserLeagueRoute";
+import TopBar from 'components/TopBar';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -82,14 +82,8 @@ export default function CreateAccount({}) {
             contentContainerStyle={styles.contentContainer}
             showsVerticalScrollIndicator={true}
         >
-            <Link href='/' style={{width: isLG ? '50%' : '90%'}}>
-                <Entypo name="chevron-left" color="white" size={30} />   
-            </Link>
+            <TopBar url='/' text={t('create-your-account')} />
                 
-            <Text style={styles.createTxt}>
-                {t('create-your-account')}
-            </Text>
-
             <GoogleAuthButton isLogIn={false} />
 
             <View style={styles.separationContainer}>
@@ -98,7 +92,7 @@ export default function CreateAccount({}) {
                 <View style={styles.whiteLine}></View>
             </View>
 
-            <View style={{width: '75%'}}>
+            <View style={{width: isLG ? '60%' : '95%'}}>
                 <CustomInputSign
                     placeholder={t('first-name')}
                     value={firstName}

@@ -7,15 +7,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: MAIN_COLOR,
         marginHorizontal: 'auto',
-        paddingHorizontal: 10,
-        paddingTop: 35,
         paddingBottom: 15,
-        borderRadius: 6
     },
     contentContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        flexGrow: 1
     },
     createTxt: {
         color: '#fff',

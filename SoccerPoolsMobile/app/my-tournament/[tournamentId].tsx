@@ -13,7 +13,7 @@ import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "
 import handleShare from "../../utils/handleShare";
 import { useTranslation } from "react-i18next";
 import { TournamentProps } from "../../types";
-import RoundsHorizontalList from "../../components/RoundsHorizontalList";
+import RoundsPicker from 'components/RoundPicker';
 import { Banner, interstitial } from "components/ads/Ads";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import LoadingCards from "../../components/LoadingCards";
@@ -136,7 +136,7 @@ export default function MyTournament({}) {
                     ?
                     <ShimmerPlaceholder style={styles.roundsListLoading} />
                     :
-                    <RoundsHorizontalList
+                    <RoundsPicker
                         rounds={rounds}
                         handleRoundSwap={swapRoundBetLeaders}
                         roundsState={roundsState}

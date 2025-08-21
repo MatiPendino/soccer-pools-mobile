@@ -7,7 +7,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useToast } from 'react-native-toast-notifications';
 import { useTranslation } from 'react-i18next';
-import { MAIN_COLOR } from '../../constants';
+import { FACEBOOK_URL, INSTAGRAM_URL, MAIN_COLOR, TWITTER_URL } from '../../constants';
 import styles from './styles';
 import CoinsDisplay from '../../components/CoinsDisplay';
 import RateAppModal from '../../components/RateAppModal';
@@ -113,11 +113,14 @@ export default function HomeLayout() {
             </Pressable>
 
             <View style={styles.socialMediaContainer}>
-              <Link href='https://www.instagram.com/tuprodefutbol/' style={styles.socialMediaBtn}>
-                <Entypo name='instagram' size={45} color='white' />
+              <Link href={INSTAGRAM_URL} style={styles.socialMediaBtn}>
+                <Entypo name='instagram' size={30} color='white' />
               </Link>
-              <Link href='https://x.com/tuprodefutbol' style={styles.socialMediaBtn}>
-                <Entypo name='twitter' size={45} color='white' />
+              <Link href={TWITTER_URL} style={styles.socialMediaBtn}>
+                <Entypo name='twitter' size={30} color='white' />
+              </Link>
+              <Link href={FACEBOOK_URL} style={styles.socialMediaBtn}>
+                <Entypo name='facebook' size={30} color='white' />
               </Link>
             </View>
           </View>

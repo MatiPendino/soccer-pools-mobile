@@ -28,12 +28,12 @@ const styles = StyleSheet.create({
     },
     itemsContainer: {
         paddingHorizontal: 10,
-        marginTop: 50
+        marginTop: 30
     },
     socialMediaContainer: {
         flex: 1,
         flexDirection: 'row',
-        marginTop: 200,
+        marginTop: 50,
         justifyContent: 'space-around'
     },
     socialMediaBtn: {},

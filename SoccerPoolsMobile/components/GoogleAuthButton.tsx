@@ -13,9 +13,10 @@ import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface GoogleAuthButtonProps {
     isLogIn?: boolean;
+    isHome?: boolean
 }
 
-export default function GoogleAuthButton ({isLogIn=true}: GoogleAuthButtonProps) {
+export default function GoogleAuthButton ({isLogIn=true, isHome=false}: GoogleAuthButtonProps) {
     const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
     const toast: ToastType = useToast();
     const router: Router = useRouter();
@@ -108,7 +109,7 @@ export default function GoogleAuthButton ({isLogIn=true}: GoogleAuthButtonProps)
             style={[
                 styles.googleBtn, 
                 (isGoogleLoading || !request) && styles.googleContainerDisabled,
-                { width: isLG ? 310 : '100%' }
+                { width: isLG ? 310 : isHome ? '100%' : '90%' }
             ]}
         >
             <View style={styles.googleContainer}>
