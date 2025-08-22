@@ -1,98 +1,89 @@
-import { Animated, View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
-export default function RuleCard ({item, index, screenWidth, scrollX, t}) {
+interface Props {
+    ruleId: number;
+    ruleText: string;
+    ruleIcon: string;
+}
+
+export default function RuleCard ({ruleId, ruleText, ruleIcon}: Props) {
+    const { t } = useTranslation();
     const { isLG } = useBreakpoint();
-    const inputRange = [ (index - 1) * screenWidth, index * screenWidth, (index + 1) * screenWidth ];
-
-    const scale = scrollX.interpolate({
-        inputRange,
-        outputRange: [0.8, 1, 0.8],
-        extrapolate: 'clamp',
-    });
-
-    const opacity = scrollX.interpolate({
-        inputRange,
-        outputRange: [0.6, 1, 0.6],
-        extrapolate: 'clamp',
-    });
-
-    if (isLG) {
-        return (
-            <View key={item.id} style={[styles.slide, {width: screenWidth}]}>
-                <View style={[styles.ruleCard, {width: '50%'}]}>
-                    <View style={styles.iconContainer}>
-                        <MaterialIcons name={item.icon as any} size={48} color='#fff' />
-                    </View>
-                    <Text style={styles.ruleNumber}>
-                        {t('rule')} {item.id}
-                    </Text>
-                    <Text style={styles.ruleTxt}>{item.text}</Text>
-                </View>
-            </View>
-        )
-    }
 
     return (
-        <Animated.View 
-            style={[
-                styles.slide,
-                {width: screenWidth, transform: [{ scale }], opacity},
-            ]}
-        >
-            <View style={[styles.ruleCard, {width: '90%'}]}>
-                <View style={styles.iconContainer}>
-                    <MaterialIcons name={item.icon} size={48} color='#fff' />
-                </View>
-                <Text style={styles.ruleNumber}>{t('rule')} {item.id}</Text>
-                <Text style={styles.ruleTxt}>{item.text}</Text>
+        <View key={ruleId} style={[styles.card, isLG && styles.cardLG]}>
+            <View style={styles.iconBadge}>
+                <MaterialIcons name={ruleIcon as any} size={22} />
             </View>
-        </Animated.View>
+            <View style={styles.textWrap}>
+                <View style={styles.ruleHeader}>
+                <View style={styles.numberBadge}>
+                    <Text style={styles.numberText}>{ruleId}</Text>
+                </View>
+                <Text style={styles.ruleTitle}>
+                    {t('how-to-play')} #{ruleId}
+                </Text>
+                </View>
+                <Text style={styles.ruleText}>{ruleText}</Text>
+            </View>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    slide: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 20,
+    card: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        backgroundColor: 'white',
+        borderRadius: 14,
+        padding: 14,
+        elevation: 2,
     },
-    ruleCard: {
-        backgroundColor: '#2F2766',
-        borderRadius: 20,
-        padding: 30,
+    cardLG: {
+        padding: 16,
+    },
+    iconBadge: {
+        width: 40,
+        height: 40,
+        borderRadius: 10,
+        backgroundColor: '#EEF1F4',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.3,
-        shadowRadius: 10,
-        shadowOffset: { width: 0, height: 5 },
-        elevation: 8,
+        justifyContent: 'center',
+        marginRight: 12,
+    },
+    textWrap: {
+        flex: 1,
+    },
+    ruleHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 6,
+    },
+    numberBadge: {
+        backgroundColor: '#EDF6FF',
+        borderColor: '#D6E9FF',
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
+        paddingHorizontal: 8,
+        paddingVertical: 2,
+        borderRadius: 999,
+        marginRight: 8,
     },
-    iconContainer: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        backgroundColor: 'rgba(255, 255, 255, 0.15)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 20,
+    numberText: {
+        color: '#1C64F2',
+        fontWeight: '700',
+        fontSize: 12,
     },
-    ruleNumber: {
-        fontSize: 16,
-        color: 'rgba(255, 255, 255, 0.7)',
+    ruleTitle: {
+        color: 'rgba(16,20,24,0.65)',
+        fontSize: 12,
         fontWeight: '600',
-        marginBottom: 12,
-        textTransform: 'uppercase',
-        letterSpacing: 1,
     },
-    ruleTxt: {
-        fontSize: 18,
-        color: 'white',
-        fontWeight: '500',
-        textAlign: 'center',
-        lineHeight: 28,
+    ruleText: {
+        color: '#222',
+        fontSize: 15,
+        lineHeight: 22,
     },
 })
