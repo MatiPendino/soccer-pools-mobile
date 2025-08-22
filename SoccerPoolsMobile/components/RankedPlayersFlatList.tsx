@@ -17,6 +17,7 @@ export default function RankedPlayersFlatList ({bets, coinsPrizes}: Props) {
                     index={index+1} 
                     username={item.username}
                     points={item.points}
+                    exactResults={item.exact_results}
                     profileImageUrl={item.profile_image}
                     coinPrizes={coinsPrizes}
                 />

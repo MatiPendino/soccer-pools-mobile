@@ -132,5 +132,7 @@
     "instagram-username-optional": "Usuario de Instagram (opcional)",
     "twitter-username-optional": "Usuario de Twitter (opcional)",
     "select-round": "Seleccionar Ronda",
-    "no-rounds-available": "No hay rondas disponibles"
+    "no-rounds-available": "No hay rondas disponibles",
+    "points": "Puntos",
+    "exact-results": "Exactos"
 }

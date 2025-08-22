@@ -86,6 +86,7 @@ export interface BetProps {
     profile_image: string
     round_id: number
     points: number
+    exact_results: number
     operation_code: string
 }
 

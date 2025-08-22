@@ -1,8 +1,9 @@
-import { View, StyleSheet, Image, Text, Platform } from "react-native"
+import { View, StyleSheet, Image, Text } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
 import { CoinsPrizes } from "../types";
 import { BRONZE_COLOR, GOLD_COLOR, SILVER_COLOR } from "../constants";
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import { useTranslation } from 'react-i18next';
 
 interface RankedPlayerProps {
   index: number
@@ -10,10 +11,14 @@ interface RankedPlayerProps {
   username: string
   points: number
   coinPrizes?: CoinsPrizes
+  exactResults: number
 }
 
-export default function RankedPlayer({ index, profileImageUrl, username, points, coinPrizes }: RankedPlayerProps) {
+export default function RankedPlayer({ 
+  index, profileImageUrl, username, points, coinPrizes, exactResults 
+}: RankedPlayerProps) {
   const { isLG } = useBreakpoint();
+  const { t } = useTranslation();
   
   // Special styling for top 3 ranks
   const rankStyles = (() => {
@@ -76,9 +81,16 @@ export default function RankedPlayer({ index, profileImageUrl, username, points,
           {username}
         </Text>
 
-        <View style={styles.pointsContainer}>
-          <Text style={styles.pointsLabel}>Points:</Text>
-          <Text style={styles.pointsTxt}>{points}</Text>
+        <View style={{ flexDirection: 'row', gap: isLG ? 25 : 10 }}>
+          <View style={styles.pointsContainer}>
+            <Text style={styles.pointsLabel}>{t('points')}:</Text>
+            <Text style={styles.pointsTxt}>{points}</Text>
+          </View>
+
+          <View style={styles.pointsContainer}>
+            <Text style={styles.pointsLabel}>{t('exact-results')}:</Text>
+            <Text style={styles.pointsTxt}>{exactResults}</Text>
+          </View>
         </View>
         
         {rankStyles.prize && (
