@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View, Pressable, Platform } from "react-native";
 import { ToastType, useToast } from "react-native-toast-notifications";
 import { BetProps, RoundProps, RoundsStateProps, Slug } from "../../types";
@@ -9,12 +9,13 @@ import { useRouter } from "expo-router";
 import { MAIN_COLOR } from "../../constants";
 import { getToken } from "../../utils/storeToken";
 import RankedPlayersFlatList from "../../components/RankedPlayersFlatList";
-import { getBetLeaders, getRounds, getRoundsState, swapRoundsBetLeaders } from "../../utils/leagueRounds";
+import { getRounds, getRoundsState, swapRoundsBetLeaders } from "../../utils/leagueRounds";
 import handleShare from "../../utils/handleShare";
 import { useTranslation } from "react-i18next";
 import { TournamentProps } from "../../types";
 import RoundsPicker from 'components/RoundPicker';
 import { Banner, interstitial } from "components/ads/Ads";
+import { getBetLeadersCursor } from "services/betService";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import LoadingCards from "../../components/LoadingCards";
 import { retrieveTournament } from "../../services/tournamentService";
@@ -33,6 +34,12 @@ export default function MyTournament({}) {
     const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
+
+    const [nextUrl, setNextUrl] = useState<string | null>(null);
+    const [loadingMore, setLoadingMore] = useState<boolean>(false);
+    const [refreshing, setRefreshing] = useState<boolean>(false);
+    const tokenRef = useRef<string>('');
+
     const { isXL } = useBreakpoint();
     const toast: ToastType = useToast()
     const router: Router = useRouter()
@@ -42,7 +49,8 @@ export default function MyTournament({}) {
     useEffect(() => {
         const getTournament = async (): Promise<void> => {
             try {
-                const token = await getToken()
+                const token: string = await getToken();
+                tokenRef.current = token;
                 const myTnt = await retrieveTournament(token, Number(tournamentId))
                 if (!myTnt) {
                     toast.show('There is been an error getting the tournament', {type: 'danger'})
@@ -50,27 +58,21 @@ export default function MyTournament({}) {
                     return;
                 } 
                 setTournament(myTnt)
-                getFirstBetLeaders(token, myTnt.league.id)
+
+                const roundsByLeague = await getRounds(token, myTnt.league.id);
+                setRounds(roundsByLeague);
+                setRoundsState(getRoundsState(roundsByLeague));
+
+                // First page via cursor
+                const firstRoundSlug = roundsByLeague[0].slug;
+                const page = await getBetLeadersCursor(token, firstRoundSlug,  Number(tournamentId), null);
+                setBets(page.results);
+                setNextUrl(page.next);
             } catch (error) {
                 toast.show(handleError(error), {type: 'danger'})
                 router.replace('/home')
-            } 
-        }
-
-        const getFirstBetLeaders = async (token: string, leagueId: number): Promise<void> => {
-            try {
-                const roundsByLeague = await getRounds(token, leagueId)
-                setRounds(roundsByLeague)
-                setRoundsState(getRoundsState(roundsByLeague)) 
-                if (roundsByLeague) {
-                    const firstRoundSlug: Slug = roundsByLeague[0].slug
-                    const betLeaders = await getBetLeaders(token, firstRoundSlug, Number(tournamentId)) 
-                    setBets(betLeaders)  
-                }
-            } catch (error) {
-                toast.show('There´s been an error getting the matches', {type: 'danger'})
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
         }
         
@@ -79,16 +81,35 @@ export default function MyTournament({}) {
 
     const swapRoundBetLeaders = async (roundId: number, roundSlug: Slug) => {
         try {
-            const {betLeaders, newRoundsState} = await swapRoundsBetLeaders(
-                roundSlug, Number(tournamentId), roundsState
-            )
+            const {newRoundsState} = await swapRoundsBetLeaders(roundSlug, roundsState);
+            setRoundsState(newRoundsState);
 
-            setBets(betLeaders)
-            setRoundsState(newRoundsState)
+            // Reset list and fetch first page via cursor
+            setBets([]);
+            setNextUrl(null);
+            setRefreshing(true);
+            const page = await getBetLeadersCursor(tokenRef.current, roundSlug, Number(tournamentId), null);
+            setBets(page.results);
+            setNextUrl(page.next);
         } catch (error) {
             toast.show('There`s been an error displaying the bets', {type: 'danger'})
         }
     }
+
+    const loadMore = async () => {
+        if (!nextUrl || loadingMore) return;
+        setLoadingMore(true);
+    
+        try {
+          const page = await getBetLeadersCursor(tokenRef.current, '', 0, nextUrl);
+          setBets(prev => [...prev, ...page.results]);
+          setNextUrl(page.next);
+        } catch (e) {
+          toast.show('There is been an error loading the rankings', {type: 'danger'});
+        } finally {
+          setLoadingMore(false);
+        }
+      }
 
     const handleTournamentClick = (pathname: string) => {
         router.push(`${pathname}/${tournamentId}/`)
@@ -150,7 +171,18 @@ export default function MyTournament({}) {
                     :
                         bets.length > 0
                         ?
-                        <RankedPlayersFlatList bets={bets} />
+                        <RankedPlayersFlatList
+                            bets={bets}
+                            onEnd={loadMore}
+                            loadingMore={loadingMore}
+                            refreshing={refreshing}
+                            onRefresh={() => {
+                            // Pull to refresh current round
+                            const current = rounds.find(round => roundsState[round.id]);
+                            if (!current) return;
+                            swapRoundBetLeaders(current.id, current.slug);
+                            }}
+                        />
                         :
                         <View><Text style={styles.noBetsTxt}>{t('no-bets')}</Text></View>
                 }

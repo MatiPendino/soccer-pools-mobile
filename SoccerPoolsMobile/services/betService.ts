@@ -15,16 +15,14 @@ export const betsRegister = async (token, leagueSlug) => {
     }
 }
 
-export const betsLeaders = async (token: string, roundSlug: Slug, tournamentId: number) => {
-    try {
-        const response = await api.get(
-            `/api/bets/bet_results/${roundSlug}/${tournamentId}/`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        return response.data
-    } catch (error) {
-        throw error.response.data
-    }
-}
+
+export const getBetLeadersCursor = async (
+    token: string, roundSlug: Slug, tournamentId: number, nextUrl?: string
+) => {
+    const url = nextUrl ?? `/api/bets/bet_results/v2/${roundSlug}/${tournamentId}/`;
+    const response = await api.get(url, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return response.data;
+};
