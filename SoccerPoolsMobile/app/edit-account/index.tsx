@@ -18,7 +18,7 @@ import TopBar from '../../components/TopBar';
 
 export default function EditAccount({}) {
     const { t } = useTranslation()
-    const [userInfo, setUserInfo] = useState<UserEditableProps>(null)
+    const [userInfo, setUserInfo] = useState<UserEditableProps>(null);
     const [profileImage, setProfileImage] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const toast = useToast()
@@ -65,8 +65,8 @@ export default function EditAccount({}) {
                     last_name: userData.last_name, 
                     email: userData.email, 
                     username: userData.username, 
-                    instagram_username: userData.instagram_username,
-                    twitter_username: userData.twitter_username
+                    instagram_username: userData.instagram_username || '',
+                    twitter_username: userData.twitter_username || ''
                 })
                 setProfileImage(userData.profile_image)
             } catch (error) {
