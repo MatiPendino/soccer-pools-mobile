@@ -19,7 +19,7 @@ export default function RoundsPicker({
 }: Props) {
     const [open, setOpen] = useState<boolean>(false);
 
-    // If it's the results tab, only show rounds that have bets
+    // If it's the results tab, only show rounds where the user has bets
     const visibleRounds = useMemo(
         () => (isResultsTab ? rounds.filter(round => round.has_bet_round) : rounds),
         [rounds, isResultsTab]

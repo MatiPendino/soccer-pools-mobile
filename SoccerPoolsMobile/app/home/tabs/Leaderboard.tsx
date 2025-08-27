@@ -110,7 +110,7 @@ export default function Leaderboard () {
       }
 
       {
-        isLoading
+        (isLoading || refreshing)
         ? 
         <LoadingCards cardHeight={80} nCards={5} cardColor='#d9d9d9' />
         : 
