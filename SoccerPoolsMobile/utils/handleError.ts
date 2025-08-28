@@ -1,32 +1,28 @@
-import * as Sentry from "@sentry/react-native";
+interface BackendError {
+  error_type?: string;
+  status_code?: number;
+  errors?: Record<string, string | string[]>;
+  details?: string;
+  detail?: string;
+};
 
-interface ErrorProps {
-    error_type: string
-    status_code: number
-    errors: object
-    details?: string
-}
+export default function handleError(error: BackendError | string): string {
+  // If it is already a string return as is
+  if (typeof error === 'string') return error;
 
-export default function handleError(error: ErrorProps): string {
-    let errorMessage = ''
+  // If it has a specific error_type or status_code handle those first
+  if (error.details && typeof error.details === 'string') return error.details;
+  if (error.detail && typeof error.detail === 'string') return error.detail;
 
-    if (error.details) {
-        errorMessage = error.details
-    } else {
-        if (!error.errors) {
-            Sentry.captureException(error)
-            return 'An unexpected error occurred. Please try again later.'
-        }
-        let keys = Object.keys(error.errors);
-        let lastKey = keys[keys.length - 1];
-
-        for (let key in error.errors) {
-            errorMessage += `${key.toUpperCase()}: ${error.errors[key][0]}`
-            if (key !== lastKey) {
-                errorMessage += '\n'
-            }
-        }
+  // Field errors under { errors: { field: msg | [msg] } }
+  if (error.errors && typeof error.errors === 'object') {
+    const lines: string[] = [];
+    for (const [key, value] of Object.entries(error.errors)) {
+      const msg = Array.isArray(value) ? (value[0] ?? '') : String(value ?? '');
+      if (msg) lines.push(`${key.toUpperCase()}: ${msg}`);
     }
+    if (lines.length) return lines.join('\n');
+  }
 
-    return errorMessage
+  return 'An unexpected error occurred. Please try again later.';
 }

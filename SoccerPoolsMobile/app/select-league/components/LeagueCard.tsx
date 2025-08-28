@@ -6,6 +6,7 @@ import { Router, useRouter } from 'expo-router';
 import { getToken } from '../../../utils/storeToken';
 import { betsRegister } from '../../../services/betService';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
+import handleError from 'utils/handleError';
 
 export default function LeagueCard ({item, setIsLoading}) {
     const { t } = useTranslation()
@@ -25,7 +26,7 @@ export default function LeagueCard ({item, setIsLoading}) {
             }
             router.replace('/home')
         } catch (error) {
-            toast.show('There is been an error joining the league. Please try later', { type: 'danger' });
+            toast.show(handleError(error), { type: 'danger' });
         } finally {
             setIsLoading(false)
         }
