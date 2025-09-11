@@ -35,6 +35,11 @@ export interface UserEditableProps {
     twitter_username?: string
 }
 
+export interface UserCoinsProps {
+    id: number
+    coins: number
+}
+
 export interface MatchProps {
     id: number
     team_1: TeamProps
@@ -106,4 +111,12 @@ export interface TournamentUserProps {
     tournament: TournamentProps,
     user: UserProps,
     tournament_user_state: 0 | 1 | 2 | 3
+}
+
+export interface PrizeProps {
+    id: number
+    title: string
+    image?: string
+    description?: string
+    coins_cost: number
 }

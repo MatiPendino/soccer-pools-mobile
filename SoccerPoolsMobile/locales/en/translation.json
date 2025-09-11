@@ -134,5 +134,10 @@
     "select-round": "Select Round",
     "no-rounds-available": "No rounds available",
     "points": "Points",
-    "exact-results": "Exact Results"
+    "exact-results": "Exact Results",
+    "see-prizes": "see prizes",
+    "prizes": "prizes",
+    "claim-rewards": "Claim your rewards for participating!",
+    "all-prizes-free": "All prizes are FREE. They are available for you to earn without investing a dime. The prizes are sent to most COUNTRIES of the world through local stores (Spain, Mexico, Argentina, Uruguay, Chile, Ecuator, United States, Colombia, etc.) without any surcharge for shipping or taxes.",
+    "prize-claimed-successfully": "Prize claimed successfully! We'll get in touch soon"
 }

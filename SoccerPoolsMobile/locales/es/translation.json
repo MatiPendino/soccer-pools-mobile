@@ -134,5 +134,10 @@
     "select-round": "Seleccionar Ronda",
     "no-rounds-available": "No hay rondas disponibles",
     "points": "Puntos",
-    "exact-results": "Exactos"
+    "exact-results": "Exactos",
+    "see-prizes": "ver premios",
+    "prizes": "premios",
+    "claim-rewards": "Reclama tu premio por participar!",
+    "all-prizes-free": "Todos los premios son GRATUITOS. Están disponibles para ganar sin pagar un centavo. Los premios son enviados a la mayoría de los países del mundo a través de tiendas locales (España, México, Argentina, Uruguay, Chile, Estados Unidos, Ecuador, Colombia, etc) sin subcargos por envío ni impuestos.",
+    "prize-claimed-successfully": "Premio reclamado exitosamente! Nos pondremos en contacto pronto."
 }

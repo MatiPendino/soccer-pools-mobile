@@ -15,3 +15,16 @@ export const updateCoins = async (token, coins, rewardType) => {
         throw error.response.data
     }
 }
+
+export const userCoinsRetrieve = async (token) => {
+    try {
+        const response = await api.get('/api/user/user_coins/', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        throw error.response.data
+    }
+}

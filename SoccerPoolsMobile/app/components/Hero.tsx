@@ -41,6 +41,15 @@ export default function Hero () {
                     >
                       <Text style={styles.ctaText}>{toCapitalCase(t('log-in'))}</Text>
                     </Link>  
+
+                    {Platform.OS === 'web' &&
+                      <Link 
+                        style={[styles.cta, styles.signUpCta, {width: isLG ? 310 : '100%'}]} 
+                        href='/prizes'
+                      >
+                        <Text style={styles.ctaText}>{toCapitalCase(t('see-prizes'))}</Text>
+                      </Link> 
+                    }
                 </View>
                 
             </View>
@@ -79,13 +88,12 @@ const styles = StyleSheet.create({
   },
   btnsContainer: {
     flexDirection: 'column', 
-    justifyContent: 'space-between'
+    gap: 10
   },
   cta: {
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    marginTop: 24,
     textAlign: 'center',
   },
   logInCta: {
@@ -95,6 +103,13 @@ const styles = StyleSheet.create({
   signUpCta: {
     backgroundColor: '#603b72a1',
     borderColor: '#452b6fff',
+    borderWidth: 3,
+    borderStyle: 'dotted',
+    color: 'white',
+  },
+  prizesCta: {
+    backgroundColor: 'orange',
+    borderColor: '#a45a0aff',
     borderWidth: 3,
     borderStyle: 'dotted',
     color: 'white',

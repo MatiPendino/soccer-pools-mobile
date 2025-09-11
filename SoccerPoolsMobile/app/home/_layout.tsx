@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Platform } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import Entypo from '@expo/vector-icons/Entypo';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useToast } from 'react-native-toast-notifications';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +17,7 @@ import { getFullUser } from '../../services/authService';
 import { removeToken } from '../../services/api';
 import handleShare from '../../utils/handleShare';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { toCapitalCase } from 'utils/helper';
 
 export default function HomeLayout() {
   const { isLG } = useBreakpoint();
@@ -107,6 +109,14 @@ export default function HomeLayout() {
               <Entypo name='game-controller' size={22} color='white' />
               <Text style={styles.shareTxt}>{t('leagues')}</Text>
             </Pressable>
+
+            {Platform.OS === 'web' &&
+              <Link href='/prizes?backto=home' style={styles.shareBtn}>
+                <FontAwesome name='gift' size={22} color='white' />
+                <Text style={styles.shareTxt}>{toCapitalCase(t('prizes'))}</Text>
+              </Link>
+            }
+
             <Pressable onPress={handleShare} style={styles.shareBtn}>
               <Entypo name='share' size={22} color='white' />
               <Text style={styles.shareTxt}>{t('share')}</Text>

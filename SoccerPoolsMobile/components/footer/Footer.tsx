@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Platform, Image } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { 
@@ -17,6 +17,7 @@ export default function Footer() {
     { label: toCapitalCase(t('log-in')), href: '/login' },
     { label: toCapitalCase(t('create-account')), href: '/create-account' },
     { label: t('download-app'), href: ANDROID_URL },
+    { label: toCapitalCase(t('see-prizes')), href: '/prizes'}
   ];
 
   const SOCIALS = [
