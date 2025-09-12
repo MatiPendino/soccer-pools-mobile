@@ -7,6 +7,7 @@ export function useBreakpoint() {
   const isMD = width >= breakpoints.sm && width < breakpoints.md;
   const isLG = width >= breakpoints.md;
   const isXL = width >= breakpoints.lg;
+  const isXXL = width >= breakpoints.xxl
 
-  return { width, height, isSM, isMD, isLG, isXL };
+  return { width, height, isSM, isMD, isLG, isXL, isXXL };
 }

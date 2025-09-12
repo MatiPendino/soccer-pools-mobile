@@ -8,11 +8,21 @@ import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 export default function Hero () {
     const { t } = useTranslation();
-    const { isLG } = useBreakpoint();
+    const { isLG, isXL, isXXL } = useBreakpoint();
+
+    const heroImageSize = () => {
+      if (isXXL) {
+        return {width: 650, height: 845}
+      } else if (isXL) {
+        return {width: 500, height: 650}
+      } 
+
+      return {width: 400, height: 570}
+    }
 
     return (
         <View style={styles.hero}>
-            <View style={{width: isLG ? 'auto' : '100%'}}>
+            <View style={{width: isLG ? '50%' : '100%'}}>
                 <Header />
 
                 <Text style={styles.heroTitle}>
@@ -56,8 +66,8 @@ export default function Hero () {
 
             {isLG &&
                 <Image
-                    source={require('../../assets/img/wireframe-landing.png')}
-                    style={styles.heroImage}
+                    source={require('../../assets/img/hero.png')}
+                    style={[styles.heroImage, {width: heroImageSize().width, height: heroImageSize().height}]}
                     resizeMode='contain'
                 />
             }
@@ -120,8 +130,6 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   heroImage: {
-    width: 400,
-    height: 570,
     alignSelf: 'center',
     marginTop: 24,
   },

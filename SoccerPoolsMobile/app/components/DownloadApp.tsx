@@ -6,15 +6,32 @@ import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 export default function DownloadApp () {
     const { t } = useTranslation();
-    const { isLG } = useBreakpoint();
+    const { isLG, isXL, isXXL } = useBreakpoint();
+
+    const downloadImageSize = () => {
+      if (isXXL) {
+            return {width: 600, height: 600}
+      } else if (isXL) {
+            return {width: 450, height: 450}
+      } 
+
+      return {width: 340, height: 340}
+    }
 
     return (
         <View 
             style={[styles.container, { flexDirection: isLG ? 'row' : 'column' }]}
         >
             <Image
-                source={require('../../assets/img/wireframe_mobile.png')}
-                style={[styles.wireframeImg, {marginHorizontal: isLG ? 0 : 'auto'}]}
+                source={require('../../assets/img/download_app.png')}
+                style={[
+                    styles.wireframeImg, 
+                    {
+                        marginHorizontal: isLG ? 0 : 'auto', 
+                        width: downloadImageSize().width, 
+                        height: downloadImageSize().height
+                    }
+                ]}
                 resizeMode='contain'
             />
 
