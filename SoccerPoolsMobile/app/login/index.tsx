@@ -16,6 +16,7 @@ import { getToken } from 'utils/storeToken';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
 import TopBar from 'components/TopBar';
+import Footer from 'components/footer/Footer';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -115,6 +116,13 @@ export default function Login({}) {
             </View>
 
             <GoogleAuthButton />
+
+            
+            {Platform.OS === 'web' && 
+                <View style={{marginTop: 50, width: '100%'}}>
+                    <Footer />
+                </View>
+            }    
         </ScrollView>   
     )
 }
@@ -123,7 +131,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: MAIN_COLOR,
-        paddingBottom: 20,
     },
     contentContainer: {
         alignItems: 'center',
