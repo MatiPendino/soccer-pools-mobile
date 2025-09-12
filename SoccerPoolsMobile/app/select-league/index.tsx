@@ -8,14 +8,14 @@ import { Entypo } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import { getToken } from '../../utils/storeToken';
-import { LeagueProps, UserProps } from '../../types';
+import { LeagueProps, UserCoinsProps } from '../../types';
 import { leagueList } from '../../services/leagueService';
 import LeagueCard from './components/LeagueCard';
 import Continents from './components/Continents';
 import { MAIN_COLOR } from '../../constants';
-import { getFullUser } from '../../services/authService';
 import CoinsDisplay from '../../components/CoinsDisplay';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { userCoinsRetrieve } from '../../services/userService';
 
 interface ContinentProps {
     id: number
@@ -62,7 +62,7 @@ const LeagueSelectionScreen = () => {
     const getUserCoins = async (): Promise<void> => {
       try {
         const token = await getToken()
-        const user: UserProps = await getFullUser(token)
+        const user: UserCoinsProps = await userCoinsRetrieve(token)
         setUserCoins(user.coins)
       } catch (error) {
         Sentry.captureException(error);
