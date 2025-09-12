@@ -123,13 +123,13 @@ export default function HomeLayout() {
             </Pressable>
 
             <View style={styles.socialMediaContainer}>
-              <Link href={INSTAGRAM_URL} style={styles.socialMediaBtn}>
+              <Link href={INSTAGRAM_URL} style={styles.socialMediaBtn} target='_blank'>
                 <Entypo name='instagram' size={30} color='white' />
               </Link>
-              <Link href={TWITTER_URL} style={styles.socialMediaBtn}>
+              <Link href={TWITTER_URL} style={styles.socialMediaBtn} target='_blank'>
                 <Entypo name='twitter' size={30} color='white' />
               </Link>
-              <Link href={FACEBOOK_URL} style={styles.socialMediaBtn}>
+              <Link href={FACEBOOK_URL} style={styles.socialMediaBtn} target='_blank'>
                 <Entypo name='facebook' size={30} color='white' />
               </Link>
             </View>
