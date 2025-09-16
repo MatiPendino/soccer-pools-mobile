@@ -12,12 +12,15 @@ const refreshToken = async (): Promise<void> => {
     if (!refrToken) throw new Error('No refresh token available')
 
     try {
+        console.log('trying to refresh token')
         const response = await api.post('/api/jwt/refresh/', {
             refresh: refrToken
         })
+        console.log('shouldnt be here', response.data)
         await AsyncStorage.setItem('accessToken', response.data.access)
         return response.data.access
     } catch (error) {
+        console.log('should be here', error.response.data)
         throw error.response.data
     }
 }
@@ -30,28 +33,18 @@ export const removeToken = async (): Promise<void> => {
         console.log(error.response.data)
     }
 }
-    
-
-api.interceptors.request.use(
-    async (config) => {
-        const token: string = await AsyncStorage.getItem('accessToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
 
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
+        console.log('response error', error.response)
+        console.log('status', error.response?.status)
         const originalRequest = error.config;
+        console.log('originalRequest', originalRequest)
         if (error.response && error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
+                console.log('attempt to refresh token')
                 const newAccessToken = await refreshToken();
                 axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
                 return api(originalRequest);
