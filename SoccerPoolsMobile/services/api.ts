@@ -62,6 +62,7 @@ api.interceptors.response.use(
                     console.log('Max retries reached');
                     await AsyncStorage.removeItem('accessToken');
                     await AsyncStorage.removeItem('refreshToken');
+                    await AsyncStorage.removeItem('n_retries');
                     return Promise.reject(error);
                 }
                 const newAccessToken = await refreshToken();
