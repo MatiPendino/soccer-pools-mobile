@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { MAIN_COLOR } from "../../constants";
+import { MAIN_COLOR } from '../../constants';
 
 const styles = StyleSheet.create({
     container: {
@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
         display: 'flex', 
         flexDirection: 'row',
         justifyContent: 'center',
-        paddingVertical: 10,
+        marginHorizontal: 'auto',
+        paddingVertical: 15,
         marginTop: 40,
         borderRadius: 10
     },
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
         color: 'white',
         marginStart: 5,
         fontWeight: '600',
-        fontSize: 17,
     },
     shareBtn: {
         flexDirection: "row",
@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     },
     shareTxt: {
         color: "white",
-        fontSize: 24,
         marginLeft: 10,
         fontWeight: '600'
     },
