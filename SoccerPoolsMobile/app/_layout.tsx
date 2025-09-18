@@ -13,6 +13,7 @@ import '../i18'
 // Sentry initialization
 Sentry.init({
     dsn: `https://${process.env.SENTRY_URL}.ingest.us.sentry.io/${process.env.SENTRY_KEY}`,
+    enabled: !Boolean(Number(process.env.TEST_ADS))
 })
 
 // Vexo Analytics Setup
