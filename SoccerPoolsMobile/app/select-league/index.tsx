@@ -5,7 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { Entypo } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, Router, useRouter } from 'expo-router';
 import * as Sentry from '@sentry/react-native';
 import { getToken } from '../../utils/storeToken';
 import { LeagueProps, UserCoinsProps } from '../../types';
@@ -40,12 +40,17 @@ const LeagueSelectionScreen = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [userCoins, setUserCoins] = useState<number>(0)
     const [isLoadingCoins, setIsLoadingCoins] = useState<boolean>(true)
+    const router: Router = useRouter();
     const { isLG } = useBreakpoint();
 
     useEffect(() => {
         const getLeagueList = async (): Promise<void> => {
             try {
                 const token = await getToken()
+                if (!token) {
+                    router.replace('/login')
+                    return
+                }
                 const leagues: LeagueProps[] = await leagueList(token, selectedContinent.id)
                 setLeagues(leagues)
             } catch (error) {

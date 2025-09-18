@@ -50,6 +50,10 @@ export default function MyTournament({}) {
         const getTournament = async (): Promise<void> => {
             try {
                 const token: string = await getToken();
+                if (!token) {
+                    router.replace('/login')
+                    return
+                }
                 tokenRef.current = token;
                 const myTnt = await retrieveTournament(token, Number(tournamentId))
                 if (!myTnt) {

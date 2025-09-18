@@ -29,6 +29,10 @@ export default function PendingInvites () {
         const getPendingInvites = async () => {
             try {
                 const tempToken = await getToken()
+                if (!tempToken) {
+                    router.replace('/login')
+                    return
+                }
                 const users = await listPendingTournamentUsers(tempToken, tournamentId)
                 setToken(tempToken)
                 setPendingTournamentUsers(users)

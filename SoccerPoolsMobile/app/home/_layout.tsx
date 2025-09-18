@@ -35,9 +35,13 @@ export default function HomeLayout() {
     (async () => {
       try {
         const token = await getToken();
-        const u = await getFullUser(token);
-        setCurrentCoins(u.coins);
-        setUser(u);
+        if (!token) {
+          router.replace('/login');
+          return;
+        }
+        const user = await getFullUser(token);
+        setCurrentCoins(user.coins);
+        setUser(user);
       } catch {
         toast.show('There was an error retrieving the user details', { type: 'danger' });
       } finally {

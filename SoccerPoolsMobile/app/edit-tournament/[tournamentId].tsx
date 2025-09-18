@@ -25,6 +25,10 @@ export default function EditTournament () {
         const getTournament = async () => {
             try {
                 const token = await getToken()
+                if (!token) {
+                    router.replace('/login')
+                    return
+                }
                 const tournament = await retrieveTournament(token, Number(tournamentId))
                 setTournament(tournament)  
             } catch (error) {

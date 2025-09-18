@@ -58,6 +58,10 @@ export default function EditAccount({}) {
         const retrieveUserDetails = async () => {
             try {
                 const token = await getToken()
+                if (!token) {
+                    router.replace('/login')
+                    return
+                }
                 const userData = await getUser(token)
 
                 setUserInfo({
