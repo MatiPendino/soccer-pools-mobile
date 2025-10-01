@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Platform, Image } from 'react-native'
 import { useTranslation } from 'react-i18next';
-import { Link } from 'expo-router';
+import { Link, useLocalSearchParams } from 'expo-router';
 import GoogleAuthButton from 'components/GoogleAuthButton';
 import Header from 'components/header/Header';
 import { toCapitalCase } from 'utils/helper';
@@ -8,6 +8,7 @@ import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 export default function Hero () {
     const { t } = useTranslation();
+    const { referralCode } = useLocalSearchParams();
     const { isLG, isXL, isXXL } = useBreakpoint();
 
     const heroImageSize = () => {
@@ -36,18 +37,21 @@ export default function Hero () {
                     { paddingHorizontal: isLG ? 0 : 10, width: isLG ? '80%' : '100%' }
                   ]}
                 >
-                    <GoogleAuthButton isHome={true} />
+                    <GoogleAuthButton 
+                      referralCode={referralCode ? referralCode : ''} 
+                      callingRoute='home' 
+                    />
                     
                     <Link 
                       style={[styles.cta, styles.signUpCta, {width: isLG ? 310 : '100%'}]} 
-                      href='/create-account'
+                      href={`/create-account?referralCode=${referralCode ? referralCode : ''}`}
                     >
                       <Text style={styles.ctaText}>{t('register-now')}</Text>
                     </Link>  
 
                     <Link 
                       style={[styles.cta, styles.logInCta, {width: isLG ? 310 : '100%'}]} 
-                      href='/login'
+                      href={`/login?referralCode=${referralCode ? referralCode : ''}`}
                     >
                       <Text style={styles.ctaText}>{toCapitalCase(t('log-in'))}</Text>
                     </Link>  
@@ -55,7 +59,7 @@ export default function Hero () {
                     {Platform.OS === 'web' &&
                       <Link 
                         style={[styles.cta, styles.signUpCta, {width: isLG ? 310 : '100%'}]} 
-                        href='/prizes'
+                        href={`/prizes?referralCode=${referralCode ? referralCode : ''}`}
                       >
                         <Text style={styles.ctaText}>{toCapitalCase(t('see-prizes'))}</Text>
                       </Link> 

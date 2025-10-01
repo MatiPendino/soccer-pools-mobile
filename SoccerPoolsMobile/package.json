@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/react-native-fontawesome": "^0.3.2",
     "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-firebase/analytics": "^21.13.0",
     "@react-native-firebase/app": "^21.13.0",
@@ -24,9 +25,11 @@
     "axios": "^1.7.7",
     "expo": "^52.0.23",
     "expo-auth-session": "~6.0.1",
+    "expo-build-properties": "~0.13.3",
     "expo-dev-client": "~5.0.7",
     "expo-image": "~2.0.3",
     "expo-image-picker": "~16.0.3",
+    "expo-linear-gradient": "~14.0.2",
     "expo-localization": "~16.0.1",
     "expo-notifications": "~0.29.13",
     "expo-router": "^4.0.15",
@@ -51,9 +54,7 @@
     "react-native-toast-notifications": "^3.4.0",
     "react-native-web": "0.20.0",
     "typescript": "~5.3.3",
-    "vexo-analytics": "^1.4.6",
-    "expo-linear-gradient": "~14.0.2",
-    "expo-build-properties": "~0.13.3"
+    "vexo-analytics": "^1.4.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

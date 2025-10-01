@@ -6,17 +6,17 @@ import { Router, useRouter } from 'expo-router';
 import * as Google from 'expo-auth-session/providers/google';
 import * as AuthSession from 'expo-auth-session';
 import * as Sentry from '@sentry/react-native';
-import { googleOauth2SignIn, login } from 'services/authService';
+import { googleOauth2SignIn } from 'services/authService';
 import { getUserInLeague } from 'services/authService';
 import { toCapitalCase } from 'utils/helper';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface GoogleAuthButtonProps {
-    isLogIn?: boolean;
-    isHome?: boolean
+    callingRoute: 'home' | 'login';
+    referralCode?: string  | string[];
 }
 
-export default function GoogleAuthButton ({isLogIn=true, isHome=false}: GoogleAuthButtonProps) {
+export default function GoogleAuthButton ({callingRoute, referralCode}: GoogleAuthButtonProps) {
     const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
     const toast: ToastType = useToast();
     const router: Router = useRouter();
@@ -54,7 +54,10 @@ export default function GoogleAuthButton ({isLogIn=true, isHome=false}: GoogleAu
             try {
                 const accessToken = response.authentication?.accessToken
                 if (accessToken) {
-                    const { access, refresh } = await googleOauth2SignIn(accessToken)
+                    const { access, refresh } = await googleOauth2SignIn(
+                        accessToken, 
+                        referralCode && referralCode.length > 0 ? referralCode.toString() : undefined
+                    )
                     await userInLeague(access)
                 } else {
                     Sentry.captureException('No access token received from Google')
@@ -109,13 +112,13 @@ export default function GoogleAuthButton ({isLogIn=true, isHome=false}: GoogleAu
             style={[
                 styles.googleBtn, 
                 (isGoogleLoading || !request) && styles.googleContainerDisabled,
-                { width: isLG ? 310 : isHome ? '100%' : '90%' }
+                { width: isLG ? 310 : callingRoute === 'home' ? '100%' : '90%' }
             ]}
         >
             <View style={styles.googleContainer}>
                 <Text style={styles.googleTxt}>
                     {
-                        isLogIn
+                        callingRoute === 'login'
                         ?
                         t('log-in-with')
                         :

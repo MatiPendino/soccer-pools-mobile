@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { ToastType, useToast } from 'react-native-toast-notifications'
-import { View, Image, StyleSheet, Text, TouchableOpacity, Platform, ScrollView, Alert } from 'react-native'
-import { Link, Router, useRouter } from 'expo-router';
+import { 
+    View, Image, StyleSheet, Text, TouchableOpacity, Platform, ScrollView, Alert 
+} from 'react-native';
+import { Link, Router, useLocalSearchParams, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useTranslation } from 'react-i18next';
 import { MAIN_COLOR } from '../../constants';
@@ -31,6 +33,7 @@ export default function Login({}) {
     const router: Router = useRouter();
     const toast: ToastType = useToast();
     const { isLG } = useBreakpoint();
+    const { referralCode } = useLocalSearchParams();
 
     useEffect(() => {
         const checkUserLeagueStatus = async (token): Promise<void> => {
@@ -72,7 +75,10 @@ export default function Login({}) {
             contentContainerStyle={styles.contentContainer}
             showsVerticalScrollIndicator={true}
         >
-            <TopBar url='/' text={t('log-in')} />
+            <TopBar 
+                url={`/?referralCode=${referralCode ? referralCode : ''}`} 
+                text={t('log-in')} 
+            />
 
             <Image 
                 source={require('../../assets/icon-no-bg.png')}
@@ -112,10 +118,18 @@ export default function Login({}) {
                     <Text style={styles.forgotCreateText}>{t('forgot-password')}</Text>
                 </TouchableOpacity>
 
-                <Link href='/create-account' style={styles.forgotCreateText}>{t('create-account')}</Link>
+                <Link 
+                    href={`/create-account?referralCode=${referralCode ? referralCode : ''}`} 
+                    style={styles.forgotCreateText}
+                >
+                    {t('create-account')}
+                </Link>
             </View>
 
-            <GoogleAuthButton />
+            <GoogleAuthButton 
+                callingRoute='login' 
+                referralCode={referralCode ? referralCode : ''}
+            />
 
             
             {Platform.OS === 'web' && 

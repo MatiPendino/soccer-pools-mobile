@@ -40,6 +40,12 @@ export interface UserCoinsProps {
     coins: number
 }
 
+export interface UserMemberProps {
+    profile_image: string
+    username: string
+    created_at: string
+}
+
 export interface MatchProps {
     id: number
     team_1: TeamProps

@@ -105,7 +105,9 @@ const LeagueSelectionScreen = () => {
       
       <View style={styles.background}>
         <View style={styles.header}>
-          <Text style={styles.title}>{t('select-league')}</Text>
+          <Text style={[styles.headerTitle, isLG && styles.headerTitleLG]}>
+            {t('select-league')}
+          </Text>
         </View>
         
         <View style={styles.tabsContainer}>
@@ -173,13 +175,16 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     alignItems: 'center',
   },
-  title: {
+  headerTitle: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: 'white',
-    textAlign: 'center',
-    letterSpacing: 1,
-    marginTop: 5
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  headerTitleLG: {
+    fontSize: 36,
   },
   // Continent FlatList styles
   tabsContainer: {

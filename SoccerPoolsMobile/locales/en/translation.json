@@ -139,5 +139,13 @@
     "prizes": "prizes",
     "claim-rewards": "Claim your rewards for participating!",
     "all-prizes-free": "All prizes are FREE. They are available for you to earn without investing a dime. The prizes are sent to most COUNTRIES of the world through local stores (Spain, Mexico, Argentina, Uruguay, Chile, Ecuator, United States, Colombia, etc.) without any surcharge for shipping or taxes.",
-    "prize-claimed-successfully": "Prize claimed successfully! We'll get in touch soon"
+    "prize-claimed-successfully": "Prize claimed successfully! We'll get in touch soon",
+    "referrals": "Referrals",
+    "start-winning-today": "Start winning today",
+    "invite-new-members": "Invite new members with your link! Both will get 5000 coins when they register, plus 10% of their earnings from leagues and rounds",
+    "your-invitation-methods": "Your invitation methods",
+    "members": "Members",
+    "no-members-yet": "You have not invited any member yet",
+    "share-referral-link": "Share your referral link to start winning rewards",
+    "referral-link-success": "Referral link copied successfully"
 }

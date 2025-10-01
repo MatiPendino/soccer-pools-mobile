@@ -28,7 +28,7 @@ export default function Prizes () {
     const toast: ToastType = useToast();
     const router: Router = useRouter();
     const { t } = useTranslation();
-    const { backto } = useLocalSearchParams();
+    const { backto, referralCode } = useLocalSearchParams();
 
     const { isLG } = useBreakpoint();
 
@@ -84,10 +84,22 @@ export default function Prizes () {
     return (
         <ScrollView style={styles.screen}>
             <View style={styles.headerContainer}>
-                <Link href={backto === 'home' ? '/home' : '/'} style={styles.arrowLink}>
+                <Link 
+                    href={
+                        backto === 'home' 
+                        ? 
+                        '/home' 
+                        : 
+                        `/?referralCode=${referralCode ? referralCode : ''}`
+                    }
+                    style={styles.arrowLink}
+                >
                     <Entypo name='chevron-left' color='white' size={30} />
                 </Link>
-                <Text style={styles.header}>{toCapitalCase(t('prizes'))}</Text>
+                <Text style={[styles.headerTitle, isLG && styles.headerTitleLG]}>
+                    {toCapitalCase(t('prizes'))}
+                </Text>
+                
                 <Text style={styles.subtitle}>{t('claim-rewards')}</Text>
                 {token && !isLoading &&
                     <View style={styles.coinsContainer}>
@@ -148,11 +160,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 15,
   },
-  header: {
-    fontSize: 32,
-    fontWeight: 'bold',
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '800',
     color: 'white',
-    letterSpacing: 1,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  headerTitleLG: {
+    fontSize: 36,
   },
   subtitle: {
     fontSize: 19,

@@ -120,15 +120,6 @@ export default function HomeLayout() {
 
             <Pressable 
               onHoverIn={(e) => handleHover(e, 'in')} onHoverOut={(e) => handleHover(e, 'out')}
-              onPress={() => router.push('/home/how-to-play')} 
-              style={styles.shareBtn}
-            >
-              <Entypo name='help' size={isXXL ? 19 : 17} color='white' />
-              <Text style={[styles.shareTxt, {fontSize: isXXL ? 21 : 19}]}>{t('how-to-play')}</Text>
-            </Pressable>
-
-            <Pressable 
-              onHoverIn={(e) => handleHover(e, 'in')} onHoverOut={(e) => handleHover(e, 'out')}
               onPress={() => router.push('/select-league')} 
               style={styles.shareBtn}
             >
@@ -149,12 +140,36 @@ export default function HomeLayout() {
 
             <Pressable 
               onHoverIn={(e) => handleHover(e, 'in')} onHoverOut={(e) => handleHover(e, 'out')}
-              onPress={handleShare} 
+              onPress={() => router.push(`/home/referrals?referralCode=${user.referral_code}`)} 
               style={styles.shareBtn}
             >
-              <Entypo name='share' size={isXXL ? 19 : 17} color='white' />
-              <Text style={[styles.shareTxt, {fontSize: isXXL ? 21 : 19}]}>{t('share')}</Text>
+              <Entypo name='add-user' size={isXXL ? 19 : 17} color='white' />
+              <Text style={[styles.shareTxt, {fontSize: isXXL ? 21 : 19}]}>{t('referrals')}</Text>
             </Pressable>
+
+            <Pressable 
+              onHoverIn={(e) => handleHover(e, 'in')} onHoverOut={(e) => handleHover(e, 'out')}
+              onPress={() => router.push('/home/how-to-play')} 
+              style={styles.shareBtn}
+            >
+              <Entypo name='help' size={isXXL ? 19 : 17} color='white' />
+              <Text style={[styles.shareTxt, {fontSize: isXXL ? 21 : 19}]}>
+                {t('how-to-play')}
+              </Text>
+            </Pressable>
+
+            {Platform.OS === 'android' &&
+              <Pressable 
+                onHoverIn={(e) => handleHover(e, 'in')} onHoverOut={(e) => handleHover(e, 'out')}
+                onPress={() => handleShare()} 
+                style={styles.shareBtn}
+              >
+                <Entypo name='share' size={isXXL ? 19 : 17} color='white' />
+                <Text style={[styles.shareTxt, {fontSize: isXXL ? 21 : 19}]}>
+                  {t('share')}
+                </Text>
+              </Pressable>
+            }
 
             <View style={styles.socialMediaContainer}>
               <Link href={INSTAGRAM_URL} style={styles.socialMediaBtn} target='_blank'>
@@ -187,6 +202,12 @@ export default function HomeLayout() {
         name='how-to-play'
         options={{
           title: t('how-to-play'),
+        }}
+      />
+      <Drawer.Screen
+        name='referrals'
+        options={{
+          title: t('referrals'),
         }}
       />
     </Drawer>

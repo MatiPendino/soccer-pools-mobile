@@ -52,7 +52,7 @@
     "no-pending-invites": "No hay invitaciones pendientes",
     "accept": "ACEPTAR",
     "reject": "RECHAZAR",
-    "select-league": "SELECCIONA UNA LIGA",
+    "select-league": "Selecciona una liga",
     "joined-league-successfully": "Te has unido a {{leagueTitle}} correctamente!",
     "password-updated-successfully": "Contraseña actualizada correctamente!",
     "update-your-password": "Actualiza tu Contraseña",
@@ -139,5 +139,13 @@
     "prizes": "premios",
     "claim-rewards": "Reclama tu premio por participar!",
     "all-prizes-free": "Todos los premios son GRATUITOS. Están disponibles para ganar sin pagar un centavo. Los premios son enviados a la mayoría de los países del mundo a través de tiendas locales (España, México, Argentina, Uruguay, Chile, Estados Unidos, Ecuador, Colombia, etc) sin subcargos por envío ni impuestos.",
-    "prize-claimed-successfully": "Premio reclamado exitosamente! Nos pondremos en contacto pronto."
+    "prize-claimed-successfully": "Premio reclamado exitosamente! Nos pondremos en contacto pronto.",
+    "referrals": "Referidos",
+    "start-winning-today": "Comenzá a ganar hoy",
+    "invite-new-members": "Invita a nuevos miembros con tu enlace! Ambos recibirán 5000 monedas con el registro, y obtendrás el 10% de lo generado por tus miembros al ganar rondas y ligas",
+    "your-invitation-methods": "Tus métodos de invitación",
+    "members": "Miembros",
+    "no-members-yet": "No has invitado a ningún miembro aún",
+    "share-referral-link": "Comparte tu enlace de referido para comenzar a ganar recompensas",
+    "referral-link-success": "Enlace copiado correctamente"
 }

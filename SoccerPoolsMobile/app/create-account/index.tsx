@@ -1,5 +1,5 @@
 import { ScrollView, Text, ActivityIndicator, View, Platform, Alert } from "react-native";
-import { Link } from "expo-router";
+import { Link, useLocalSearchParams } from 'expo-router';
 import { useState, useEffect } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { useRouter } from "expo-router";
@@ -35,6 +35,7 @@ export default function CreateAccount({}) {
     const toast = useToast()
     const router = useRouter()
     const { isLG } = useBreakpoint();
+    const { referralCode } = useLocalSearchParams();
 
     useEffect(() => {
         const checkUserLeagueStatus = async (token): Promise<void> => {
@@ -60,8 +61,13 @@ export default function CreateAccount({}) {
         setIsLoading(true)
         try {
             const registerStatus = await register(
-                firstName.trim(), lastName.trim(), username.trim(), email.trim(), password.trim()
-            )
+                firstName.trim(), 
+                lastName.trim(), 
+                username.trim(), 
+                email.trim(), 
+                password.trim(),
+                referralCode ? referralCode : ''
+            );
             if (registerStatus === 201) {
                 toast.show(t('check-email'), {type: 'success'})
                 setEmail('')
@@ -83,9 +89,15 @@ export default function CreateAccount({}) {
             contentContainerStyle={styles.contentContainer}
             showsVerticalScrollIndicator={true}
         >
-            <TopBar url='/' text={t('create-your-account')} />
+            <TopBar 
+                url={`/?referralCode=${referralCode ? referralCode : ''}`} 
+                text={t('create-your-account')} 
+            />
                 
-            <GoogleAuthButton isLogIn={false} />
+            <GoogleAuthButton 
+                referralCode={referralCode ? referralCode : ''}  
+                callingRoute='login' 
+            />
 
             <View style={styles.separationContainer}>
                 <View style={styles.whiteLine}></View>
@@ -138,7 +150,12 @@ export default function CreateAccount({}) {
                 <CustomButton callable={createAccount} btnText={t('create-account')} btnColor='#2F2766' />
             }
 
-            <Link href='/login' style={styles.alreadyTxt}>{t('already-account')}</Link>
+            <Link 
+                href={`/login?referralCode=${referralCode ? referralCode : ''}`} 
+                style={styles.alreadyTxt}
+            >
+                {t('already-account')}
+            </Link>
 
             {Platform.OS === 'web' && 
                 <View style={{marginTop: 50, width: '100%'}}>

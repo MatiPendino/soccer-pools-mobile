@@ -3,7 +3,7 @@ import api from "./api";
 import {storeToken} from "../utils/storeToken"
 import { generateUserFormData } from '../utils/generateFormData';
 
-export const register = async(name, last_name, username, email, password) => {
+export const register = async(name, last_name, username, email, password, referralCode) => {
     try {
         const response = await api.post('/api/users/', {
             username: username,
@@ -11,6 +11,7 @@ export const register = async(name, last_name, username, email, password) => {
             name: name,
             last_name: last_name,
             password: password, 
+            referral_code: referralCode && referralCode.length > 0 ? referralCode : undefined
         })
         return response.status
     } catch (error) {
@@ -119,10 +120,11 @@ export const editPassword = async (token, oldPassword, newPassword) => {
     }
 }
 
-export const googleOauth2SignIn = async (accessToken) => {
+export const googleOauth2SignIn = async (accessToken, referralCode?) => {
     try {
         const response = await api.post("/api/user/android_google_oauth2/", {
             accessToken: accessToken ,
+            referralCode: referralCode && referralCode
         })
 
         const {access, refresh} = response.data;

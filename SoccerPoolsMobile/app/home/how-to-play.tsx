@@ -63,12 +63,15 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '800',
     color: 'white',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   headerTitleLG: {
-    fontSize: 32,
+    fontSize: 36,
   },
   headerSubtitle: {
     marginTop: 6,

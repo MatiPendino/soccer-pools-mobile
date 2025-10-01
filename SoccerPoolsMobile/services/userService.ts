@@ -28,3 +28,16 @@ export const userCoinsRetrieve = async (token) => {
         throw error.response.data
     }
 }
+
+export const listMembers = async (token) => {
+    try {
+        const response = await api.get('/api/user/user/members/', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}

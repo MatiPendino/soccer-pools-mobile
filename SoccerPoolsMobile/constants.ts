@@ -6,6 +6,7 @@ export const BRONZE_COLOR: string = '#CD7F32'
 export const DARK_PURPLE_COLOR: string = '#25223b'
 export const PURPLE_COLOR: string = '#362B6F'
 export const REVIEW_APP_COINS_PRIZE: number = 2000
+export const WEBSITE_URL: string = 'https://prodeapp.com';
 export const ANDROID_URL: string= 'https://play.google.com/store/apps/details?id=com.matipendino2001.soccerpools'
 export const PORTFOLIO_URL: string = 'https://matiaspendino.com'
 export const TWITTER_URL: string = 'https://x.com/prode_app'
