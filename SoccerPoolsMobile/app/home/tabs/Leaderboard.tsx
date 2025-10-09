@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { StyleSheet } from 'react-native';
-import { useToast } from 'react-native-toast-notifications';
+import { ToastType, useToast } from 'react-native-toast-notifications';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import { MAIN_COLOR } from '../../../constants';
-import { RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps, CoinsPrizes } from '../../../types';
+import { 
+  RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps, CoinsPrizes 
+} from '../../../types';
 import { getToken } from '../../../utils/storeToken';
 import RankedPlayersFlatList from '../../../components/RankedPlayersFlatList';
 import { getRounds, getRoundsState, swapRoundsBetLeaders } from '../../../utils/leagueRounds';
@@ -26,7 +28,7 @@ export default function Leaderboard () {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const tokenRef = useRef<string>('');
 
-  const toast = useToast();
+  const toast: ToastType = useToast();
   const Wrapper = getWrapper();
 
   const swapRoundBetLeaders = async (roundId: number, roundSlug: Slug) => {
@@ -66,7 +68,6 @@ export default function Leaderboard () {
         // First page via cursor
         const firstRoundSlug = roundsByLeague[0].slug;
         const page = await getBetLeadersCursor(token, firstRoundSlug, 0, null);
-        console.log(page);
         setBets(page.results);
         setNextUrl(page.next);
       } catch (error) {
@@ -85,7 +86,6 @@ export default function Leaderboard () {
 
     try {
       const page = await getBetLeadersCursor(tokenRef.current, '', 0, nextUrl);
-      console.log(page);
       setBets(prev => [...prev, ...page.results]);
       setNextUrl(page.next);
     } catch (e) {

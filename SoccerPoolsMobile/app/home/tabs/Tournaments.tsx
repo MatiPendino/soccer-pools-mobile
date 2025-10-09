@@ -1,71 +1,76 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import { 
     View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView,
-} from "react-native";
-import { FloatingAction } from "react-native-floating-action";
-import { useRouter } from "expo-router";
-import { useToast } from "react-native-toast-notifications";
-import { MaterialIcons } from "@expo/vector-icons";
-import { MAIN_COLOR } from "../../../constants";
-import { LeagueProps, TournamentProps } from "../../../types";
-import TournamentCard from "../components/TournamentCard";
-import { getToken } from "../../../utils/storeToken";
-import { listTournaments } from "../../../services/tournamentService";
-import { useTranslation } from "react-i18next";
-import { userLeague } from "../../../services/leagueService";
+} from 'react-native';
+import { FloatingAction } from 'react-native-floating-action';
+import { Router, useRouter } from 'expo-router';
+import { ToastType, useToast } from 'react-native-toast-notifications';
+import { MaterialIcons } from '@expo/vector-icons';
+import { MAIN_COLOR } from '../../../constants';
+import { LeagueProps, TournamentProps } from '../../../types';
+import TournamentCard from '../components/TournamentCard';
+import { getToken } from '../../../utils/storeToken';
+import { listTournaments } from '../../../services/tournamentService';
+import { useTranslation } from 'react-i18next';
+import { userLeague } from '../../../services/leagueService';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
 
 export default function Tournaments ({}) {
-    const { t } = useTranslation()
-    const [tournamentLookup, setTournamentLookup] = useState<string>('')
-    const [tournaments, setTournaments] = useState<TournamentProps[]>(null)
-    const [leagueId, setLeagueId] = useState<number>(null)
-    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const { t } = useTranslation();
+    const [tournamentLookup, setTournamentLookup] = useState<string>('');
+    const [tournaments, setTournaments] = useState<TournamentProps[]>(null);
+    const [leagueId, setLeagueId] = useState<number>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const { isLG } = useBreakpoint();
-    const router = useRouter()
-    const toast = useToast()
+    const router: Router = useRouter();
+    const toast: ToastType = useToast();
 
     useEffect(() => {
         const getLeague = async (): Promise<void> => {
             try {
-                const token: string = await getToken()
+                const token: string = await getToken();
                 /* 
                     Since this function is called everytime the tournamentLookup updates,
                     to avoid fetching the league more than once, if there is a leagueId
                     already stored in the state, call getTournaments directly and return
                 */
                 if (leagueId) {
-                    getTournaments(token, leagueId)
-                    return
+                    getTournaments(token, leagueId);
+                    return;
                 }
 
-                const league: LeagueProps = await userLeague(token)
-                setLeagueId(league.id)
-                getTournaments(token, league.id)
+                const league: LeagueProps = await userLeague(token);
+                setLeagueId(league.id);
+                getTournaments(token, league.id);
             } catch (error) {
-                console.log(error)
-                toast.show('There is been an error displaying league information', {type: 'danger'})
+                toast.show(
+                    'There is been an error displaying league information', {type: 'danger'}
+                );
             } 
         }
 
         const getTournaments = async (token, leagueId) => {
             try {
                 if (token) {
-                    const data: TournamentProps[] = await listTournaments(token, leagueId, tournamentLookup)
-                    setTournaments(data)
+                    const data: TournamentProps[] = await listTournaments(
+                        token, 
+                        leagueId, 
+                        tournamentLookup
+                    );
+                    setTournaments(data);
                 }
             } catch (error) {
-                toast.show(error.toString(), { type: 'danger' })
+                toast.show(error.toString(), { type: 'danger' });
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
         }
 
-        getLeague()
+        getLeague();
     }, [tournamentLookup])
 
-    const actions = []
+    const actions = [];
 
     const renderEmptyState = () => (
         <View style={styles.emptyStateContainer}>
@@ -73,14 +78,14 @@ export default function Tournaments ({}) {
             <Text style={styles.noTournamentTxt}>{t('not-tournament-yet')}</Text>
             <Text style={styles.emptyStateSubtitle}>{t('create-tournament-tapping-button')}</Text>
         </View>
-    )
+    );
 
     const renderLoader = () => (
         <View style={styles.loaderContainer}>
             <ActivityIndicator size='large' color='#ffffff' />
             <Text style={styles.loaderText}>{t('loading-tournaments')}</Text>
         </View>
-    )
+    );
 
     return (
         <View style={styles.container}>
@@ -106,7 +111,7 @@ export default function Tournaments ({}) {
 
                 {tournamentLookup.length > 0 && (
                     <TouchableOpacity
-                        onPress={() => setTournamentLookup("")}
+                        onPress={() => setTournamentLookup('')}
                         style={styles.clearIcon}
                     >
                         <MaterialIcons name='clear' size={20} color='#666' />

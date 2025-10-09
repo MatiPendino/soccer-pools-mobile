@@ -1,8 +1,8 @@
-import { View, Image, StyleSheet, Text } from "react-native"
+import { View, Image, StyleSheet, Text } from 'react-native';
 
 interface TeamLogoProps {
-    teamBadge: string
-    teamAcronym: string
+    teamBadge: string;
+    teamAcronym: string;
 }
 
 export default function TeamLogo({teamBadge, teamAcronym}: TeamLogoProps) {

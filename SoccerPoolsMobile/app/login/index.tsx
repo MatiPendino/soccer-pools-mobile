@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { ToastType, useToast } from 'react-native-toast-notifications'
+import React, { useState, useEffect } from 'react';
+import { ToastType, useToast } from 'react-native-toast-notifications';
 import { 
     View, Image, StyleSheet, Text, TouchableOpacity, Platform, ScrollView, Alert 
 } from 'react-native';
@@ -11,7 +11,7 @@ import { login } from 'services/authService';
 import CustomInputSign from 'components/CustomInputSign';
 import CustomButton from 'components/CustomButton';
 import handleError from 'utils/handleError';
-import ForgotPasswordModal from '../../modals/ForgotPasswordModal'
+import ForgotPasswordModal from '../../modals/ForgotPasswordModal';
 import GoogleAuthButton from 'components/GoogleAuthButton';
 import { removeToken } from 'services/api';
 import { getToken } from 'utils/storeToken';
@@ -40,15 +40,19 @@ export default function Login({}) {
             try {
                router.replace(await getUserLeagueRoute(token));
             } catch (error) {
-                Alert.alert('Error', handleError(error), [{ text: 'OK', onPress: () => {}}], {cancelable: false});
-                await removeToken()
+                Alert.alert(
+                    'Error', handleError(error), 
+                    [{ text: 'OK', onPress: () => {}}], 
+                    {cancelable: false}
+                );
+                await removeToken();
             }
-        }
+        };
     
         const checkAuth = async (): Promise<void> => {
             const token = await getToken();
             if (!!token) {
-                checkUserLeagueStatus(token)
+                checkUserLeagueStatus(token);
             }
         }
         
@@ -61,13 +65,13 @@ export default function Login({}) {
 
     const logIn = async (): Promise<void> => {
         try {
-            const {access, refresh} = await login(username.trim(), password.trim())
-            toast.show(t('logged-in-successfully'), {type: 'success'})
-            await userInLeague(access)
+            const {access, refresh} = await login(username.trim(), password.trim());
+            toast.show(t('logged-in-successfully'), {type: 'success'});
+            await userInLeague(access);
         } catch (error) {
-            toast.show(handleError(error), {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'});
         }
-    }
+    };
 
     return (
         <ScrollView 

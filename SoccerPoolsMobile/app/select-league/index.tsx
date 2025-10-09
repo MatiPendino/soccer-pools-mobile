@@ -18,13 +18,13 @@ import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { userCoinsRetrieve } from '../../services/userService';
 
 interface ContinentProps {
-    id: number
-    name: string
+    id: number;
+    name: string;
 }
 
 const LeagueSelectionScreen = () => {
-    const { t } = useTranslation()
-    const toast: ToastType = useToast()
+    const { t } = useTranslation();
+    const toast: ToastType = useToast();
     const CONTINENTS_DATA: ContinentProps[] = [
         { id: 6, name: t('all') },
         { id: 5, name: t('tournaments') },
@@ -35,49 +35,49 @@ const LeagueSelectionScreen = () => {
         { id: 4, name: t('oceania') },
     ];
 
-    const [leagues, setLeagues] = useState<LeagueProps[]>([])
-    const [selectedContinent, setSelectedContinent] = useState<ContinentProps>(CONTINENTS_DATA[0])
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [userCoins, setUserCoins] = useState<number>(0)
-    const [isLoadingCoins, setIsLoadingCoins] = useState<boolean>(true)
+    const [leagues, setLeagues] = useState<LeagueProps[]>([]);
+    const [selectedContinent, setSelectedContinent] = useState<ContinentProps>(CONTINENTS_DATA[0]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [userCoins, setUserCoins] = useState<number>(0);
+    const [isLoadingCoins, setIsLoadingCoins] = useState<boolean>(true);
     const router: Router = useRouter();
     const { isLG } = useBreakpoint();
 
     useEffect(() => {
         const getLeagueList = async (): Promise<void> => {
             try {
-                const token = await getToken()
+                const token = await getToken();
                 if (!token) {
-                    router.replace('/login')
-                    return
+                    router.replace('/login');
+                    return;
                 }
-                const leagues: LeagueProps[] = await leagueList(token, selectedContinent.id)
-                setLeagues(leagues)
+                const leagues: LeagueProps[] = await leagueList(token, selectedContinent.id);
+                setLeagues(leagues);
             } catch (error) {
-                toast.show('Error authenticating user', {type: 'danger'})
+                toast.show('Error authenticating user', {type: 'danger'});
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
         }
         
-        getLeagueList()
-    }, [selectedContinent])
+        getLeagueList();
+    }, [selectedContinent]);
 
   useEffect(() => {
     const getUserCoins = async (): Promise<void> => {
       try {
-        const token = await getToken()
-        const user: UserCoinsProps = await userCoinsRetrieve(token)
-        setUserCoins(user.coins)
+        const token = await getToken();
+        const user: UserCoinsProps = await userCoinsRetrieve(token);
+        setUserCoins(user.coins);
       } catch (error) {
         Sentry.captureException(error);
       } finally {
-        setIsLoadingCoins(false)
+        setIsLoadingCoins(false);
       }
     }
     
-    getUserCoins()
-  }, [])
+    getUserCoins();
+  }, []);
 
   const renderHomeLink = () => {
     // If the user is not loading and has joined at least one league, show the home link
@@ -130,7 +130,7 @@ const LeagueSelectionScreen = () => {
         {
             isLoading
             ?
-            <ActivityIndicator size="large" color="white" />
+            <ActivityIndicator size='large' color='white' />
             :
             <FlatList
                 data={leagues}

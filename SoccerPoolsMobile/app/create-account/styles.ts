@@ -1,5 +1,5 @@
-import { Platform, StyleSheet } from "react-native"
-import { MAIN_COLOR } from "../../constants"
+import { Platform, StyleSheet } from 'react-native';
+import { MAIN_COLOR } from '../../constants';
 
 const styles = StyleSheet.create({
     container: {

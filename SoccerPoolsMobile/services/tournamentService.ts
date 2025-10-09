@@ -1,5 +1,5 @@
+import api from './api';
 import { generateTournamentFormData } from '../utils/generateFormData';
-import api from "./api";
 
 export const listTournaments = async (token: string, leagueId: number, searchText: string) => {
     try {
@@ -9,12 +9,12 @@ export const listTournaments = async (token: string, leagueId: number, searchTex
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const retrieveTournament = async (token: string, tournamentId: number) => {
     try {
@@ -22,12 +22,12 @@ export const retrieveTournament = async (token: string, tournamentId: number) =>
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const createTournament = async (
     token: string, name: string, description: string, logo: string, leagueId: number
@@ -42,12 +42,12 @@ export const createTournament = async (
                     'Content-Type': 'multipart/form-data'
                 }
             }
-        )
-        return response.data
+        );
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const editTournament = async (
     token: string, name: string, description: string, logo: string, tournamentId: number
@@ -62,25 +62,26 @@ export const editTournament = async (
                     'Content-Type': 'multipart/form-data'
                 }
             }
-        )
-        return response.data
+        );
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const retrieveTournamentUser = async (token: string, tournamentId: number) => {
     try {
-        const response = await api.get(`/api/tournaments/tournament_user_tnt_id/${tournamentId}/`, {
+        const response = await api.get(
+            `/api/tournaments/tournament_user_tnt_id/${tournamentId}/`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const listPendingTournamentUsers = async (token, tournamentId) => {
     try {
@@ -89,12 +90,12 @@ export const listPendingTournamentUsers = async (token, tournamentId) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const updateStateTournamentUser = async (
     token: string, tournamentUserId: number, tournamentState: number
@@ -107,9 +108,9 @@ export const updateStateTournamentUser = async (
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};

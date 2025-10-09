@@ -1,79 +1,81 @@
-import React, { useState, useEffect } from "react"
-import { View, Pressable, Text, StyleSheet } from "react-native"
+import React, { useState, useEffect } from 'react';
+import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useResultsContext } from '../contexts/ResultsContext';
-import { MAIN_COLOR } from "../../../constants"
-import { MatchResultProps } from "../../../types"
+import { MAIN_COLOR } from '../../../constants';
+import { MatchResultProps } from '../../../types';
 
 interface TeamScoreProps {
-    currentMatchResult: MatchResultProps
-    teamNum: 1 | 2
-    matchResults: MatchResultProps[]
-    setMatchResults: React.Dispatch<React.SetStateAction<MatchResultProps[]>>
+    currentMatchResult: MatchResultProps;
+    teamNum: 1 | 2;
+    matchResults: MatchResultProps[];
+    setMatchResults: React.Dispatch<React.SetStateAction<MatchResultProps[]>>;
 }
 
-export default function TeamScore({currentMatchResult, teamNum, matchResults, setMatchResults}: TeamScoreProps) {
+export default function TeamScore({
+    currentMatchResult, teamNum, matchResults, setMatchResults
+}: TeamScoreProps) {
     const { arePredictionsSaved, setArePredictionsSaved } = useResultsContext();
     
     const [teamGoals, setTeamGoals] = useState<number>(
         teamNum === 1 ? currentMatchResult.goals_team_1 : currentMatchResult.goals_team_2
-    )
+    );
 
     useEffect(() => {
         setTeamGoals(
             teamNum === 1 ? currentMatchResult.goals_team_1 : currentMatchResult.goals_team_2
-        )
+        );
     }, [matchResults])
 
     const handleTeamGoals = (isAdding: boolean) => {
-        let newMatchResults = matchResults
+        let newMatchResults = matchResults;
         if (isAdding) {
             if (teamGoals === null) {
-                setTeamGoals(0)
+                setTeamGoals(0);
                 newMatchResults = matchResults.map((matchResult) => {
                     if(matchResult.id === currentMatchResult.id) {
                         if (teamNum === 1) {
-                            return {...matchResult, goals_team_1: 0}
+                            return {...matchResult, goals_team_1: 0};
                         } else {
-                            return {...matchResult, goals_team_2: 0}
+                            return {...matchResult, goals_team_2: 0};
                         }
                     }
-                    return matchResult
+                    return matchResult;
                 })
             } else {
-                setTeamGoals(teamGoals + 1)
+                setTeamGoals(teamGoals + 1);
                 newMatchResults = matchResults.map((matchResult) => {
                     if(matchResult.id === currentMatchResult.id) {
                         if (teamNum === 1) {
-                            return {...matchResult, goals_team_1: teamGoals+1}
+                            return {...matchResult, goals_team_1: teamGoals+1};
                         } else {
-                            return {...matchResult, goals_team_2: teamGoals+1}
+                            return {...matchResult, goals_team_2: teamGoals+1};
                         }
                     }
-                    return matchResult
+                    return matchResult;
                 })
             }
             if (arePredictionsSaved) {
-                setArePredictionsSaved(false)
+                setArePredictionsSaved(false);
             }
         } else {
             if (teamGoals > 0) {
                 newMatchResults = matchResults.map((matchResult) => {
                     if(matchResult.id === currentMatchResult.id) {
                         if (teamNum === 1) {
-                            return {...matchResult, goals_team_1: teamGoals-1}
+                            return {...matchResult, goals_team_1: teamGoals-1};
                         } else {
-                            return {...matchResult, goals_team_2: teamGoals-1}
+                            return {...matchResult, goals_team_2: teamGoals-1};
                         }
                     }
-                    return matchResult
+                    return matchResult;
                 })
-                setTeamGoals(teamGoals - 1)
+                setTeamGoals(teamGoals - 1);
                 if (arePredictionsSaved) {
-                    setArePredictionsSaved(false)
+                    setArePredictionsSaved(false);
                 }
             }
         }
-        setMatchResults(newMatchResults)
+        setMatchResults(newMatchResults);
     }
 
     return (

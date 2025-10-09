@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image, Platform } from 'react-native'
+import { StyleSheet, View, Text, Image } from 'react-native';
 import { PURPLE_COLOR } from '../../constants';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 

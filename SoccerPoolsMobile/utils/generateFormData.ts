@@ -1,4 +1,4 @@
-import { UserEditableProps } from "types";
+import { UserEditableProps } from 'types';
 
 const convertToBlob = (logo: string): File => {
     // Convert Base64-encoded data URL to Blob file
@@ -36,7 +36,7 @@ const createImageFile = (imageUrl: string) => {
 export const generateTournamentFormData = (
     name: string, description: string, logo: string, leagueId?: number
 ): FormData => {
-    const formData = new FormData()
+    const formData = new FormData();
 
     if (logo){
         /* 
@@ -60,8 +60,10 @@ export const generateTournamentFormData = (
     return formData;
 }
 
-export const generateUserFormData = (userData: UserEditableProps, profileImage: string): FormData => {
-    const formData: FormData = new FormData()
+export const generateUserFormData = (
+    userData: UserEditableProps, profileImage: string
+): FormData => {
+    const formData: FormData = new FormData();
     if (profileImage){
         /* 
         If the logo is a URL, it means that it is an already created model which image has not

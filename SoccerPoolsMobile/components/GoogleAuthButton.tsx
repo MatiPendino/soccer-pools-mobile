@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Platform, Pressable, Image, View, Text, StyleSheet } from 'react-native'
+import { Platform, Pressable, Image, View, Text, StyleSheet } from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { useTranslation } from 'react-i18next';
 import { Router, useRouter } from 'expo-router';
@@ -24,13 +24,13 @@ export default function GoogleAuthButton ({callingRoute, referralCode}: GoogleAu
     const { isLG } = useBreakpoint();
 
     const userInLeague = async (token: string): Promise<void> => {
-        const inLeague = await getUserInLeague(token)
+        const inLeague = await getUserInLeague(token);
         if (inLeague.in_league) {
-            router.replace('/home')
+            router.replace('/home');
         } else {
-            router.replace('/select-league')
+            router.replace('/select-league');
         }
-    }
+    };
 
     const [request, response, promptAsync] = Google.useAuthRequest({
         androidClientId: process.env.ANDROID_CLIENT_ID,
@@ -50,57 +50,63 @@ export default function GoogleAuthButton ({callingRoute, referralCode}: GoogleAu
 
     const googleAuth = async () => {
         if (response?.type === 'success') {
-            setIsGoogleLoading(true)
+            setIsGoogleLoading(true);
             try {
-                const accessToken = response.authentication?.accessToken
+                const accessToken = response.authentication?.accessToken;
                 if (accessToken) {
                     const { access, refresh } = await googleOauth2SignIn(
                         accessToken, 
                         referralCode && referralCode.length > 0 ? referralCode.toString() : undefined
-                    )
-                    await userInLeague(access)
+                    );
+                    await userInLeague(access);
                 } else {
-                    Sentry.captureException('No access token received from Google')
-                    toast.show('No access token received from Google', { type: 'danger' })
+                    Sentry.captureException('No access token received from Google');
+                    toast.show('No access token received from Google', { type: 'danger' });
                 }
             } catch (error) {
-                Sentry.captureException(error)
-                toast.show('There is been an error signing in. Please try again or use another method', {
+                Sentry.captureException(error);
+                toast.show(
+                    'There is been an error signing in. Please try again or use another method', {
                     type: 'danger',
-                })
+                });
             } finally {
-                setIsGoogleLoading(false)
+                setIsGoogleLoading(false);
             }
         } else if (response?.type === 'error') {
-            Sentry.captureException(response.error?.message || 'Google login error')
-            toast.show(`Google login failed: ${response.error?.message || 'Unknown error'}`, { type: 'danger' })
+            Sentry.captureException(response.error?.message || 'Google login error');
+            toast.show(
+                `Google login failed: ${response.error?.message || 'Unknown error'}`, 
+                { type: 'danger' }
+            );
         } else if (response?.type === 'cancel') {
-            toast.show('Google login cancelled!', { type: 'warning' })
+            toast.show('Google login cancelled!', { type: 'warning' });
         }
     }
     
     const handleGoogleSignIn = async () => {
         if (!request) {
-            toast.show('Google sign-in is not ready yet. Please wait a moment and try again.', { type: 'warning' })
-            return
+            toast.show(
+                'Google sign-in is not ready yet. Please wait a moment and try again.', 
+                { type: 'warning' }
+            );
+            return;
         }
 
-        setIsGoogleLoading(true)
+        setIsGoogleLoading(true);
         try {
             const result = await promptAsync({
                 // @ts-ignore
                 useProxy: Platform.OS === 'web',
                 showInRecents: false,
-            })
+            });
 
             // The response will be handled by the useEffect above
             if (result.type === 'dismiss') {
-                setIsGoogleLoading(false)
+                setIsGoogleLoading(false);
             }
         } catch (error) {
-            console.error('Error initiating Google sign-in:', error)
-            toast.show('Failed to start Google sign-in. Please try again.', { type: 'danger' })
-            setIsGoogleLoading(false)
+            toast.show('Failed to start Google sign-in. Please try again.', { type: 'danger' });
+            setIsGoogleLoading(false);
         }
     }
     

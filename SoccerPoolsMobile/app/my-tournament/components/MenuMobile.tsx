@@ -1,7 +1,7 @@
-import { View, Pressable } from "react-native"
-import { Menu } from "react-native-paper";
-import { Entypo } from "@expo/vector-icons";
-import { TournamentProps } from "types";
+import { View, Pressable } from 'react-native';
+import { Menu } from 'react-native-paper';
+import { Entypo } from '@expo/vector-icons';
+import { TournamentProps } from 'types';
 
 interface MenuMobileProps {
     tournament: TournamentProps;
@@ -23,7 +23,7 @@ export default function MenuMobile ({
                 onDismiss={() => setIsMenuVisible(false)}
                 anchor={
                     <Pressable onPress={() => setIsMenuVisible(true)}>
-                        <Entypo name="dots-three-vertical" color="white" size={30} />   
+                        <Entypo name='dots-three-vertical' color='white' size={30} />   
                     </Pressable>
                 }
             >

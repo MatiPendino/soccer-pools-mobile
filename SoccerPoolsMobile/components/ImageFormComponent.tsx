@@ -13,7 +13,7 @@ export default function ImageFormComponent({image, setImage}) {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             alert(t('permission-media-required'));
-            return
+            return;
         }
 
         // Launch the image picker

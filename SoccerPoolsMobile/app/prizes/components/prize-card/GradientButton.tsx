@@ -12,7 +12,9 @@ type Props = {
   isClaiming: boolean;
 };
 
-export default function GradientButton({ title, onPress, style, textStyle, prizeId, isClaiming=false }: Props) {
+export default function GradientButton({ 
+  title, onPress, style, textStyle, prizeId, isClaiming=false 
+}: Props) {
   return (
     <Pressable
       onPress={() => onPress(prizeId)}

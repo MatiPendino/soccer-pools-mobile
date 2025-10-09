@@ -1,4 +1,4 @@
-import api from "./api";
+import api from './api';
 
 export const leagueList = async (token, continent) => {
     try {
@@ -6,12 +6,12 @@ export const leagueList = async (token, continent) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data    
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const userLeague = async (token) => {
     try {
@@ -19,12 +19,12 @@ export const userLeague = async (token) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const roundsListByLeague = async (token, leagueId, notGeneralRound=undefined) => {
     try {
@@ -34,9 +34,9 @@ export const roundsListByLeague = async (token, leagueId, notGeneralRound=undefi
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};

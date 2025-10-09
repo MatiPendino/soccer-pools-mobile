@@ -16,7 +16,9 @@ type PrizeCardProps = {
   isClaiming: boolean;
 };
 
-export default function PrizeCard({ prize, onClaim, buttonLabel ='Claim', isClaiming=false }: PrizeCardProps) {
+export default function PrizeCard({ 
+  prize, onClaim, buttonLabel ='Claim', isClaiming=false 
+}: PrizeCardProps) {
   const [open, setOpen] = useState(false);
   const { width, isLG } = useBreakpoint();
 

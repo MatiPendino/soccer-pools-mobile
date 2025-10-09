@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Platform, Image } from 'react-native'
+import { View, Text, StyleSheet, Platform, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocalSearchParams } from 'expo-router';
 import GoogleAuthButton from 'components/GoogleAuthButton';

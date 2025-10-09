@@ -1,5 +1,5 @@
-import { View, Image, Text, StyleSheet } from "react-native"
-import { SILVER_COLOR } from "../../../constants";
+import { View, Image, Text, StyleSheet } from 'react-native';
+import { SILVER_COLOR } from '../../../constants';
 
 interface Props {
     username: string;

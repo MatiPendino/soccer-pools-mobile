@@ -1,6 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import api from "./api";
-import {storeToken} from "../utils/storeToken"
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from './api';
+import {storeToken} from '../utils/storeToken'
 import { generateUserFormData } from '../utils/generateFormData';
 
 export const register = async(name, last_name, username, email, password, referralCode) => {
@@ -12,29 +12,29 @@ export const register = async(name, last_name, username, email, password, referr
             last_name: last_name,
             password: password, 
             referral_code: referralCode && referralCode.length > 0 ? referralCode : undefined
-        })
-        return response.status
+        });
+        return response.status;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const login = async(username, password) => {
     try {
         const response = await api.post('/api/jwt/create/', {
             username: username, 
             password: password
-        })
-        const {access, refresh} = response.data
+        });
+        const {access, refresh} = response.data;
         await storeToken(response.data);
-        return {access, refresh}
+        return {access, refresh};
     } catch (error) {
         if (error.response) {
-            throw error.response.data
+            throw error.response.data;
         }
-        throw error
+        throw error;
     }
-}
+};
 
 export const getUser = async (token) => {
     try {
@@ -42,12 +42,12 @@ export const getUser = async (token) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const updateUser = async (token, userData, profileImage) => {
     try {
@@ -61,11 +61,11 @@ export const updateUser = async (token, userData, profileImage) => {
                 }
             }
         );
-        return response.data
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const deleteUser = async (token) => {
     try {
@@ -73,11 +73,11 @@ export const deleteUser = async (token) => {
             headers: {
                 Authorization: `Bearer ${token}`
             },
-        })
+        });
     } catch (error) {
         // When user is removed properly, an Axios Network Error is thrown
     }
-}
+};
 
 export const logout = async (token) => {
     try {
@@ -85,12 +85,12 @@ export const logout = async (token) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const getUserInLeague = async (token) => {
     try {
@@ -98,12 +98,12 @@ export const getUserInLeague = async (token) => {
             headers: {
                 Authorization: `Bearer ${token}`
             } 
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const editPassword = async (token, oldPassword, newPassword) => {
     try {
@@ -113,41 +113,41 @@ export const editPassword = async (token, oldPassword, newPassword) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const googleOauth2SignIn = async (accessToken, referralCode?) => {
     try {
-        const response = await api.post("/api/user/android_google_oauth2/", {
+        const response = await api.post('/api/user/android_google_oauth2/', {
             accessToken: accessToken ,
             referralCode: referralCode && referralCode
-        })
+        });
 
         const {access, refresh} = response.data;
-        await AsyncStorage.setItem("accessToken", access)
-        await AsyncStorage.setItem("refreshToken", refresh)
+        await AsyncStorage.setItem('accessToken', access);
+        await AsyncStorage.setItem('refreshToken', refresh);
 
-        return {access, refresh}
+        return {access, refresh};
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const resetPassword = async (email: string) => {
     try {
         const response = await api.post('/api/users/reset_password/', {
             email: email
-        })
+        });
 
-        return response.data
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const getFullUser = async (token) => {
     try {
@@ -155,9 +155,9 @@ export const getFullUser = async (token) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};

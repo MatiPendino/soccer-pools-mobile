@@ -1,5 +1,5 @@
-import api from "./api";
-import { Slug } from "../types";
+import api from './api';
+import { Slug } from '../types';
 
 export const betsRegister = async (token, leagueSlug) => {
     try {
@@ -8,12 +8,12 @@ export const betsRegister = async (token, leagueSlug) => {
                 Authorization: `Bearer ${token}`
             },
             league_slug: leagueSlug
-        })
-        return response
+        });
+        return response;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 
 export const getBetLeadersCursor = async (

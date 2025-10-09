@@ -3,8 +3,8 @@ import { View, StyleSheet, Text, Platform } from 'react-native';
 import { Link } from 'expo-router';
 
 interface Props {
-    text: string
-    url: string
+    text: string;
+    url: string;
 }
 
 export default function TopBar ({text, url}: Props) {

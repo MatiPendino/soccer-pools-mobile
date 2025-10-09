@@ -1,36 +1,36 @@
-import { useState } from "react"
-import { View, StyleSheet, Text, ActivityIndicator } from "react-native"
-import { useToast } from "react-native-toast-notifications"
-import { MAIN_COLOR } from "../../constants"
-import CustomButton from "../../components/CustomButton"
-import CustomInputSign from "../../components/CustomInputSign"
-import { getToken } from "../../utils/storeToken"
-import handleError from "../../utils/handleError"
-import { editPassword } from "../../services/authService"
-import { useTranslation } from "react-i18next"
-import { Banner } from "components/ads/Ads"
+import { useState } from 'react';
+import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { ToastType, useToast } from 'react-native-toast-notifications';
+import { MAIN_COLOR } from '../../constants';
+import CustomButton from '../../components/CustomButton';
+import CustomInputSign from '../../components/CustomInputSign';
+import { getToken } from '../../utils/storeToken';
+import handleError from '../../utils/handleError';
+import { editPassword } from '../../services/authService';
+import { useTranslation } from 'react-i18next';
+import { Banner } from 'components/ads/Ads';
 
 export default function UpdatePassword({}) {
-    const { t } = useTranslation()
-    const [oldPassword, setOldPassword] = useState<string>('')
-    const [newPassword, setNewPassword] = useState<string>('')
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const toast = useToast()
+    const { t } = useTranslation();
+    const [oldPassword, setOldPassword] = useState<string>('');
+    const [newPassword, setNewPassword] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const toast: ToastType = useToast();
 
     const updatePassword = async () => {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
-            const token = await getToken()
-            await editPassword(token, oldPassword.trim(), newPassword.trim())
-            setOldPassword('')
-            setNewPassword('')
-            toast.show(t('password-updated-successfully'), {type: 'success'})
+            const token = await getToken();
+            await editPassword(token, oldPassword.trim(), newPassword.trim());
+            setOldPassword('');
+            setNewPassword('');
+            toast.show(t('password-updated-successfully'), {type: 'success'});
         } catch (error) {
-            toast.show(handleError(error), {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'});
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -55,7 +55,7 @@ export default function UpdatePassword({}) {
             {
                 isLoading
                 ?
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size='large' color='#0000ff' />
                 :
                 <CustomButton callable={updatePassword} btnText={t('update-password')} btnColor='#2F2766' />
             }

@@ -1,65 +1,65 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react';
 import { 
     View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable, KeyboardAvoidingView,
     Platform, ScrollView
-} from "react-native"
-import { type Router, useRouter } from "expo-router"
-import { Entypo, MaterialIcons, Feather } from "@expo/vector-icons"
-import { MAIN_COLOR } from "../constants"
-import { useTranslation } from "react-i18next"
-import { Banner, interstitial } from "components/ads/Ads"
-import { useBreakpoint } from '../hooks/useBreakpoint'
-import { ActivityIndicator } from "react-native-paper"
+} from 'react-native';
+import { type Router, useRouter } from 'expo-router';
+import { Entypo, MaterialIcons, Feather } from '@expo/vector-icons';
+import { MAIN_COLOR } from '../constants';
+import { useTranslation } from 'react-i18next';
+import { Banner, interstitial } from 'components/ads/Ads';
+import { useBreakpoint } from '../hooks/useBreakpoint';
+import { ActivityIndicator } from 'react-native-paper';
 import ImageFormComponent from './ImageFormComponent';
 
 interface TournamentFormProps {
-    initialData?: any
-    onSubmit: CallableFunction
-    buttonLabel: string
-    isCreationMode: boolean
-    isLoading: boolean
+    initialData?: any;
+    onSubmit: CallableFunction;
+    buttonLabel: string;
+    isCreationMode: boolean;
+    isLoading: boolean;
 }
 
 export default function TournamentForm({
     initialData, onSubmit, buttonLabel, isCreationMode, isLoading,
 }: TournamentFormProps) {
-    const { t } = useTranslation()
-    const [tournamentName, setTournamentName] = useState<string>("")
-    const [description, setDescription] = useState<string>("")
-    const [logo, setLogo] = useState<string>("")
+    const { t } = useTranslation();
+    const [tournamentName, setTournamentName] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const [logo, setLogo] = useState<string>('');
     const { isLG } = useBreakpoint();
-    const router: Router = useRouter()
+    const router: Router = useRouter();
 
     const handleSubmit = () => {
-        onSubmit({ name: tournamentName, description: description, logo: logo })
+        onSubmit({ name: tournamentName, description: description, logo: logo });
     }
 
     const setInitialFormData = () => {
         if (!isCreationMode) {
             if (initialData) {
-                setTournamentName(initialData.name)
-                setDescription(initialData.description)
-                setLogo(initialData.logo)
+                setTournamentName(initialData.name);
+                setDescription(initialData.description);
+                setLogo(initialData.logo);
             }
         }
     }
 
-    interstitial(process.env.CREATE_TOURNAMENT_INTERST_ID)
+    interstitial(process.env.CREATE_TOURNAMENT_INTERST_ID);
 
     useEffect(() => {
         if (!isLoading) {
-        setInitialFormData()
+        setInitialFormData();
         }
-    }, [isLoading])
+    }, [isLoading]);
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
             <View style={styles.topBar}>
                 <Text style={styles.tntNameTxt}>
-                    {initialData ? initialData.name.toString().toUpperCase() : t("create-tournament")}
+                    {initialData ? initialData.name.toString().toUpperCase() : t('create-tournament')}
                 </Text>
                 <Pressable onPress={() => router.back()} style={styles.closeButton}>
-                    <Entypo name="cross" color="white" size={24} />
+                    <Entypo name='cross' color='white' size={24} />
                 </Pressable>
             </View>
 
@@ -69,13 +69,13 @@ export default function TournamentForm({
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>{t("tournament-name")}</Text>
+                    <Text style={styles.label}>{t('tournament-name')}</Text>
                     <View style={styles.inputContainer}>
-                        <MaterialIcons name="emoji-events" size={20} color="#8F92A1" style={styles.inputIcon} />
+                        <MaterialIcons name='emoji-events' size={20} color='#8F92A1' style={styles.inputIcon} />
                         <TextInput
                             style={styles.inputTxt}
-                            placeholder={t("tournament-name")}
-                            placeholderTextColor="#8F92A1"
+                            placeholder={t('tournament-name')}
+                            placeholderTextColor='#8F92A1'
                             value={tournamentName}
                             onChangeText={setTournamentName}
                         />
@@ -85,34 +85,34 @@ export default function TournamentForm({
                 <ImageFormComponent image={logo} setImage={setLogo} />
 
                 <View style={styles.formGroup}>
-                    <Text style={styles.label}>{t("description")}</Text>
+                    <Text style={styles.label}>{t('description')}</Text>
 
                     <View style={[styles.inputContainer, styles.textAreaContainer]}>
                         <TextInput
                             style={[styles.inputTxt, styles.textArea]}
-                            placeholder={t("add-tournament-description")}
-                            placeholderTextColor="#8F92A1"
+                            placeholder={t('add-tournament-description')}
+                            placeholderTextColor='#8F92A1'
                             value={description}
                             onChangeText={setDescription}
                             multiline
-                            textAlignVertical="top"
+                            textAlignVertical='top'
                         />
                     </View>
                 </View>
 
                 <TouchableOpacity
                     onPress={() => (!isLoading ? handleSubmit() : {})}
-                    style={[styles.button, (tournamentName.trim() === "" || isLoading) && styles.buttonDisabled]}
-                    disabled={tournamentName.trim() === "" || isLoading}
+                    style={[styles.button, (tournamentName.trim() === '' || isLoading) && styles.buttonDisabled]}
+                    disabled={tournamentName.trim() === '' || isLoading}
                 >
                     {
                         isLoading 
                         ? 
-                        <ActivityIndicator color="#fff" size="small" />
+                        <ActivityIndicator color='#fff' size='small' />
                         : 
                         <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
                             <Text style={styles.buttonText}>{buttonLabel}</Text>
-                            <Feather name="arrow-right" size={20} color="white" style={styles.buttonIcon} />
+                            <Feather name='arrow-right' size={20} color='white' style={styles.buttonIcon} />
                         </View>
                     }
                 </TouchableOpacity>
@@ -133,23 +133,23 @@ const styles = StyleSheet.create({
         marginHorizontal: 'auto',
     },
     topBar: {
-        backgroundColor: "#2F2766",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
+        backgroundColor: '#2F2766',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         paddingVertical: 16,
         paddingHorizontal: 16,
         marginTop: Platform.OS === 'web' ? 0 : 20,
         borderBottomWidth: 1,
-        borderBottomColor: "rgba(255,255,255,0.1)",
+        borderBottomColor: 'rgba(255,255,255,0.1)',
     },
     closeButton: {
         width: 36,
         height: 36,
         borderRadius: 18,
-        backgroundColor: "rgba(255,255,255,0.1)",
-        justifyContent: "center",
-        alignItems: "center",
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     contentContainer: {
         paddingHorizontal: 20,
@@ -157,28 +157,28 @@ const styles = StyleSheet.create({
         paddingBottom: 40,
     },
     tntNameTxt: {
-        color: "white",
+        color: 'white',
         fontSize: 18,
-        fontWeight: "600",
+        fontWeight: '600',
     },
     formGroup: {
         marginBottom: 24,
     },
     label: {
-        color: "white",
+        color: 'white',
         fontSize: 14,
-        fontWeight: "500",
+        fontWeight: '500',
         marginBottom: 8,
         opacity: 0.9,
     },
     inputContainer: {
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
         borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.2)",
+        borderColor: 'rgba(255,255,255,0.2)',
         borderRadius: 12,
-        backgroundColor: "rgba(255,255,255,0.05)",
-        overflow: "hidden",
+        backgroundColor: 'rgba(255,255,255,0.05)',
+        overflow: 'hidden',
     },
     inputIcon: {
         marginLeft: 16,
@@ -186,25 +186,25 @@ const styles = StyleSheet.create({
     inputTxt: {
         flex: 1,
         padding: 16,
-        color: "white",
+        color: 'white',
         fontSize: 16,
     },
     textAreaContainer: {
         height: 120,
-        alignItems: "flex-start",
+        alignItems: 'flex-start',
     },
     textArea: {
-        height: "100%",
+        height: '100%',
     },
     button: {
-        backgroundColor: "#2F2766",
+        backgroundColor: '#2F2766',
         padding: 16,
         borderRadius: 12,
-        alignItems: "center",
+        alignItems: 'center',
         marginTop: 12,
-        flexDirection: "row",
-        justifyContent: "center",
-        shadowColor: "#000",
+        flexDirection: 'row',
+        justifyContent: 'center',
+        shadowColor: '#000',
         shadowOffset: {
         width: 0,
         height: 2,
@@ -214,12 +214,12 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     buttonDisabled: {
-        backgroundColor: "rgba(47, 39, 102, 0.5)",
+        backgroundColor: 'rgba(47, 39, 102, 0.5)',
         elevation: 0,
     },
     buttonText: {
-        color: "white",
-        fontWeight: "600",
+        color: 'white',
+        fontWeight: '600',
         fontSize: 16,
     },
     buttonIcon: {

@@ -1,39 +1,39 @@
-import { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View, Pressable, Platform } from "react-native";
-import { ToastType, useToast } from "react-native-toast-notifications";
-import { BetProps, RoundProps, RoundsStateProps, Slug } from "../../types";
-import { Router, useLocalSearchParams } from "expo-router";
+import { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, Pressable, Platform } from 'react-native';
+import { ToastType, useToast } from 'react-native-toast-notifications';
+import { BetProps, RoundProps, RoundsStateProps, Slug } from '../../types';
+import { Router, useLocalSearchParams } from 'expo-router';
 import Entypo from '@expo/vector-icons/Entypo';
 import { PaperProvider } from 'react-native-paper';
-import { useRouter } from "expo-router";
-import { MAIN_COLOR } from "../../constants";
-import { getToken } from "../../utils/storeToken";
-import RankedPlayersFlatList from "../../components/RankedPlayersFlatList";
-import { getRounds, getRoundsState, swapRoundsBetLeaders } from "../../utils/leagueRounds";
-import handleShare from "../../utils/handleShare";
-import { useTranslation } from "react-i18next";
-import { TournamentProps } from "../../types";
+import { useRouter } from 'expo-router';
+import { MAIN_COLOR } from '../../constants';
+import { getToken } from '../../utils/storeToken';
+import RankedPlayersFlatList from '../../components/RankedPlayersFlatList';
+import { getRounds, getRoundsState, swapRoundsBetLeaders } from '../../utils/leagueRounds';
+import handleShare from '../../utils/handleShare';
+import { useTranslation } from 'react-i18next';
+import { TournamentProps } from '../../types';
 import RoundsPicker from 'components/RoundPicker';
-import { Banner, interstitial } from "components/ads/Ads";
-import { getBetLeadersCursor } from "services/betService";
-import ShimmerPlaceholder from "react-native-shimmer-placeholder";
-import LoadingCards from "../../components/LoadingCards";
-import { retrieveTournament } from "../../services/tournamentService";
-import handleError from "../../utils/handleError";
-import { getWrapper } from "../../utils/getWrapper";
+import { Banner, interstitial } from 'components/ads/Ads';
+import { getBetLeadersCursor } from 'services/betService';
+import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
+import LoadingCards from '../../components/LoadingCards';
+import { retrieveTournament } from '../../services/tournamentService';
+import handleError from '../../utils/handleError';
+import { getWrapper } from '../../utils/getWrapper';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import MenuWeb from "./components/MenuWeb";
-import MenuMobile from "./components/MenuMobile";
+import MenuWeb from './components/MenuWeb';
+import MenuMobile from './components/MenuMobile';
 
 export default function MyTournament({}) {
-    const { t } = useTranslation()
-    const { tournamentId } = useLocalSearchParams()
-    const [tournament, setTournament] = useState<TournamentProps>(null)
-    const [bets, setBets] = useState<BetProps[]>(null)
-    const [rounds, setRounds] = useState<RoundProps[]>([])
-    const [roundsState, setRoundsState] = useState<RoundsStateProps>({})
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
+    const { t } = useTranslation();
+    const { tournamentId } = useLocalSearchParams();
+    const [tournament, setTournament] = useState<TournamentProps>(null);
+    const [bets, setBets] = useState<BetProps[]>(null);
+    const [rounds, setRounds] = useState<RoundProps[]>([]);
+    const [roundsState, setRoundsState] = useState<RoundsStateProps>({});
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
 
     const [nextUrl, setNextUrl] = useState<string | null>(null);
     const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -41,8 +41,8 @@ export default function MyTournament({}) {
     const tokenRef = useRef<string>('');
 
     const { isXL } = useBreakpoint();
-    const toast: ToastType = useToast()
-    const router: Router = useRouter()
+    const toast: ToastType = useToast();
+    const router: Router = useRouter();
 
     //interstitial(process.env.MY_TOURNAMENT_INTERST_ID)
 
@@ -51,17 +51,17 @@ export default function MyTournament({}) {
             try {
                 const token: string = await getToken();
                 if (!token) {
-                    router.replace('/login')
-                    return
+                    router.replace('/login');
+                    return;
                 }
                 tokenRef.current = token;
-                const myTnt = await retrieveTournament(token, Number(tournamentId))
+                const myTnt = await retrieveTournament(token, Number(tournamentId));
                 if (!myTnt) {
-                    toast.show('There is been an error getting the tournament', {type: 'danger'})
-                    router.replace('/home')
+                    toast.show('There is been an error getting the tournament', {type: 'danger'});
+                    router.replace('/home');
                     return;
                 } 
-                setTournament(myTnt)
+                setTournament(myTnt);
 
                 const roundsByLeague = await getRounds(token, myTnt.league.id);
                 setRounds(roundsByLeague);
@@ -69,19 +69,21 @@ export default function MyTournament({}) {
 
                 // First page via cursor
                 const firstRoundSlug = roundsByLeague[0].slug;
-                const page = await getBetLeadersCursor(token, firstRoundSlug,  Number(tournamentId), null);
+                const page = await getBetLeadersCursor(
+                    token, firstRoundSlug,  Number(tournamentId), null
+                );
                 setBets(page.results);
                 setNextUrl(page.next);
             } catch (error) {
-                toast.show(handleError(error), {type: 'danger'})
-                router.replace('/home')
+                toast.show(handleError(error), {type: 'danger'});
+                router.replace('/home');
             } finally {
                 setIsLoading(false);
             }
         }
         
-        getTournament()
-    }, [])
+        getTournament();
+    }, []);
 
     const swapRoundBetLeaders = async (roundId: number, roundSlug: Slug) => {
         try {
@@ -92,13 +94,15 @@ export default function MyTournament({}) {
             setBets([]);
             setNextUrl(null);
             setRefreshing(true);
-            const page = await getBetLeadersCursor(tokenRef.current, roundSlug, Number(tournamentId), null);
+            const page = await getBetLeadersCursor(
+                tokenRef.current, roundSlug, Number(tournamentId), null
+            );
             setBets(page.results);
             setNextUrl(page.next);
         } catch (error) {
-            toast.show('There`s been an error displaying the bets', {type: 'danger'})
+            toast.show('There`s been an error displaying the bets', {type: 'danger'});
         }
-    }
+    };
 
     const loadMore = async () => {
         if (!nextUrl || loadingMore) return;
@@ -113,10 +117,10 @@ export default function MyTournament({}) {
         } finally {
           setLoadingMore(false);
         }
-      }
+    }
 
     const handleTournamentClick = (pathname: string) => {
-        router.push(`${pathname}/${tournamentId}/`)
+        router.push(`${pathname}/${tournamentId}/`);
     }
 
     const Wrapper = getWrapper();
@@ -127,7 +131,7 @@ export default function MyTournament({}) {
                 <View style={styles.topBar}>
                     <View style={styles.arrowNameContainer}>
                         <Pressable onPress={() => router.replace('/home')}>
-                            <Entypo name="chevron-left" color="white" size={30} />   
+                            <Entypo name='chevron-left' color='white' size={30} />   
                         </Pressable>
 
                         <Text style={styles.tntNameTxt}>
@@ -203,7 +207,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     roundsListLoading: { 
-        width: "100%", 
+        width: '100%', 
         height: 50, 
         marginBottom: 30 
     },

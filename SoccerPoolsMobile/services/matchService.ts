@@ -1,4 +1,4 @@
-import api from "./api";
+import api from './api';
 
 export const retrieveOriginalMatchResult = async (token, matchId) => {
     try {
@@ -6,13 +6,13 @@ export const retrieveOriginalMatchResult = async (token, matchId) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
+        });
 
-        return response.data
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const matchResultsList = async (token, roundId) => {
     try {
@@ -20,12 +20,12 @@ export const matchResultsList = async (token, roundId) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return matchResults.data
+        });
+        return matchResults.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const matchResultsUpdate = async (token, matchResults) => {
     try {
@@ -34,10 +34,10 @@ export const matchResultsUpdate = async (token, matchResults) => {
                 Authorization: `Bearer ${token}`
             },
             matchResults: matchResults
-        })
+        });
 
-        return response.data
+        return response.data;
     } catch(error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};

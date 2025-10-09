@@ -4,7 +4,9 @@ const ResultsContext = createContext(null);
 
 export const ResultsProvider = ({ children }) => {
     const [arePredictionsSaved, setArePredictionsSaved] = useState(true);
-    const value = useMemo(() => ({arePredictionsSaved, setArePredictionsSaved}), [arePredictionsSaved]);
+    const value = useMemo(
+        () => ({arePredictionsSaved, setArePredictionsSaved}), [arePredictionsSaved]
+    );
 
     return (
         <ResultsContext.Provider value={value}>

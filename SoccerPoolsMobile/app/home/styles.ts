@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 import { MAIN_COLOR } from '../../constants';
 
 const styles = StyleSheet.create({
@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     shareBtn: {
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
         paddingVertical: 10,
         paddingHorizontal: 15,
     },
     shareTxt: {
-        color: "white",
+        color: 'white',
         marginLeft: 10,
         fontWeight: '600'
     },

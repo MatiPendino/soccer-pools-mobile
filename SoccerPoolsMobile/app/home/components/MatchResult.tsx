@@ -1,46 +1,49 @@
-import { useEffect, useState } from "react"
-import { View, StyleSheet } from "react-native"
-import { ToastType, useToast } from "react-native-toast-notifications"
-import { MatchResultProps } from "../../../types"
-import TeamLogo from "./TeamLogo"
-import ForecastResult from "./ForecastResult"
-import MatchResultTop from "./MatchResultTop"
-import Scores from "./Scores"
-import { getToken } from "../../../utils/storeToken"
-import { retrieveOriginalMatchResult } from "../../../services/matchService"
-import { ActivityIndicator } from "react-native-paper"
+import { useEffect, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { ToastType, useToast } from 'react-native-toast-notifications';
+import { MatchResultProps } from '../../../types';
+import TeamLogo from './TeamLogo';
+import ForecastResult from './ForecastResult';
+import MatchResultTop from './MatchResultTop';
+import Scores from './Scores';
+import { getToken } from '../../../utils/storeToken';
+import { retrieveOriginalMatchResult } from '../../../services/matchService';
+import { ActivityIndicator } from 'react-native-paper';
 
 
 interface Props {
-    currentMatchResult: MatchResultProps
-    matchResults: MatchResultProps[]
-    setMatchResults: React.Dispatch<React.SetStateAction<MatchResultProps[]>>
+    currentMatchResult: MatchResultProps;
+    matchResults: MatchResultProps[];
+    setMatchResults: React.Dispatch<React.SetStateAction<MatchResultProps[]>>;
 }
 
 export default function MatchResult ({
     currentMatchResult, matchResults, setMatchResults
 }: Props) {
-    const [originalMatchResult, setOriginalMatchResult] = useState<MatchResultProps>(null)
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const toast: ToastType = useToast()
+    const [originalMatchResult, setOriginalMatchResult] = useState<MatchResultProps>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const toast: ToastType = useToast();
 
     useEffect(() => {
         const getOriginalMatchResult = async () => {
             try {
                 if (currentMatchResult.match.match_state === 2) {
-                    const token = await getToken()
-                    const data = await retrieveOriginalMatchResult(token, currentMatchResult.match.id)
+                    const token = await getToken();
+                    const data = await retrieveOriginalMatchResult(
+                        token, 
+                        currentMatchResult.match.id
+                    );
     
-                    setOriginalMatchResult(data)
+                    setOriginalMatchResult(data);
                 }
             } catch (error) {
-                toast.show('There is been an error retrieving the results', {type: 'danger'})
+                toast.show('There is been an error retrieving the results', {type: 'danger'});
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
         }
 
-        getOriginalMatchResult()
+        getOriginalMatchResult();
     }, [])
 
     const renderResult = () => {
@@ -55,7 +58,7 @@ export default function MatchResult ({
             :
                 isLoading
                 ?
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <ActivityIndicator size='large' color='#0000ff' />
                 :
                     <ForecastResult
                         forecastGoalsTeam1={currentMatchResult.goals_team_1}
@@ -64,7 +67,7 @@ export default function MatchResult ({
                         goalsTeam2={originalMatchResult ? originalMatchResult.goals_team_2 : 0}
                         matchState={currentMatchResult.match.match_state}
                     />
-        )
+        );
     }
 
     return (

@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { useToast, ToastType } from 'react-native-toast-notifications';
 import { useRewardedAd } from 'components/ads/Ads';
 import { updateCoins } from '../services/userService';
@@ -13,21 +13,21 @@ export default function CoinsDisplay({ setCoins, coins }) {
     const toast: ToastType = useToast();
 
     useEffect(() => {
-        setCoins(coins)
-    }, [coins])
+        setCoins(coins);
+    }, [coins]);
 
     const onEarnedReward = useCallback(async (amount: number) => {
         try {
-            const token = await getToken()
+            const token = await getToken();
             const { coins } = await updateCoins(token, amount, REWARD_AD_REWARD);
-            setCoins(coins)
-            toast.show(t('coins-added', { coins: amount }), {type: 'success'})
+            setCoins(coins);
+            toast.show(t('coins-added', { coins: amount }), {type: 'success'});
         } catch (error) {
-            toast.show(error, {type: 'danger'})
+            toast.show(error, {type: 'danger'});
         }
-    }, [])
+    }, []);
 
-    const { loaded, show } = useRewardedAd({onEarnedReward})
+    const { loaded, show } = useRewardedAd({onEarnedReward});
 
     const handlePress = () => {
         if (loaded) {
@@ -35,15 +35,14 @@ export default function CoinsDisplay({ setCoins, coins }) {
         } else {
             toast.show(t('ads-not-loaded'), {type: 'warning'});
         }
-    }
+    };
 
-    const Wrapper = 
-        Platform.OS === 'web' ? View : Pressable;
+    const Wrapper = Platform.OS === 'web' ? View : Pressable;
 
     return (
         <Wrapper style={coinStyles.container} onPress={handlePress}>
             <View style={coinStyles.coinsContainer}>
-                <FontAwesome5 name="coins" size={16} color="#f59e0b" />
+                <FontAwesome5 name='coins' size={16} color='#f59e0b' />
                 <Text style={coinStyles.text}>{coins}</Text>
                 {Platform.OS === 'android' && (
                     <Text style={coinStyles.plusText}>+</Text>

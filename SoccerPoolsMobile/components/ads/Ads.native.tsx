@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { 
-  BannerAd, TestIds, BannerAdSize, AdEventType, InterstitialAd, AppOpenAd, RewardedAd, RewardedAdEventType
+  BannerAd, TestIds, BannerAdSize, AdEventType, InterstitialAd, AppOpenAd, 
+  RewardedAd, RewardedAdEventType
 } from 'react-native-google-mobile-ads';
 
 export const Banner = ({bannerId}: {bannerId: string}) => {
@@ -26,7 +27,7 @@ export const interstitial = (interstitialId: string) => {
 
     useEffect(() => {
         const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-            showAd()
+            showAd();
         });
           
         interstitial.load();
@@ -54,19 +55,18 @@ export const showOpenAppAd = async (openAppId): Promise<void> => {
         });
     
         openApp.addAdEventListener(AdEventType.ERROR, (error) => {
-            console.log('Open App Ad Error:', error);
             reject(error);
-        })
-    })
+        });
+    });
 }
 
 
 interface UseRewardedAdOptions {
-  onEarnedReward: (amount: number, type: string) => void
+  onEarnedReward: (amount: number, type: string) => void;
 }
 
 export function useRewardedAd({onEarnedReward}: UseRewardedAdOptions) {
-  const [loaded, setLoaded] = useState(false)
+  const [loaded, setLoaded] = useState<boolean>(false);
   const adUnitIdRewarded: string = 
     Boolean(Number(process.env.TEST_ADS)) ? TestIds.REWARDED
     : process.env.REWARDED_AD_ID;
@@ -76,41 +76,40 @@ export function useRewardedAd({onEarnedReward}: UseRewardedAdOptions) {
     RewardedAd.createForAdRequest(adUnitIdRewarded, {
       requestNonPersonalizedAdsOnly: true,
     })
-  )
+  );
   const rewardedAd = rewardedAdRef.current;
 
   useEffect(() => {
     const subs = [
       rewardedAd.addAdEventListener(RewardedAdEventType.LOADED, () => {
         setLoaded(true);
-        console.log('RewardedAd loaded')
       }),
       rewardedAd.addAdEventListener(AdEventType.ERROR, (error) => {
-        console.error('RewardedAd failed to load/show:', error)
+        console.error('RewardedAd failed to load/show:', error);
       }),
       rewardedAd.addAdEventListener(RewardedAdEventType.EARNED_REWARD, ({ amount, type }) => {
-        onEarnedReward(amount, type)
+        onEarnedReward(amount, type);
       }),
       rewardedAd.addAdEventListener(AdEventType.CLOSED, () => {
-        setLoaded(false)
-        rewardedAd.load()
+        setLoaded(false);
+        rewardedAd.load();
       }),
-    ]
+    ];
 
     // kick off initial load
-    rewardedAd.load()
+    rewardedAd.load();
 
-    return () => subs.forEach(unsub => unsub())
-  }, [onEarnedReward, rewardedAd])
+    return () => subs.forEach(unsub => unsub());
+  }, [onEarnedReward, rewardedAd]);
 
   const show = useCallback(() => {
     if (loaded) {
-      rewardedAd.show()
-      setLoaded(false)
+      rewardedAd.show();
+      setLoaded(false);
     } else {
-      console.log('Rewarded ad not loaded yet.')
+      console.log('Rewarded ad not loaded yet.');
     }
   }, [loaded])
 
-  return { loaded, show }
+  return { loaded, show };
 }

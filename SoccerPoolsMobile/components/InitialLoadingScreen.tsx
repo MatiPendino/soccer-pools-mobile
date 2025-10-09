@@ -1,5 +1,5 @@
-import { View, Image, ActivityIndicator, StyleSheet } from "react-native"
-import { MAIN_COLOR } from "../constants"
+import { View, Image, ActivityIndicator, StyleSheet } from 'react-native';
+import { MAIN_COLOR } from '../constants';
 
 export default function InitialLoadingScreen () {
 
@@ -9,7 +9,7 @@ export default function InitialLoadingScreen () {
                 source={require('../assets/icon-no-bg.png')}
                 style={styles.logoImg}
             />
-            <ActivityIndicator color="#ffffff" size="large" />
+            <ActivityIndicator color='#ffffff' size='large' />
         </View>
     )
 }

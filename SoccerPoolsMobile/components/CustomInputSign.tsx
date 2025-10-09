@@ -1,23 +1,23 @@
-import { useState } from "react"
-import { View, TextInput, Pressable, StyleSheet, Platform } from "react-native"
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useState } from 'react';
+import { View, TextInput, Pressable, StyleSheet, Platform } from 'react-native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 interface Props {
-    inputMode?: 'text' | 'email'
-    placeholder: string
-    isSecureTextEntry?: boolean
-    value: string
-    setValue: (value: string) => void
-    isActive?: boolean
-    isCapitalized?: boolean
+    inputMode?: 'text' | 'email';
+    placeholder: string;
+    isSecureTextEntry?: boolean;
+    value: string;
+    setValue: (value: string) => void;
+    isActive?: boolean;
+    isCapitalized?: boolean;
 }
 
 export default function CustomInputSign({
     inputMode='text', placeholder, isSecureTextEntry=false, value, setValue, isActive=true,
     isCapitalized=false
 }: Props) {
-    const [isPasswordHidden, setIsPasswordHidden] = useState(true)
+    const [isPasswordHidden, setIsPasswordHidden] = useState<boolean>(true);
     const { isLG } = useBreakpoint();
 
     return (

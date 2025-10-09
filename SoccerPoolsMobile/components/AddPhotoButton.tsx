@@ -1,9 +1,9 @@
-import { StyleSheet, Pressable, Image } from "react-native";
+import { StyleSheet, Pressable, Image } from 'react-native';
 
 interface AddPhotoButtonProps {
-    label: string
-    onPress: () => Promise<void>
-    logo: string
+    label: string;
+    onPress: () => Promise<void>;
+    logo: string;
 }
 
 export default function AddPhotoButton({ label, onPress, logo }: AddPhotoButtonProps) {
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         width: 250,
         height: 250,
         objectFit: 'cover',
-        alignSelf: "center",
+        alignSelf: 'center',
         borderRadius: 10,
     },
 });

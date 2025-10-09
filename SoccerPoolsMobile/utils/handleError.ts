@@ -25,4 +25,4 @@ export default function handleError(error: BackendError | string): string {
   }
 
   return 'An unexpected error occurred. Please try again later.';
-}
+};

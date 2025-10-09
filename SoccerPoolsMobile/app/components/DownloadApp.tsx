@@ -1,7 +1,7 @@
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'expo-router'
-import { ANDROID_URL } from '../../constants'
+import { Link } from 'expo-router';
+import { ANDROID_URL } from '../../constants';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 export default function DownloadApp () {
@@ -9,13 +9,13 @@ export default function DownloadApp () {
     const { isLG, isXL, isXXL } = useBreakpoint();
 
     const downloadImageSize = () => {
-      if (isXXL) {
-            return {width: 600, height: 600}
-      } else if (isXL) {
-            return {width: 450, height: 450}
-      } 
+        if (isXXL) {
+            return {width: 600, height: 600};
+        } else if (isXL) {
+            return {width: 450, height: 450};
+        } 
 
-      return {width: 340, height: 340}
+        return {width: 340, height: 340};
     }
 
     return (

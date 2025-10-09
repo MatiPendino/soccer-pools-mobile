@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { Modal, Pressable, Text, View, Platform, Linking } from "react-native"
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useTranslation } from "react-i18next";
-import { getToken } from "../utils/storeToken";
-import { updateCoins } from "../services/userService";
-import { ANDROID_URL, REVIEW_APP_COINS_PRIZE, REWARD_APP_REVIEW } from "../constants";
+import { useState, useEffect } from 'react';
+import { Modal, Pressable, Text, View, Platform, Linking } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
+import { getToken } from '../utils/storeToken';
+import { updateCoins } from '../services/userService';
+import { ANDROID_URL, REVIEW_APP_COINS_PRIZE, REWARD_APP_REVIEW } from '../constants';
 
 export default function RateAppModal ({setCoins}) {
     const [showRatingModal, setShowRatingModal] = useState<boolean>(false);
@@ -23,7 +23,7 @@ export default function RateAppModal ({setCoins}) {
         
             if (!hasAsked && nSessions >= 2) {
                 // Wait a few seconds before showing
-                setShowRatingModal(true)
+                setShowRatingModal(true);
                 setTimeout(() => {
                     // Here ill trigger pop up
                     AsyncStorage.setItem('was_asked_review', 'true');
@@ -40,22 +40,22 @@ export default function RateAppModal ({setCoins}) {
         Linking.openURL(url);
         setShowRatingModal(false);
 
-        const token = await getToken()
+        const token = await getToken();
         const { coins } = await updateCoins(token, REVIEW_APP_COINS_PRIZE, REWARD_APP_REVIEW);
-        setCoins(coins)
+        setCoins(coins);
     };
 
     useEffect(() => {
         if (Platform.OS !== 'web') {
             askForRatingIfNeeded();
         }
-    }, [])
+    }, []);
 
     return (
         <Modal
             visible={showRatingModal}
             transparent
-            animationType="fade"
+            animationType='fade'
             onRequestClose={() => setShowRatingModal(false)}
         >
             <View style={{

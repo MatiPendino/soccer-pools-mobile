@@ -9,11 +9,15 @@ interface MenuWebProps {
     handleShare: () => void;
 }
 
-export default function MenuWeb({tournament, t, handleTournamentClick, handleShare}: MenuWebProps) {
+export default function MenuWeb({
+    tournament, t, handleTournamentClick, handleShare
+}: MenuWebProps) {
 
     return (
         <View style={[styles.menuWebContainer]}>
-            <Pressable onPress={handleShare}><Text style={styles.menuTxt}>{t('invite-friends')}</Text></Pressable> 
+            <Pressable onPress={handleShare}>
+                <Text style={styles.menuTxt}>{t('invite-friends')}</Text>
+            </Pressable> 
             {
                 tournament && tournament.is_current_user_admin &&
                 <View style={styles.innerMenuWebContainer}>

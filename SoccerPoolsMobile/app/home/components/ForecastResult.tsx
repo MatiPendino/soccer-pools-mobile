@@ -1,20 +1,20 @@
-import { useTranslation } from "react-i18next"
-import { View, Text, StyleSheet } from "react-native"
+import { useTranslation } from 'react-i18next';
+import { View, Text, StyleSheet } from 'react-native';
 
 interface ForecastResultProps {
-    forecastGoalsTeam1: number
-    forecastGoalsTeam2: number
-    goalsTeam1: number
-    goalsTeam2: number
-    matchState: number
+    forecastGoalsTeam1: number;
+    forecastGoalsTeam2: number;
+    goalsTeam1: number;
+    goalsTeam2: number;
+    matchState: number;
 }
 
 export default function ForecastResult ({
     forecastGoalsTeam1, forecastGoalsTeam2, goalsTeam1, goalsTeam2, matchState
 }: ForecastResultProps) {
-    const { t } = useTranslation()
+    const { t } = useTranslation();
     const handleResultGoals = (goalsTeam: number) => {
-        return matchState === 1 ? '' : goalsTeam.toString()
+        return matchState === 1 ? '' : goalsTeam.toString();
     }
 
     return (

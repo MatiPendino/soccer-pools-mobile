@@ -1,4 +1,4 @@
-import api from "./api"
+import api from './api';
 
 export const updateCoins = async (token, coins, rewardType) => {
     try {
@@ -8,13 +8,12 @@ export const updateCoins = async (token, coins, rewardType) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        console.log(error)
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const userCoinsRetrieve = async (token) => {
     try {
@@ -22,12 +21,12 @@ export const userCoinsRetrieve = async (token) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
-        return response.data
+        });
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const listMembers = async (token) => {
     try {
@@ -40,4 +39,4 @@ export const listMembers = async (token) => {
     } catch (error) {
         throw error.response.data;
     }
-}
+};

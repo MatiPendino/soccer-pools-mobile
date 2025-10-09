@@ -1,23 +1,23 @@
-import { ScrollView, Text, ActivityIndicator, View, Platform, Alert } from "react-native";
+import { ScrollView, Text, ActivityIndicator, View, Platform, Alert } from 'react-native';
 import { Link, useLocalSearchParams } from 'expo-router';
-import { useState, useEffect } from "react";
-import { useToast } from "react-native-toast-notifications";
-import { useRouter } from "expo-router";
-import * as WebBrowser from "expo-web-browser";
-import handleError from "../../utils/handleError";
-import CustomInputSign from "../../components/CustomInputSign";
-import CustomButton from "../../components/CustomButton";
-import { register } from "../../services/authService";
-import styles from "./styles";
-import { Email } from "../../types";
-import { useTranslation } from "react-i18next";
+import { useState, useEffect } from 'react';
+import { useToast } from 'react-native-toast-notifications';
+import { useRouter } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
+import handleError from '../../utils/handleError';
+import CustomInputSign from '../../components/CustomInputSign';
+import CustomButton from '../../components/CustomButton';
+import { register } from '../../services/authService';
+import styles from './styles';
+import { Email } from '../../types';
+import { useTranslation } from 'react-i18next';
 import { removeToken } from 'services/api';
 import { getToken } from 'utils/storeToken';
-import GoogleAuthButton from "components/GoogleAuthButton";
+import GoogleAuthButton from 'components/GoogleAuthButton';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { getUserLeagueRoute } from "utils/getUserLeagueRoute";
+import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
 import TopBar from 'components/TopBar';
-import Footer from "components/footer/Footer";
+import Footer from 'components/footer/Footer';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -130,7 +130,7 @@ export default function CreateAccount({}) {
                     placeholder={t('email')}
                     value={email}
                     setValue={setEmail}
-                    inputMode="email"
+                    inputMode='email'
                 />
 
                 <CustomInputSign
@@ -145,7 +145,7 @@ export default function CreateAccount({}) {
             {
                 isLoading
                 ?
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size='large' color='#0000ff' />
                 :
                 <CustomButton callable={createAccount} btnText={t('create-account')} btnColor='#2F2766' />
             }

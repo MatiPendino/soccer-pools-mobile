@@ -1,4 +1,4 @@
-import api from "./api";
+import api from './api';
 import * as Notifications from 'expo-notifications';
 
 export const registerPush = async (token, fcmToken) => {
@@ -8,14 +8,14 @@ export const registerPush = async (token, fcmToken) => {
                 Authorization: `Bearer ${token}`
             },
             fcm_token: fcmToken
-        })
-        return response
+        });
+        return response;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const getFCMToken = async () => {
     const token = (await Notifications.getDevicePushTokenAsync()).data;
-    return token
-}
+    return token;
+};

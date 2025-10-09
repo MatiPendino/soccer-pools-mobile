@@ -1,6 +1,6 @@
-import { useBreakpoint } from "hooks/useBreakpoint";
-import { StyleSheet, View } from "react-native"
-import ShimmerPlaceholder from "react-native-shimmer-placeholder";
+import { useBreakpoint } from 'hooks/useBreakpoint';
+import { StyleSheet, View } from 'react-native';
+import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 
 export default function LoadingCards({cardHeight, nCards, cardColor}) {
     const { isLG } = useBreakpoint();
@@ -20,7 +20,6 @@ export default function LoadingCards({cardHeight, nCards, cardColor}) {
 
 const styles = StyleSheet.create({
     rankedPlayersLoading: { 
-        //width: "90%", 
         marginBottom: 15,
         marginHorizontal: 'auto',
         borderRadius: 10,

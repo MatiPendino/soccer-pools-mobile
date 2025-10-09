@@ -1,39 +1,41 @@
-import { SetStateAction, useState } from "react"
-import { StyleSheet, View, Text, Image, Pressable, ActivityIndicator } from "react-native"
-import { ToastType, useToast } from "react-native-toast-notifications"
-import { updateStateTournamentUser } from "../../../services/tournamentService"
-import { TournamentUserProps } from "../../../types"
-import handleError from "../../../utils/handleError"
-import { useTranslation } from "react-i18next"
+import { SetStateAction, useState } from 'react';
+import { StyleSheet, View, Text, Image, Pressable, ActivityIndicator } from 'react-native';
+import { ToastType, useToast } from 'react-native-toast-notifications';
+import { updateStateTournamentUser } from '../../../services/tournamentService';
+import { TournamentUserProps } from '../../../types';
+import handleError from '../../../utils/handleError';
+import { useTranslation } from 'react-i18next';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 
 interface PendingInviteCardProps {
-    id: number
-    token: string
-    username: string
-    userLogoUrl: string
-    setPendingTournamentUsers: React.Dispatch<SetStateAction<TournamentUserProps[]>>
-    pendingTournamentUsers: TournamentUserProps[]
+    id: number;
+    token: string;
+    username: string;
+    userLogoUrl: string;
+    setPendingTournamentUsers: React.Dispatch<SetStateAction<TournamentUserProps[]>>;
+    pendingTournamentUsers: TournamentUserProps[];
 }
 
 export default function PendingInviteCard({
     id, token, username, userLogoUrl, setPendingTournamentUsers, pendingTournamentUsers
 }: PendingInviteCardProps) {
-    const { t } = useTranslation()
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const toast: ToastType = useToast()
+    const { t } = useTranslation();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const toast: ToastType = useToast();
     const { isLG } = useBreakpoint();
 
     const handlePendingInvite = async (isAccept: boolean) => {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
-            const tournamentState = isAccept ? 2 : 3
-            await updateStateTournamentUser(token, id, tournamentState)
-            setPendingTournamentUsers(pendingTournamentUsers.filter((tntUser) => tntUser.id != id))
+            const tournamentState = isAccept ? 2 : 3;
+            await updateStateTournamentUser(token, id, tournamentState);
+            setPendingTournamentUsers(
+                pendingTournamentUsers.filter((tntUser) => tntUser.id != id)
+            );
         } catch (error) {
-            toast.show(handleError(error), {type: 'danger'})
+            toast.show(handleError(error), {type: 'danger'});
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
@@ -50,7 +52,7 @@ export default function PendingInviteCard({
             {
                 isLoading
                 ?
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <ActivityIndicator size='large' color='#0000ff' />
                 :
                     <View style={styles.btnsContainer}>
                         <Pressable 

@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next"
-import { StyleSheet, Text, View } from "react-native"
-import { MAIN_COLOR } from "../../../constants"
-import { ISO8601DateString } from "../../../types"
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, Text, View } from 'react-native';
+import { MAIN_COLOR } from '../../../constants';
+import { ISO8601DateString } from '../../../types';
 
 interface MatchResultTopProps {
     matchState: number

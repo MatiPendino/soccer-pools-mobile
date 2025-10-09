@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { RoundProps, RoundsStateProps, Slug } from "../../types";
-import RoundListModal from "./RoundListModal";
-import ArrowButton from "./ArrowButton";
-import NoRounds from "./NoRounds";
-import { PURPLE_COLOR } from "../../constants";
-import CurrentRoundButton from "./CurrentRoundButton";
+import { useMemo, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { RoundProps, RoundsStateProps, Slug } from '../../types';
+import RoundListModal from './RoundListModal';
+import ArrowButton from './ArrowButton';
+import NoRounds from './NoRounds';
+import { PURPLE_COLOR } from '../../constants';
+import CurrentRoundButton from './CurrentRoundButton';
 
 interface Props {
   rounds: RoundProps[];
@@ -55,13 +55,13 @@ export default function RoundsPicker({
     return (
         <View style={styles.wrapper}>
             {/* Left arrow */}
-            <ArrowButton onPress={onPrev} direction="left" disabled={atStart} />
+            <ArrowButton onPress={onPrev} direction='left' disabled={atStart} />
 
             {/* Current round */}
             <CurrentRoundButton setOpen={setOpen} currentName={current.name} />
 
             {/* Right arrow */}
-            <ArrowButton onPress={onNext} direction="right" disabled={atEnd} />
+            <ArrowButton onPress={onNext} direction='right' disabled={atEnd} />
 
             {/* Picker modal/list */}
             <RoundListModal 
@@ -81,9 +81,9 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         backgroundColor: PURPLE_COLOR,
         borderRadius: 12,
-        alignItems: "center",
-        flexDirection: "row",
-        justifyContent: "space-between",
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         gap: 6,
         marginVertical: 8,
         marginHorizontal: 12,

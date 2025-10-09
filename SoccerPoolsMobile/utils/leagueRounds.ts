@@ -1,16 +1,16 @@
-import { roundsListByLeague } from "../services/leagueService";
-import { RoundProps, RoundsStateProps, Slug } from "../types";
+import { roundsListByLeague } from '../services/leagueService';
+import { RoundProps, RoundsStateProps, Slug } from '../types';
 
 export async function getRounds(token, leagueId, notGeneralRound=undefined) {
     try {
         if (leagueId) {
             const roundsByLeague: RoundProps[] = await roundsListByLeague(
                 token, leagueId, notGeneralRound
-            )
-            return roundsByLeague
+            );
+            return roundsByLeague;
         }
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
 }
 
@@ -29,20 +29,22 @@ export function getRoundsState(roundsByLeague, nextRoundId=0) {
             activeRoundsState[round.slug] = round.id === nextRoundId;    
         }
         
-        return activeRoundsState
+        return activeRoundsState;
     }, {} as RoundsStateProps)
     
-    return roundsStateObject
+    return roundsStateObject;
 }
 
 export const updateActiveRound = (roundSlug: Slug, roundsState: RoundsStateProps): RoundsStateProps => {
-    const newRoundsState = Object.keys(roundsState).reduce((updatedRoundsState: RoundsStateProps, key) => {
-        updatedRoundsState[key] = key === roundSlug
-        return updatedRoundsState
-    }, {} as RoundsStateProps)
+    const newRoundsState = Object.keys(roundsState).reduce((
+        updatedRoundsState: RoundsStateProps, key
+    ) => {
+        updatedRoundsState[key] = key === roundSlug;
+        return updatedRoundsState;
+    }, {} as RoundsStateProps);
 
-    return newRoundsState
-}
+    return newRoundsState;
+};
 
 export const swapRoundsBetLeaders = async (
     roundSlug: Slug, roundsState: RoundsStateProps
@@ -56,4 +58,4 @@ export const swapRoundsBetLeaders = async (
     } catch (error) {
         throw error;
     } 
-}
+};

@@ -1,4 +1,4 @@
-import { Modal, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Modal, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MAIN_COLOR } from '../constants';
 import { useResultsContext } from '../app/home/contexts/ResultsContext';
@@ -12,7 +12,9 @@ interface Props {
     isLoading: boolean;
     nextRoundId: number;
     nextRoundSlug: Slug;
-    handleRoundSwap: (roundId: number, roundSlug: Slug, alreadyShowedModal?: boolean) => Promise<void>;
+    handleRoundSwap: (
+        roundId: number, roundSlug: Slug, alreadyShowedModal?: boolean
+    ) => Promise<void>;
 }
 
 export default function SaveChanges({

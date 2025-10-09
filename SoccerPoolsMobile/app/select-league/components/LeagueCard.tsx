@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { FontAwesome5 } from '@expo/vector-icons'; 
@@ -9,28 +9,31 @@ import { useBreakpoint } from '../../../hooks/useBreakpoint';
 import handleError from 'utils/handleError';
 
 export default function LeagueCard ({item, setIsLoading}) {
-    const { t } = useTranslation()
+    const { t } = useTranslation();
     const { width, isLG } = useBreakpoint();
-    const toast: ToastType = useToast()
-    const router: Router = useRouter()
+    const toast: ToastType = useToast();
+    const router: Router = useRouter();
 
     const cardWidth = isLG ? width*0.23 : width*0.44;
 
     const selectLeague = async (): Promise<void> => {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
-            const token = await getToken()
-            const response = await betsRegister(token, item.slug)
+            const token = await getToken();
+            const response = await betsRegister(token, item.slug);
             if (response.status === 201) {
-                toast.show(t('joined-league-successfully', {leagueTitle: item.name}), { type: 'success' });
+                toast.show(
+                    t('joined-league-successfully', {leagueTitle: item.name}), 
+                    { type: 'success' }
+                );
             }
-            router.replace('/home')
+            router.replace('/home');
         } catch (error) {
             toast.show(handleError(error), { type: 'danger' });
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
         <TouchableOpacity
@@ -47,7 +50,7 @@ export default function LeagueCard ({item, setIsLoading}) {
             ]}>
                 <View style={styles.prizeRibbon}>
                     <View style={styles.ribbonContainer}>
-                        <FontAwesome5 name="coins" size={16} color="white" />
+                        <FontAwesome5 name='coins' size={16} color='white' />
                         <Text style={styles.prizeText}>
                             {item.coins_prizes.coins_prize_first}
                         </Text>
@@ -64,7 +67,7 @@ export default function LeagueCard ({item, setIsLoading}) {
                     <Image
                         source={{ uri: item.logo }}
                         style={styles.logo}
-                        resizeMode="contain"
+                        resizeMode='contain'
                     />
                 </View>
                 
@@ -87,7 +90,7 @@ export default function LeagueCard ({item, setIsLoading}) {
                             <Text style={styles.costText}>
                                 {t('cost')}: {item.coins_cost || 0}
                             </Text>
-                            <FontAwesome5 name="coins" size={14} color="#f59e0b" style={styles.costIcon} />
+                            <FontAwesome5 name='coins' size={14} color='#f59e0b' style={styles.costIcon} />
                         </View>
                         <Text style={styles.joinText}>{t('tap-to-join')}</Text>
                     </View>

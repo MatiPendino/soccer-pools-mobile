@@ -1,49 +1,51 @@
-import { Router, useLocalSearchParams } from "expo-router"
-import { StyleSheet, View, Text, Pressable, Platform, ScrollView } from "react-native"
-import { Entypo } from "@expo/vector-icons"
-import { useRouter } from "expo-router"
-import { ToastType, useToast } from "react-native-toast-notifications"
-import { useEffect, useState } from "react"
-import { ActivityIndicator } from "react-native-paper"
-import { MAIN_COLOR } from "../../constants"
-import { getToken } from "../../utils/storeToken"
-import { listPendingTournamentUsers } from "../../services/tournamentService"
-import { TournamentUserProps } from "../../types"
-import PendingInviteCard from "./components/PendingInviteCard"
-import { useTranslation } from "react-i18next"
-import { getWrapper } from "../../utils/getWrapper"
+import { Router, useLocalSearchParams } from 'expo-router';
+import { StyleSheet, View, Text, Pressable, Platform, ScrollView } from 'react-native';
+import { Entypo } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { ToastType, useToast } from 'react-native-toast-notifications';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native-paper';
+import { MAIN_COLOR } from '../../constants';
+import { getToken } from '../../utils/storeToken';
+import { listPendingTournamentUsers } from '../../services/tournamentService';
+import { TournamentUserProps } from '../../types';
+import PendingInviteCard from './components/PendingInviteCard';
+import { useTranslation } from 'react-i18next';
+import { getWrapper } from '../../utils/getWrapper';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { Banner } from "components/ads/Ads"
+import { Banner } from 'components/ads/Ads';
 
 export default function PendingInvites () {
-    const { t } = useTranslation()
-    const { tournamentId } = useLocalSearchParams()
-    const [pendingTournamentUsers, setPendingTournamentUsers] = useState<TournamentUserProps[]>(null)
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [token, setToken] = useState<string>('')
+    const { t } = useTranslation();
+    const { tournamentId } = useLocalSearchParams();
+    const [pendingTournamentUsers, setPendingTournamentUsers] = useState<TournamentUserProps[]>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [token, setToken] = useState<string>('');
     const { isLG } = useBreakpoint();
-    const router: Router = useRouter()
-    const toast: ToastType = useToast()
+    const router: Router = useRouter();
+    const toast: ToastType = useToast();
 
     useEffect(() => {
         const getPendingInvites = async () => {
             try {
-                const tempToken = await getToken()
+                const tempToken = await getToken();
                 if (!tempToken) {
-                    router.replace('/login')
-                    return
+                    router.replace('/login');
+                    return;
                 }
-                const users = await listPendingTournamentUsers(tempToken, tournamentId)
-                setToken(tempToken)
-                setPendingTournamentUsers(users)
+                const users = await listPendingTournamentUsers(tempToken, tournamentId);
+                setToken(tempToken);
+                setPendingTournamentUsers(users);
             } catch (error) {
-                toast.show('There is been an error retrieving the pending users', {type: 'danger'})
+                toast.show(
+                    'There is been an error retrieving the pending users', {type: 'danger'}
+                );
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
         }
 
-        getPendingInvites()
+        getPendingInvites();
     }, [])
 
     const Wrapper = getWrapper();
@@ -52,7 +54,7 @@ export default function PendingInvites () {
         <Wrapper style={styles.container}>
             <View style={styles.topBar}>
                 <Pressable onPress={() => router.push(`/my-tournament/${tournamentId}`)}>
-                    <Entypo name="chevron-left" color="white" size={30} />
+                    <Entypo name='chevron-left' color='white' size={30} />
                 </Pressable>
                 <Text style={styles.topBarTxt}>{t('pending-invites')}</Text>
             </View>
@@ -60,7 +62,7 @@ export default function PendingInvites () {
             {
                 isLoading
                 ?
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <ActivityIndicator size='large' color='#0000ff' />
                 :
                     pendingTournamentUsers.length > 0
                     ?

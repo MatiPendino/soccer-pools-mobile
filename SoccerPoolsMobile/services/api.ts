@@ -1,35 +1,35 @@
-import axios from "axios";
+import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const API_URL: string = process.env.API_URL
+export const API_URL: string = process.env.API_URL;
 
 const api = axios.create({
     baseURL: API_URL
-})
+});
 
 const refreshToken = async (): Promise<void> => {
-    const refrToken: string = await AsyncStorage.getItem('refreshToken')
-    if (!refrToken) throw new Error('No refresh token available')
+    const refrToken: string = await AsyncStorage.getItem('refreshToken');
+    if (!refrToken) throw new Error('No refresh token available');
 
     try {
         const response = await api.post('/api/jwt/refresh/', {
             refresh: refrToken
-        })
-        await AsyncStorage.setItem('accessToken', response.data.access)
-        return response.data.access
+        });
+        await AsyncStorage.setItem('accessToken', response.data.access);
+        return response.data.access;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const removeToken = async (): Promise<void> => {
     try {
-        await AsyncStorage.removeItem('accessToken')
-        await AsyncStorage.removeItem('refreshToken')  
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('refreshToken');
     } catch (error) {
-        console.log(error.response.data)
+        console.log(error.response.data);
     }
-}
+};
     
 
 api.interceptors.request.use(
@@ -69,7 +69,7 @@ api.interceptors.response.use(
                 axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
                 return api(originalRequest);
             } catch (refreshError) {
-                console.log("Token refresh failed", refreshError);
+                console.log('Token refresh failed', refreshError);
                 await AsyncStorage.removeItem('accessToken');
                 await AsyncStorage.removeItem('refreshToken');
             }
@@ -78,4 +78,4 @@ api.interceptors.response.use(
     }
 );
 
-export default api
+export default api;

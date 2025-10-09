@@ -1,47 +1,49 @@
-import { View, StyleSheet, Text, Image, ActivityIndicator, Pressable } from 'react-native'
-import { useEffect, useState } from 'react'
-import { ToastType, useToast } from 'react-native-toast-notifications'
-import { Router, useRouter } from 'expo-router'
-import { useTranslation } from 'react-i18next'
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
-import { MAIN_COLOR } from '../../../constants'
-import { getToken } from '../../../utils/storeToken'
-import { retrieveTournamentUser, updateStateTournamentUser } from '../../../services/tournamentService'
-import { Email, TournamentUserProps } from '../../../types'
+import { View, StyleSheet, Text, Image, ActivityIndicator, Pressable } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ToastType, useToast } from 'react-native-toast-notifications';
+import { Router, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { MAIN_COLOR } from '../../../constants';
+import { getToken } from '../../../utils/storeToken';
+import { 
+    retrieveTournamentUser, updateStateTournamentUser 
+} from '../../../services/tournamentService';
+import { Email, TournamentUserProps } from '../../../types';
 
 interface TournamentCardProps {
-    name: string
-    logoUrl: string
-    nParticipants: number
-    adminEmail: Email
-    adminUsername: string
-    tournamentId: number
-    leagueId: number
+    name: string;
+    logoUrl: string;
+    nParticipants: number;
+    adminEmail: Email;
+    adminUsername: string;
+    tournamentId: number;
+    leagueId: number;
 }
 
 export default function TournamentCard({
     name, logoUrl, nParticipants, adminEmail, adminUsername, tournamentId, leagueId,
 }: TournamentCardProps) {
-    const { t } = useTranslation()
-    const [tournamentUser, setTournamentUser] = useState<TournamentUserProps>(null)
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const toast: ToastType = useToast()
-    const router: Router = useRouter()
+    const { t } = useTranslation();
+    const [tournamentUser, setTournamentUser] = useState<TournamentUserProps>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const toast: ToastType = useToast();
+    const router: Router = useRouter();
 
     const getTournamentUser = async () => {
         try {
-            const token: string = await getToken()
-            const data = await retrieveTournamentUser(token, tournamentId)
-            setTournamentUser(data)
+            const token: string = await getToken();
+            const data = await retrieveTournamentUser(token, tournamentId);
+            setTournamentUser(data);
         } catch (error) {
-            toast.show('There is been an error getting the tournament state', {type: 'danger'})
+            toast.show('There is been an error getting the tournament state', {type: 'danger'});
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
   
     useEffect(() => {
-        getTournamentUser()
+        getTournamentUser();
     }, [])
 
     const getStateInfo = () => {
@@ -62,7 +64,7 @@ export default function TournamentCard({
     }
 
     const tournamentStateConversion = (): React.JSX.Element => {
-        const stateInfo = getStateInfo()
+        const stateInfo = getStateInfo();
         
         return (
             <View style={[styles.stateContainer, { backgroundColor: `${stateInfo.color}20` }]}>
@@ -70,24 +72,24 @@ export default function TournamentCard({
                 <MaterialIcons name={stateInfo.icon} size={16} color={stateInfo.color} />
                 <Text style={[styles.stateTxt, { color: stateInfo.color }]}>{stateInfo.text}</Text>
             </View>
-        )
+        );
     }
 
     const joinTournament = async () => {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
-            const token: string = await getToken()
-            await updateStateTournamentUser(token, tournamentUser.id, 1)
-            toast.show(t('join-request-sent'), {type: 'success'})
+            const token: string = await getToken();
+            await updateStateTournamentUser(token, tournamentUser.id, 1);
+            toast.show(t('join-request-sent'), {type: 'success'});
         } catch (error) {
-            toast.show('There is been an error trying to send the join request', {type: 'error'})
+            toast.show('There is been an error trying to send the join request', {type: 'error'});
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
     const handleCard = () => {
-        if (!tournamentUser) return
+        if (!tournamentUser) return;
         
         switch (tournamentUser.tournament_user_state) {
             case 0:

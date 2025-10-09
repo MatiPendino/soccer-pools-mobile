@@ -2,12 +2,12 @@ import api from './api';
 
 export const prizesList = async () => {
     try {
-        const response = await api.get('/api/prizes/prize/')
-        return response.data
+        const response = await api.get('/api/prizes/prize/');
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};
 
 export const prizeClaim = async (token: string, prizeId: number) => {
     try {
@@ -15,10 +15,10 @@ export const prizeClaim = async (token: string, prizeId: number) => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
+        });
 
-        return response.data
+        return response.data;
     } catch (error) {
-        throw error.response.data
+        throw error.response.data;
     }
-}
+};

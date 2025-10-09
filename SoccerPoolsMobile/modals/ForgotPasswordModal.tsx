@@ -5,41 +5,41 @@ import { MAIN_COLOR } from '../constants';
 import { resetPassword } from '../services/authService';
 
 interface Props {
-    visible: boolean
-    onClose: () => void
+    visible: boolean;
+    onClose: () => void;
 }
 
 export default function ForgotPasswordModal ({ visible, onClose }: Props) {
-    const { t } = useTranslation()
-    const [email, setEmail] = useState<string>('')
-    const [loading, setLoading] = useState<boolean>(false)
+    const { t } = useTranslation();
+    const [email, setEmail] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleResetPassword = async () => {
         try {
-            setLoading(true)
-            await resetPassword(email)
-            Alert.alert(t('success'), t('check-email-password-link'))
-            setEmail('')
-            onClose()
+            setLoading(true);
+            await resetPassword(email);
+            Alert.alert(t('success'), t('check-email-password-link'));
+            setEmail('');
+            onClose();
         } catch (error) {
-            Alert.alert('Error', t('couldnt-send-reset-email'))
+            Alert.alert('Error', t('couldnt-send-reset-email'));
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     return (
-        <Modal visible={visible} transparent animationType="slide">
+        <Modal visible={visible} transparent animationType='slide'>
             <View style={styles.overlay}>
                 <View style={styles.modalContainer}>
                     <Text style={styles.title}>{t('forgot-password')}</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Email"
+                        placeholder='Email'
                         onChangeText={setEmail}
                         value={email}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
+                        keyboardType='email-address'
+                        autoCapitalize='none'
                     />
 
                     <TouchableOpacity style={styles.button} onPress={handleResetPassword} disabled={loading}>

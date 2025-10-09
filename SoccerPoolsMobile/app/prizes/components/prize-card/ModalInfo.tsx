@@ -19,7 +19,8 @@ type Props = {
 };
 
 export default function ModalInfo({
-  visible, onClose, title, imageUri, coinsLabel, description, width, onClaim, buttonLabel, prizeId, isClaiming
+  visible, onClose, title, imageUri, coinsLabel, description, width, onClaim, 
+  buttonLabel, prizeId, isClaiming
 }: Props) {
   return (
     <Modal transparent visible={visible} animationType='fade' onRequestClose={onClose}>
