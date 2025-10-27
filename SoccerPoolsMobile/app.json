@@ -8,7 +8,7 @@
     "icon": "./assets/icon.jpg",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
-    "jsEngine": "jsc",
+    "jsEngine": "hermes",
     "splash": {
       "image": "./assets/icon-no-bg.png",
       "resizeMode": "cover",
