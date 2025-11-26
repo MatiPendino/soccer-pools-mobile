@@ -27,10 +27,10 @@ export const removeToken = async (): Promise<void> => {
         await AsyncStorage.removeItem('accessToken');
         await AsyncStorage.removeItem('refreshToken');
     } catch (error) {
-        console.log(error.response.data);
+        throw error.response.data;
     }
 };
-    
+
 
 api.interceptors.request.use(
     async (config) => {
@@ -49,7 +49,12 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        if (error.response && error.response.status === 401 && !originalRequest._retry) {
+        if (
+            error.response &&
+            error.response.status === 401 &&
+            !originalRequest._retry &&
+            !originalRequest.url.includes('jwt/create')
+        ) {
             originalRequest._retry = true;
             try {
                 const nRetriesStr: string | null = await AsyncStorage.getItem('n_retries');
@@ -72,6 +77,7 @@ api.interceptors.response.use(
                 console.log('Token refresh failed', refreshError);
                 await AsyncStorage.removeItem('accessToken');
                 await AsyncStorage.removeItem('refreshToken');
+                return Promise.reject(refreshError);
             }
         }
         return Promise.reject(error);

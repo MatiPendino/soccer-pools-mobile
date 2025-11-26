@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { ToastType, useToast } from 'react-native-toast-notifications';
-import { 
-    View, Image, StyleSheet, Text, TouchableOpacity, Platform, ScrollView, Alert 
+import {
+    View, Image, StyleSheet, Text, TouchableOpacity, Platform, ScrollView, 
+    Alert, ActivityIndicator
 } from 'react-native';
 import { Link, Router, useLocalSearchParams, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useTranslation } from 'react-i18next';
-import { MAIN_COLOR } from '../../constants';
-import { login } from 'services/authService';
 import CustomInputSign from 'components/CustomInputSign';
 import CustomButton from 'components/CustomButton';
-import handleError from 'utils/handleError';
-import ForgotPasswordModal from '../../modals/ForgotPasswordModal';
-import GoogleAuthButton from 'components/GoogleAuthButton';
-import { removeToken } from 'services/api';
-import { getToken } from 'utils/storeToken';
-import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
 import TopBar from 'components/TopBar';
 import Footer from 'components/footer/Footer';
+import GoogleAuthButton from 'components/GoogleAuthButton';
+import { removeToken } from 'services/api';
+import handleError from 'utils/handleError';
+import { getToken } from 'utils/storeToken';
+import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
+import ForgotPasswordModal from '../../modals/ForgotPasswordModal';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { useLogin, useUser } from '../../hooks/useUser';
+import { MAIN_COLOR } from '../../constants';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -35,15 +36,17 @@ export default function Login({}) {
     const { isLG } = useBreakpoint();
     const { referralCode } = useLocalSearchParams();
 
+    const { mutate: loginUser, isPending: isLoggingIn } = useLogin();
+
     useEffect(() => {
         const checkUserLeagueStatus = async (token): Promise<void> => {
             try {
                router.replace(await getUserLeagueRoute(token));
             } catch (error) {
                 Alert.alert(
-                    'Error', handleError(error), 
-                    [{ text: 'OK', onPress: () => {}}], 
-                    {cancelable: false}
+                    'Error', 
+                    handleError(error), 
+                    [{ text: 'OK', onPress: () => {}}], {cancelable: false}
                 );
                 await removeToken();
             }
@@ -59,18 +62,16 @@ export default function Login({}) {
         checkAuth();
     }, []);
 
-    const userInLeague = async (token: string): Promise<void> => {
-        router.replace(await getUserLeagueRoute(token));
-    }
-
-    const logIn = async (): Promise<void> => {
-        try {
-            const {access, refresh} = await login(username.trim(), password.trim());
-            toast.show(t('logged-in-successfully'), {type: 'success'});
-            await userInLeague(access);
-        } catch (error) {
-            toast.show(handleError(error), {type: 'danger'});
-        }
+    const logIn = () => {
+        loginUser({ username: username.trim(), password: password.trim() }, {
+            onSuccess: async (data) => {
+                toast.show(t('logged-in-successfully'), { type: 'success' });
+                router.replace(await getUserLeagueRoute(data.access));
+            },
+            onError: (error) => {
+                toast.show(handleError(error.message), { type: 'danger' });
+            }
+        });
     };
 
     return (
@@ -103,9 +104,14 @@ export default function Login({}) {
                     isSecureTextEntry={true}
                 />    
             </View>
-            
-            
-            <CustomButton callable={logIn} btnText={t('log-in')} btnColor='#2F2766' />
+
+            {
+                isLoggingIn
+                    ?
+                    <ActivityIndicator size='large' color='#0000ff' />
+                    :
+                    <CustomButton callable={logIn} btnText={t('log-in')} btnColor='#2F2766' />
+            }
 
             <ForgotPasswordModal
                 visible={modalVisible}
@@ -132,7 +138,13 @@ export default function Login({}) {
 
             <GoogleAuthButton 
                 callingRoute='login' 
-                referralCode={referralCode ? referralCode : ''}
+                referralCode={
+                    referralCode 
+                    ? 
+                    (Array.isArray(referralCode) ? referralCode[0] : referralCode) 
+                    : 
+                    ''
+                }
             />
 
             

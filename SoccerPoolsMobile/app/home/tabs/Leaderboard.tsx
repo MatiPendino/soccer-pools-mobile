@@ -1,131 +1,88 @@
-import { useEffect, useState, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import { MAIN_COLOR } from '../../../constants';
-import { 
-  RoundProps, RoundsStateProps, BetProps, Slug, LeagueProps, CoinsPrizes 
-} from '../../../types';
-import { getToken } from '../../../utils/storeToken';
+import { Slug } from '../../../types';
 import RankedPlayersFlatList from '../../../components/RankedPlayersFlatList';
-import { getRounds, getRoundsState, swapRoundsBetLeaders } from '../../../utils/leagueRounds';
-import { getBetLeadersCursor } from '../../../services/betService';
 import RoundsPicker from 'components/RoundPicker';
-import { userLeague } from '../../../services/leagueService';
 import { Banner } from 'components/ads/Ads';
 import LoadingCards from '../../../components/LoadingCards';
 import { getWrapper } from '../../../utils/getWrapper';
+import { useUserLeague, useRounds } from '../../../hooks/useLeagues';
+import { useBetLeaders } from '../../../hooks/useResults';
 
-export default function Leaderboard () {
-  const [rounds, setRounds] = useState<RoundProps[]>([]);
-  const [roundsState, setRoundsState] = useState<RoundsStateProps>({});
-  const [bets, setBets] = useState<BetProps[]>([]);
-  const [coinsPrizes, setCoinsPrizes] = useState<CoinsPrizes>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const [nextUrl, setNextUrl] = useState<string | null>(null);
-  const [loadingMore, setLoadingMore] = useState<boolean>(false);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
-  const tokenRef = useRef<string>('');
-
+export default function Leaderboard() {
   const toast: ToastType = useToast();
   const Wrapper = getWrapper();
 
-  const swapRoundBetLeaders = async (roundId: number, roundSlug: Slug) => {
-    try {
-      const { newRoundsState } = await swapRoundsBetLeaders(roundSlug, roundsState);
-      setRoundsState(newRoundsState);
+  const { data: league, isLoading: isLeagueLoading } = useUserLeague();
+  const { data: rounds, isLoading: isRoundsLoading } = useRounds(league?.id);
 
-      // Reset list and fetch first page via cursor
-      setBets([]);
-      setNextUrl(null);
-      setRefreshing(true);
-      const page = await getBetLeadersCursor(tokenRef.current, roundSlug, 0, null);
-      setBets(page.results);
-      setNextUrl(page.next);
+  const [activeRoundId, setActiveRoundId] = useState<number | null>(null);
 
-      const currentRound = rounds.find(round => round.id === roundId);
-      setCoinsPrizes(currentRound?.coins_prizes ?? null);
-    } catch (error) {
-      toast.show('There`s been an error displaying the bets', {type: 'danger'});
-    } finally {
-      setRefreshing(false);
-    }
-  }
-
+  // Set initial active round
   useEffect(() => {
-    const getLeague = async (): Promise<void> => {
-      try {
-        const token: string = await getToken();
-        tokenRef.current = token;
-
-        const temp_league: LeagueProps = await userLeague(token);
-        const roundsByLeague = await getRounds(token, temp_league.id);
-        setRounds(roundsByLeague);
-        setRoundsState(getRoundsState(roundsByLeague));
-        setCoinsPrizes(roundsByLeague[0].coins_prizes);
-
-        // First page via cursor
-        const firstRoundSlug = roundsByLeague[0].slug;
-        const page = await getBetLeadersCursor(token, firstRoundSlug, 0, null);
-        setBets(page.results);
-        setNextUrl(page.next);
-      } catch (error) {
-        toast.show('There is been an error displaying league information', {type: 'danger'});
-      } finally {
-        setIsLoading(false);
-      }
+    if (rounds && rounds.length > 0 && activeRoundId === null) {
+      setActiveRoundId(rounds[0].id);
     }
+  }, [rounds]);
 
-    getLeague();
-  }, [])
+  const activeRound = useMemo(() =>
+    rounds?.find(round => round.id === activeRoundId),
+    [rounds, activeRoundId]
+  );
 
-  const loadMore = async () => {
-    if (!nextUrl || loadingMore) return;
-    setLoadingMore(true);
+  const activeRoundSlug = activeRound?.slug;
 
-    try {
-      const page = await getBetLeadersCursor(tokenRef.current, '', 0, nextUrl);
-      setBets(prev => [...prev, ...page.results]);
-      setNextUrl(page.next);
-    } catch (e) {
-      toast.show('There is been an error loading the rankings', {type: 'danger'});
-    } finally {
-      setLoadingMore(false);
+  const { 
+    data: betLeadersData, fetchNextPage, hasNextPage, isFetchingNextPage, 
+    isLoading: isBetsLoading, refetch: refetchBets, isRefetching
+  } = useBetLeaders(activeRoundSlug, 0);
+
+  const bets = useMemo(() =>
+    betLeadersData?.pages.flatMap(page => page.results) || [],
+    [betLeadersData]
+  );
+
+  const handleRoundSwap = (roundId: number, roundSlug: Slug) => {
+    setActiveRoundId(roundId);
+  }
+
+  const loadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
   }
+
+  const isLoading = isLeagueLoading || isRoundsLoading || (isBetsLoading && !isRefetching);
 
   return (
     <Wrapper style={styles.container}>
       {
-        isLoading
-        ? 
+        (isLeagueLoading || isRoundsLoading)
+        ?
         <ShimmerPlaceholder style={styles.roundsListLoading} />
-        : 
+        :
         <RoundsPicker
-          rounds={rounds}
-          handleRoundSwap={swapRoundBetLeaders}
-          roundsState={roundsState}
+          rounds={rounds || []}
+          handleRoundSwap={handleRoundSwap}
+          activeRoundId={activeRoundId}
         />
       }
 
       {
-        (isLoading || refreshing)
+        isLoading
         ? 
         <LoadingCards cardHeight={80} nCards={5} cardColor='#d9d9d9' />
         : 
         <RankedPlayersFlatList
           bets={bets}
-          coinsPrizes={coinsPrizes}
+          coinsPrizes={activeRound?.coins_prizes ?? null}
           onEnd={loadMore}
-          loadingMore={loadingMore}
-          refreshing={refreshing}
-          onRefresh={() => {
-            // Pull to refresh current round
-            const current = rounds.find(round => roundsState[round.id]);
-            if (!current) return;
-            swapRoundBetLeaders(current.id, current.slug);
-          }}
+          loadingMore={isFetchingNextPage}
+          refreshing={isRefetching}
+          onRefresh={refetchBets}
         />
       }
 

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { RoundProps, RoundsStateProps, Slug } from '../../types';
+import { RoundProps, Slug } from '../../types';
 import RoundListModal from './RoundListModal';
 import ArrowButton from './ArrowButton';
 import NoRounds from './NoRounds';
@@ -10,12 +10,12 @@ import CurrentRoundButton from './CurrentRoundButton';
 interface Props {
   rounds: RoundProps[];
   handleRoundSwap: (roundId: number, roundSlug: Slug) => void;
-  roundsState: RoundsStateProps;
+  activeRoundId: number | null;
   isResultsTab?: boolean;
 }
 
 export default function RoundsPicker({
-    rounds, handleRoundSwap, roundsState, isResultsTab = false,
+    rounds, handleRoundSwap, activeRoundId, isResultsTab = false,
 }: Props) {
     const [open, setOpen] = useState<boolean>(false);
 
@@ -25,13 +25,12 @@ export default function RoundsPicker({
         [rounds, isResultsTab]
     );
 
-    // Get the current index, the one marked true in roundsState
+    // Get the current index based on activeRoundId
     const currentIndex = useMemo(() => {
-        const activeSlug = Object.keys(roundsState).find(s => roundsState[s]);
-        const index = visibleRounds.findIndex(round => round.slug === activeSlug);
-
+        if (!activeRoundId) return 0;
+        const index = visibleRounds.findIndex(round => round.id === activeRoundId);
         return index >= 0 ? index : 0;
-    }, [visibleRounds, roundsState]);
+    }, [visibleRounds, activeRoundId]);
 
     const current = visibleRounds[currentIndex];
 

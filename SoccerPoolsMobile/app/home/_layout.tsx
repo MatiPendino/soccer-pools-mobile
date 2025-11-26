@@ -1,25 +1,23 @@
-import { useEffect, useState } from 'react';
 import { View, Text, Pressable, Platform } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Entypo from '@expo/vector-icons/Entypo';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useToast } from 'react-native-toast-notifications';
 import { useTranslation } from 'react-i18next';
-import { 
-  FACEBOOK_URL, INSTAGRAM_URL, MAIN_COLOR, MAIN_COLOR_OPACITY, TWITTER_URL 
+import {
+  FACEBOOK_URL, INSTAGRAM_URL, MAIN_COLOR, MAIN_COLOR_OPACITY, TWITTER_URL
 } from '../../constants';
 import styles from './styles';
 import CoinsDisplay from '../../components/CoinsDisplay';
 import RateAppModal from '../../components/RateAppModal';
-import { getToken } from '../../utils/storeToken';
-import { getFullUser } from '../../services/authService';
-import { removeToken } from '../../services/api';
 import handleShare from '../../utils/handleShare';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { toCapitalCase } from 'utils/helper';
+import { useFullUser } from '../../hooks/useUser';
+import { removeToken } from 'services/api';
 
 export default function HomeLayout() {
   const { isSM, isLG, isXXL } = useBreakpoint();
@@ -27,28 +25,7 @@ export default function HomeLayout() {
   const toast = useToast();
   const router = useRouter();
 
-  const [user, setUser] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentCoins, setCurrentCoins] = useState<number>(0);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const token = await getToken();
-        if (!token) {
-          router.replace('/login');
-          return;
-        }
-        const user = await getFullUser(token);
-        setCurrentCoins(user.coins);
-        setUser(user);
-      } catch {
-        toast.show('There was an error retrieving the user details', { type: 'danger' });
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, []);
+  const { data: user, isLoading } = useFullUser();
 
   const logOut = async () => {
     try {
@@ -84,8 +61,8 @@ export default function HomeLayout() {
         headerLeft: isLG ? () => null : undefined,
         headerRight: () => (
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <CoinsDisplay setCoins={setCurrentCoins} coins={isLoading ? '...' : currentCoins} />
-            <RateAppModal setCoins={setCurrentCoins} />
+            <CoinsDisplay coins={isLoading ? '...' : (user?.coins || 0)} />
+            <RateAppModal />
           </View>
         ),
         headerRightContainerStyle: { paddingRight: 16 },
@@ -134,7 +111,9 @@ export default function HomeLayout() {
                 style={styles.shareBtn}
               >
                 <FontAwesome name='gift' size={isXXL ? 19 : 17} color='white' />
-                <Text style={[styles.shareTxt, {fontSize: isXXL ? 21 : 19}]}>{toCapitalCase(t('prizes'))}</Text>
+                <Text style={[styles.shareTxt, {fontSize: isXXL ? 21 : 19}]}>
+                  {toCapitalCase(t('prizes'))}
+                </Text>
               </Pressable>
             }
 

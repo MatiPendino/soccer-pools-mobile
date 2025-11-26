@@ -8,13 +8,13 @@ import { Slug } from 'types';
 interface Props {
     visible: boolean;
     onClose: () => void;
-    savePredictions: () => Promise<void>;
+    savePredictions: () => void;
     isLoading: boolean;
     nextRoundId: number;
     nextRoundSlug: Slug;
     handleRoundSwap: (
         roundId: number, roundSlug: Slug, alreadyShowedModal?: boolean
-    ) => Promise<void>;
+    ) => void;
 }
 
 export default function SaveChanges({

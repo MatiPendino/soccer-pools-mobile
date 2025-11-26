@@ -4,6 +4,7 @@ import { Stack } from 'expo-router';
 import { ToastProvider } from 'react-native-toast-notifications';
 import { StatusBar } from 'expo-status-bar';
 import * as Sentry from '@sentry/react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import initializeMobileAds from 'utils/initialize_mobile_ads/initializeMobileAds';
 import initializeAnalytics from 'utils/analytics/initializeAnalytics';
 import initializeVexo from 'utils/initialize_vexo/initializeVexo';
@@ -21,7 +22,9 @@ initializeVexo();
 
 // Firebase Analytics Setup
 initializeAnalytics();
-  
+
+const queryClient: QueryClient = new QueryClient();
+
 export default function Layout () {
     useEffect(() => {
         // Admob initialization
@@ -34,13 +37,15 @@ export default function Layout () {
     }, []);
 
     return (
-        <ToastProvider>
-            <StatusBar style='light' backgroundColor='#1C154F' />
-            <Stack
-                screenOptions={{
-                    headerShown: false,
-                }}
-            />
-        </ToastProvider>
+        <QueryClientProvider client={queryClient}>
+            <ToastProvider>
+                <StatusBar style='light' backgroundColor='#1C154F' />
+                <Stack
+                    screenOptions={{
+                        headerShown: false,
+                    }}
+                />
+            </ToastProvider>
+        </QueryClientProvider>
     )
 }

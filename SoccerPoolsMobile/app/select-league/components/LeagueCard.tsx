@@ -1,26 +1,27 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+    View, Text, TouchableOpacity, Image, StyleSheet, ActivityIndicator 
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { Router, useRouter } from 'expo-router';
-import { getToken } from '../../../utils/storeToken';
-import { betsRegister } from '../../../services/betService';
-import { useBreakpoint } from '../../../hooks/useBreakpoint';
 import handleError from 'utils/handleError';
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
+import { useJoinLeague } from '../../../hooks/useLeagues';
 
-export default function LeagueCard ({item, setIsLoading}) {
+export default function LeagueCard({ item }) {
     const { t } = useTranslation();
     const { width, isLG } = useBreakpoint();
     const toast: ToastType = useToast();
     const router: Router = useRouter();
 
+    const { mutateAsync: joinLeagueAsync, isPending: isLoading } = useJoinLeague();
+
     const cardWidth = isLG ? width*0.23 : width*0.44;
 
-    const selectLeague = async (): Promise<void> => {
-        setIsLoading(true);
+    const selectLeague = async () => {
         try {
-            const token = await getToken();
-            const response = await betsRegister(token, item.slug);
+            const response = await joinLeagueAsync(item.slug);
             if (response.status === 201) {
                 toast.show(
                     t('joined-league-successfully', {leagueTitle: item.name}), 
@@ -30,8 +31,6 @@ export default function LeagueCard ({item, setIsLoading}) {
             router.replace('/home');
         } catch (error) {
             toast.show(handleError(error), { type: 'danger' });
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -43,6 +42,7 @@ export default function LeagueCard ({item, setIsLoading}) {
             }]}
             onPress={() => selectLeague()}
             activeOpacity={0.7}
+            disabled={isLoading}
         >
             <View style={[
                 styles.card,
@@ -79,7 +79,10 @@ export default function LeagueCard ({item, setIsLoading}) {
                 </Text>
                 
                 {
-                    item.is_user_joined 
+                isLoading ?
+                    <ActivityIndicator size="small" color="#0000ff" />
+                : 
+                    item.is_user_joined
                     ? 
                     <View style={styles.memberBadge}>
                         <Text style={styles.memberText}>{t('joined')}</Text>
@@ -90,7 +93,10 @@ export default function LeagueCard ({item, setIsLoading}) {
                             <Text style={styles.costText}>
                                 {t('cost')}: {item.coins_cost || 0}
                             </Text>
-                            <FontAwesome5 name='coins' size={14} color='#f59e0b' style={styles.costIcon} />
+                            <FontAwesome5 
+                                name='coins' size={14} 
+                                color='#f59e0b' style={styles.costIcon} 
+                            />
                         </View>
                         <Text style={styles.joinText}>{t('tap-to-join')}</Text>
                     </View>

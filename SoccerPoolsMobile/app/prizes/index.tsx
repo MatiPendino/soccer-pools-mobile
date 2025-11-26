@@ -1,83 +1,44 @@
-import { useEffect, useState } from 'react';
 import { FlatList, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Link, Router, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator } from 'react-native-paper';
 import { Entypo } from '@expo/vector-icons';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { useTranslation } from 'react-i18next';
-import { prizeClaim, prizesList } from 'services/prizeService';
-import { PrizeProps, UserCoinsProps } from 'types';
 import handleError from 'utils/handleError';
-import { getToken } from 'utils/storeToken';
-import PrizeCard from './components/prize-card/PrizeCard';
 import { useBreakpoint } from 'hooks/useBreakpoint';
 import Footer from 'components/footer/Footer';
 import CoinsDisplay from 'components/CoinsDisplay';
-import { MAIN_COLOR } from '../../constants';
-import { userCoinsRetrieve } from 'services/userService';
 import { toCapitalCase } from 'utils/helper';
+import { MAIN_COLOR } from '../../constants';
+import { usePrizes, useClaimPrize } from '../../hooks/usePrizes';
+import { useUserCoins } from '../../hooks/useUser';
+import PrizeCard from './components/prize-card/PrizeCard';
 
-
-export default function Prizes () {
-    const [prizes, setPrizes] = useState<PrizeProps[]>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [loadingCoins, setLoadingCoins] = useState<boolean>(true);
-    const [isClaiming, setIsClaiming] = useState<boolean>(false);
-    const [user, setUser] = useState<UserCoinsProps | null>(null);
-    const [token, setToken] = useState<string | null>(null);
+export default function Prizes() {
     const toast: ToastType = useToast();
     const router: Router = useRouter();
     const { t } = useTranslation();
     const { backto, referralCode } = useLocalSearchParams();
-
     const { isLG } = useBreakpoint();
 
-    useEffect(() => {
-        const getPrizes = async () => {
-            try {
-                const token = await getToken();
-                setToken(token);
-                if (token) {
-                    try {
-                        const user: UserCoinsProps = await userCoinsRetrieve(token);
-                        setUser(user);    
-                    } catch (error) {
-                        toast.show(handleError(error), {type: 'danger'});
-                    } finally {
-                        setLoadingCoins(false);
-                    }
-                }
-                const prizes = await prizesList();
-                setPrizes(prizes);
-            } catch (error) {
-                toast.show(handleError(error), {type: 'danger'});
-            } finally {
-                setIsLoading(false);
-            }
-            
+    const { data: prizes, isLoading: isPrizesLoading } = usePrizes();
+    const { data: userCoins, isLoading: isCoinsLoading } = useUserCoins();
+    const { mutate: claimPrize, isPending: isClaiming } = useClaimPrize();
+
+    const onClaim = (prizeId) => {
+        if (!userCoins) {
+            router.push('login');
+            return;
         }
 
-        getPrizes();
-    }, [])
-
-    const onClaim = async (prizeId) => {
-        setIsClaiming(true);
-        try {
-            if (token) {
-                await prizeClaim(token, prizeId);
-                toast.show(t('prize-claimed-successfully'), {type: 'success'});
-            } else {
-                router.push('login');
+        claimPrize(prizeId, {
+            onSuccess: () => {
+                toast.show(t('prize-claimed-successfully'), { type: 'success' });
+            },
+            onError: (error) => {
+                toast.show(handleError(error.message), { type: 'danger' });
             }
-        } catch (error) {
-            toast.show(handleError(error), {type: 'danger'});
-        } finally {
-            setIsClaiming(false);
-        }
-    }
-
-    const setUserCoins = (coins: number) => {
-        setUser({...user, coins: coins});
+        });
     }
 
     
@@ -101,21 +62,23 @@ export default function Prizes () {
                 </Text>
                 
                 <Text style={styles.subtitle}>{t('claim-rewards')}</Text>
-                {token && !isLoading &&
+                {!isCoinsLoading && userCoins &&
                     <View style={styles.coinsContainer}>
-                        <CoinsDisplay setCoins={setUserCoins} coins={loadingCoins ? '...' : (user.coins || 0)} />
+                        <CoinsDisplay coins={userCoins.coins || 0} />
                     </View>
                 }
                 
             </View>
 
-            <Text style={[styles.description, {fontSize: isLG ? 17 : 15, marginHorizontal: isLG ? 50 : 25}]}>
+            <Text style={[
+                styles.description, {fontSize: isLG ? 17 : 15, marginHorizontal: isLG ? 50 : 25}
+            ]}>
                 {t('all-prizes-free')}
             </Text>
 
             <View>
                 {
-                    isLoading
+                    isPrizesLoading
                     ?
                     <ActivityIndicator size='large' color='#007AFF' />
                     :

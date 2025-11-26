@@ -1,30 +1,27 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next';
 import { useToast, ToastType } from 'react-native-toast-notifications';
 import { useRewardedAd } from 'components/ads/Ads';
-import { updateCoins } from '../services/userService';
-import { getToken } from '../utils/storeToken';
 import { REWARD_AD_REWARD } from '../constants';
+import { useUpdateCoins } from '../hooks/useUser';
 
-export default function CoinsDisplay({ setCoins, coins }) {
+export default function CoinsDisplay({ coins }) {
     const { t } = useTranslation();
     const toast: ToastType = useToast();
+    const { mutate: updateCoinsMutate } = useUpdateCoins();
 
-    useEffect(() => {
-        setCoins(coins);
-    }, [coins]);
-
-    const onEarnedReward = useCallback(async (amount: number) => {
-        try {
-            const token = await getToken();
-            const { coins } = await updateCoins(token, amount, REWARD_AD_REWARD);
-            setCoins(coins);
-            toast.show(t('coins-added', { coins: amount }), {type: 'success'});
-        } catch (error) {
-            toast.show(error, {type: 'danger'});
-        }
+    const onEarnedReward = useCallback((coins: number) => {
+        updateCoinsMutate({ coins: coins, rewardType: REWARD_AD_REWARD }, {
+            onSuccess: (data) => {
+                toast.show(t('coins-added', { coins: coins }), { type: 'success' });
+            },
+            onError: (error) => {
+                console.log(error);
+                toast.show(error.message || 'Error adding coins', { type: 'danger' });
+            }
+        });
     }, []);
 
     const { loaded, show } = useRewardedAd({onEarnedReward});

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
     View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView,
 } from 'react-native';
@@ -6,69 +6,27 @@ import { FloatingAction } from 'react-native-floating-action';
 import { Router, useRouter } from 'expo-router';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { MaterialIcons } from '@expo/vector-icons';
-import { MAIN_COLOR } from '../../../constants';
-import { LeagueProps, TournamentProps } from '../../../types';
-import TournamentCard from '../components/TournamentCard';
-import { getToken } from '../../../utils/storeToken';
-import { listTournaments } from '../../../services/tournamentService';
 import { useTranslation } from 'react-i18next';
-import { userLeague } from '../../../services/leagueService';
+import { MAIN_COLOR } from '../../../constants';
+import TournamentCard from '../components/TournamentCard';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
+import { useTournaments } from '../../../hooks/useTournaments';
+import { useUserLeague } from '../../../hooks/useLeagues';
 
 
 export default function Tournaments ({}) {
     const { t } = useTranslation();
     const [tournamentLookup, setTournamentLookup] = useState<string>('');
-    const [tournaments, setTournaments] = useState<TournamentProps[]>(null);
-    const [leagueId, setLeagueId] = useState<number>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
     const { isLG } = useBreakpoint();
     const router: Router = useRouter();
     const toast: ToastType = useToast();
 
-    useEffect(() => {
-        const getLeague = async (): Promise<void> => {
-            try {
-                const token: string = await getToken();
-                /* 
-                    Since this function is called everytime the tournamentLookup updates,
-                    to avoid fetching the league more than once, if there is a leagueId
-                    already stored in the state, call getTournaments directly and return
-                */
-                if (leagueId) {
-                    getTournaments(token, leagueId);
-                    return;
-                }
+    const { data: league, isLoading: isLeagueLoading } = useUserLeague();
+    const { data: tournaments, isLoading: isTournamentsLoading } = useTournaments(
+        league?.id, tournamentLookup
+    );
 
-                const league: LeagueProps = await userLeague(token);
-                setLeagueId(league.id);
-                getTournaments(token, league.id);
-            } catch (error) {
-                toast.show(
-                    'There is been an error displaying league information', {type: 'danger'}
-                );
-            } 
-        }
-
-        const getTournaments = async (token, leagueId) => {
-            try {
-                if (token) {
-                    const data: TournamentProps[] = await listTournaments(
-                        token, 
-                        leagueId, 
-                        tournamentLookup
-                    );
-                    setTournaments(data);
-                }
-            } catch (error) {
-                toast.show(error.toString(), { type: 'danger' });
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        getLeague();
-    }, [tournamentLookup])
+    const isLoading = isLeagueLoading || isTournamentsLoading;
 
     const actions = [];
 
@@ -154,7 +112,7 @@ export default function Tournaments ({}) {
             <FloatingAction
                 actions={actions}
                 onOpen={() => {
-                    router.push({pathname: 'create-tournament', params: {leagueId: leagueId}})
+                    router.push({ pathname: 'create-tournament', params: { leagueId: league?.id } })
                 }}
                 color='#0C9A24'
                 iconHeight={24}

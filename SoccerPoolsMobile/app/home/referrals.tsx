@@ -1,40 +1,23 @@
-import { useEffect, useState } from 'react';
-import { 
-    StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView 
+import {
+    StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator
 } from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Feather from '@expo/vector-icons/Feather';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import handleError from 'utils/handleError';
-import { getToken } from 'utils/storeToken';
-import { listMembers } from 'services/userService';
-import { useBreakpoint } from 'hooks/useBreakpoint';
-import { UserMemberProps } from 'types';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { MAIN_COLOR, PURPLE_COLOR, SILVER_COLOR, WEBSITE_URL } from '../../constants';
 import MemberCard from './components/MemberCard';
+import { useReferrals } from '../../hooks/useReferrals';
 
 export default function Referrals() {
-    const [members, setMembers] = useState<UserMemberProps[]>(null);
     const { t } = useTranslation();
     const { isLG } = useBreakpoint();
     const { referralCode } = useLocalSearchParams();
     const toast: ToastType = useToast();
 
-    useEffect(() => {
-        const getMembers = async () => {
-            try {
-                const token: string = await getToken();
-                const mems: UserMemberProps[] = await listMembers(token);
-                setMembers(mems);
-            } catch (error) {
-                toast.show(handleError(error), {type: 'error'});
-            }    
-        }
-        
-        getMembers();
-    }, [])
+    const { data: members, isLoading } = useReferrals();
 
     const copyToClipboard = () => {
         Clipboard.setString(`${WEBSITE_URL}?referralCode=${referralCode}`);
@@ -72,24 +55,29 @@ export default function Referrals() {
                 <Text style={styles.membersTxt}>{t('members')}</Text>
 
                 {
-                    members?.length > 0
+                    isLoading 
                     ?
-                    members.map(member => (
-                        <MemberCard key={member.username}
-                            username={member.username}
-                            profile_image={member.profile_image}
-                            created_at={member.created_at}
-                        />
-                    ))
-                    :
-                    <View style={styles.emptyContainer}>
-                        <Feather name='users' size={40} color={SILVER_COLOR} />
-                        <Text style={styles.emptyText}>{t('no-members-yet')}</Text>
-                        <Text style={styles.emptySubtext}>{t('share-referral-link')}</Text>
-                    </View>
+                    <ActivityIndicator size="small" color="white" />
+                    : (
+                        members?.length > 0
+                        ?
+                        members.map(member => (
+                            <MemberCard key={member.username}
+                                username={member.username}
+                                profile_image={member.profile_image}
+                                created_at={member.created_at}
+                            />
+                        ))
+                        :
+                        <View style={styles.emptyContainer}>
+                            <Feather name='users' size={40} color={SILVER_COLOR} />
+                            <Text style={styles.emptyText}>{t('no-members-yet')}</Text>
+                            <Text style={styles.emptySubtext}>{t('share-referral-link')}</Text>
+                        </View>
+                    )
                 }
             </View>
-            
+
         </ScrollView>
     )
 }

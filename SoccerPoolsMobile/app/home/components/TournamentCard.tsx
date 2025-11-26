@@ -1,15 +1,11 @@
 import { View, StyleSheet, Text, Image, ActivityIndicator, Pressable } from 'react-native';
-import { useEffect, useState } from 'react';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { Router, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { MAIN_COLOR } from '../../../constants';
-import { getToken } from '../../../utils/storeToken';
-import { 
-    retrieveTournamentUser, updateStateTournamentUser 
-} from '../../../services/tournamentService';
-import { Email, TournamentUserProps } from '../../../types';
+import { useTournamentUser, useUpdateStateTournamentUser } from '../../../hooks/useTournaments';
+import { Email } from '../../../types';
 
 interface TournamentCardProps {
     name: string;
@@ -25,30 +21,18 @@ export default function TournamentCard({
     name, logoUrl, nParticipants, adminEmail, adminUsername, tournamentId, leagueId,
 }: TournamentCardProps) {
     const { t } = useTranslation();
-    const [tournamentUser, setTournamentUser] = useState<TournamentUserProps>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { data: tournamentUser, isLoading: isUserLoading } = useTournamentUser(tournamentId);
+    const { mutate: updateState, isPending: isUpdating } = useUpdateStateTournamentUser();
     const toast: ToastType = useToast();
     const router: Router = useRouter();
 
-    const getTournamentUser = async () => {
-        try {
-            const token: string = await getToken();
-            const data = await retrieveTournamentUser(token, tournamentId);
-            setTournamentUser(data);
-        } catch (error) {
-            toast.show('There is been an error getting the tournament state', {type: 'danger'});
-        } finally {
-            setIsLoading(false);
-        }
-    }
-  
-    useEffect(() => {
-        getTournamentUser();
-    }, [])
-
     const getStateInfo = () => {
-        if (!tournamentUser) return { color: '#0C9A24', text: t('apply'), icon: 'add-circle-outline' }
-        
+        if (!tournamentUser) {
+            return { 
+                color: '#0C9A24', text: t('apply'), icon: 'add-circle-outline' 
+            };
+        }
+
         switch (tournamentUser.tournament_user_state) {
             case 0:
                 return { color: '#0C9A24', text: t('apply'), icon: 'add-circle-outline' }
@@ -75,17 +59,16 @@ export default function TournamentCard({
         );
     }
 
-    const joinTournament = async () => {
-        setIsLoading(true);
-        try {
-            const token: string = await getToken();
-            await updateStateTournamentUser(token, tournamentUser.id, 1);
-            toast.show(t('join-request-sent'), {type: 'success'});
-        } catch (error) {
-            toast.show('There is been an error trying to send the join request', {type: 'error'});
-        } finally {
-            setIsLoading(false);
-        }
+    const joinTournament = () => {
+        if (!tournamentUser) return;
+        updateState({tournamentUserId: tournamentUser.id, tournamentState: 1}, {
+            onSuccess: () => {
+                toast.show(t('join-request-sent'), { type: 'success' });
+            },
+            onError: () => {
+                toast.show('There is been an error sending the join request', { type: 'error' });
+            }
+        });
     }
 
     const handleCard = () => {
@@ -151,7 +134,7 @@ export default function TournamentCard({
         
             <View style={styles.stateWrapper}>
                 {
-                    !isLoading 
+                    (!isUserLoading && !isUpdating)
                     ? 
                     tournamentStateConversion()
                     : 

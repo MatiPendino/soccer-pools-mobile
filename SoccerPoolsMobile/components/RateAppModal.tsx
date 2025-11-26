@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { Modal, Pressable, Text, View, Platform, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
-import { getToken } from '../utils/storeToken';
-import { updateCoins } from '../services/userService';
 import { ANDROID_URL, REVIEW_APP_COINS_PRIZE, REWARD_APP_REVIEW } from '../constants';
+import { useUpdateCoins } from '../hooks/useUser';
 
-export default function RateAppModal ({setCoins}) {
+export default function RateAppModal({}) {
     const [showRatingModal, setShowRatingModal] = useState<boolean>(false);
     const { t } = useTranslation();
+    const { mutate: updateCoinsMutate } = useUpdateCoins();
 
     const askForRatingIfNeeded = async () => {
         const hasAsked = await AsyncStorage.getItem('was_asked_review');
@@ -32,7 +32,7 @@ export default function RateAppModal ({setCoins}) {
         }
     }
 
-    const handleRateApp = async () => {
+    const handleRateApp = () => {
         const url = Platform.select({
             android: ANDROID_URL,
             ios: `itms-apps://itunes.apple.com/app/idYOUR_APP_ID`, //TODO Update
@@ -40,9 +40,7 @@ export default function RateAppModal ({setCoins}) {
         Linking.openURL(url);
         setShowRatingModal(false);
 
-        const token = await getToken();
-        const { coins } = await updateCoins(token, REVIEW_APP_COINS_PRIZE, REWARD_APP_REVIEW);
-        setCoins(coins);
+        updateCoinsMutate({coins: REVIEW_APP_COINS_PRIZE, rewardType: REWARD_APP_REVIEW});
     };
 
     useEffect(() => {

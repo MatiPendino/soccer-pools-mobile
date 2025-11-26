@@ -4,136 +4,102 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
+import { useTranslation } from 'react-i18next';
 import { showOpenAppAd } from 'components/ads/Ads';
 import SaveChanges from '../../../modals/SaveChanges';
 import { MAIN_COLOR } from '../../../constants';
 import { getToken } from '../../../utils/storeToken';
-import { matchResultsList, matchResultsUpdate } from '../../../services/matchService';
 import MatchResult from '../components/MatchResult';
 import { ResultsProvider, useResultsContext } from '../contexts/ResultsContext';
-import { 
-    LeagueProps, MatchResultProps, RoundProps, RoundsStateProps, Slug 
-} from '../../../types';
-import { getRounds, getRoundsState, updateActiveRound } from '../../../utils/leagueRounds';
-import { useTranslation } from 'react-i18next';
-import RoundsPicker from 'components/RoundPicker';
-import { userLeague } from '../../../services/leagueService';
+import { MatchResultProps, Slug } from '../../../types';
 import { getNextRoundId } from '../../../utils/getNextRound';
 import handleError from '../../../utils/handleError';
 import { registerPush, getFCMToken } from '../../../services/pushNotificationService';
 import { getWrapper } from '../../../utils/getWrapper';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
-
+import RoundsPicker from 'components/RoundPicker';
+import { useUserLeague, useRounds } from '../../../hooks/useLeagues';
+import { useMatchResults, useUpdateMatchResults } from '../../../hooks/useResults';
 
 function Results({}) {
     const { t } = useTranslation();
-    const [rounds, setRounds] = useState<RoundProps[]>([]);
-    const [roundsState, setRoundsState] = useState<RoundsStateProps>({});
-    const [matchResults, setMatchResults] = useState<MatchResultProps[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isRoundLoading, setIsRoundLoading] = useState<boolean>(false);
-    const [isSavePredLoading, setIsSavePredLoading] = useState<boolean>(false);
-    const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const [nextRoundId, setNextRoundId] = useState<number>(0);
-    const [nextRoundSlug, setNextRoundSlug] = useState<Slug>('');
     const { isXL } = useBreakpoint();
     const toast: ToastType = useToast();
+    const Wrapper = getWrapper();
+
+    const { data: league, isLoading: isLeagueLoading } = useUserLeague();
+    const { data: rounds, isLoading: isRoundsLoading } = useRounds(league?.id);
+
+    const [activeRoundId, setActiveRoundId] = useState<number | null>(null);
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [pendingRoundSwap, setPendingRoundSwap] = useState<{ id: number, slug: Slug } | null>(null);
 
     const { arePredictionsSaved, setArePredictionsSaved } = useResultsContext();
 
-    const getMatchResults = async (token: string, roundId: number): Promise<void> => {
-        setIsRoundLoading(true);
-        try {
-            const matchResults = await matchResultsList(token, roundId);
-            setMatchResults(matchResults);
-        } catch (error) {
-            toast.show('There´s been an error getting the matches', {type: 'danger'});
-        } finally {
-            setIsRoundLoading(false);
+    useEffect(() => {
+        if (rounds && rounds.length > 0 && activeRoundId === null) {
+            const nextId = getNextRoundId(rounds);
+            setActiveRoundId(nextId);
         }
-    };
+    }, [rounds]);
 
-    const savePredictions = async (): Promise<void> => {
-        setIsSavePredLoading(true);
-        try {
-            const token = await getToken();
-            const response = await matchResultsUpdate(token, matchResults);
-            toast.show(t('matches-saved-successfully'), {type: 'success'});
-            setArePredictionsSaved(true);
-        } catch (error) {
-            toast.show(handleError(error), {type: 'danger'});
-        } finally {
-            setIsSavePredLoading(false);
+    const { data: serverMatchResults, isLoading: isMatchesLoading } = useMatchResults(activeRoundId);
+    const { mutate: savePredictionsMutate, isPending: isSaving } = useUpdateMatchResults();
+
+    const [localMatchResults, setLocalMatchResults] = useState<MatchResultProps[]>([]);
+
+    useEffect(() => {
+        if (serverMatchResults) {
+            setLocalMatchResults(serverMatchResults);
         }
-    };
+    }, [serverMatchResults]);
 
-    const swapRoundMatchResults = async (
-        roundId: number, roundSlug: Slug, alreadyShowedModal?: boolean
-    ): Promise<void> => {
-        try {
-            const token = await getToken();
-            /* 
-                If predictions ARE NOT saved, show modal.
-                If they are saved or the modal has already been shown, swap the round
-            */
-            if (alreadyShowedModal || arePredictionsSaved) {
-                getMatchResults(token, roundId);  
-                setRoundsState(updateActiveRound(roundSlug, roundsState));
-            } else if (!arePredictionsSaved) {
-                setModalVisible(true);
-                setNextRoundId(roundId);
-                setNextRoundSlug(roundSlug);
+    const savePredictions = () => {
+        savePredictionsMutate(localMatchResults, {
+            onSuccess: () => {
+                toast.show(t('matches-saved-successfully'), { type: 'success' });
+                setArePredictionsSaved(true);
+                if (pendingRoundSwap) {
+                    setActiveRoundId(pendingRoundSwap.id);
+                    setPendingRoundSwap(null);
+                    setModalVisible(false);
+                }
+            },
+            onError: (error) => {
+                toast.show(handleError(error.message), { type: 'danger' });
             }
-        } catch (error) {
-            toast.show('There´s been an error getting the matches', {type: 'danger'})
-        } 
+        });
+    };
+
+    const swapRoundMatchResults = (
+        roundId: number, roundSlug: Slug, alreadyShowedModal?: boolean
+    ) => {
+        if (alreadyShowedModal || arePredictionsSaved) {
+            setActiveRoundId(roundId);
+        } else {
+            setPendingRoundSwap({ id: roundId, slug: roundSlug });
+            setModalVisible(true);
+        }
     };
 
     useEffect(() => {
-        const getLeague = async (): Promise<void> => {
-            try {
-                const token: string = await getToken();
-                const temp_league: LeagueProps = await userLeague(token);
-                const roundsByLeague = await getRounds(token, temp_league.id, true);
-                const nextRoundId = getNextRoundId(roundsByLeague);
-
-                setRounds(roundsByLeague);
-                setRoundsState(getRoundsState(roundsByLeague, nextRoundId));
-                getFirstMatchResults(token, nextRoundId);
-            } catch (error) {
-                toast.show(
-                    'There is been an error displaying league information', {type: 'danger'}
-                );
-            } 
-        }
-
-        const getFirstMatchResults = async (token, firstRoundId): Promise<void> => {
-            try {
-                getMatchResults(token, firstRoundId);
-            } catch (error) {
-                toast.show('There´s been an error getting the matches', {type: 'danger'});
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         const sendFCMToken = async () => {
             try {
                 const existingFCMToken = await AsyncStorage.getItem('FCMToken');
                 if (!existingFCMToken) {
                     const token = await getToken();
                     const fcmToken = await getFCMToken();
-                    const response = registerPush(token, fcmToken); 
-                    if (response) {
-                        await AsyncStorage.setItem('FCMToken', fcmToken);
+                    if (token && fcmToken) {
+                        const response = registerPush(token, fcmToken);
+                        if (response) {
+                            await AsyncStorage.setItem('FCMToken', fcmToken);
+                        }
                     }
                 }
             } catch (error) {
                 Sentry.captureException(error);
             }
         };
-
-        getLeague();
         sendFCMToken();
     }, []);
 
@@ -145,39 +111,46 @@ function Results({}) {
         }
     }, []);
 
+    const isLoading = isLeagueLoading || isRoundsLoading;
+
     if (isLoading) {
         return <ActivityIndicator size='large' color='#0000ff' />
     };
-
-    const Wrapper = getWrapper();
 
     return (
         <Wrapper style={styles.container}>
             {
                 isLoading
-                ?
-                <ShimmerPlaceholder style={styles.roundsListLoading} />
-                :
-                <RoundsPicker
-                    rounds={rounds}
-                    handleRoundSwap={swapRoundMatchResults}
-                    roundsState={roundsState}
-                    isResultsTab={true}
-                />
+                    ?
+                    <ShimmerPlaceholder style={styles.roundsListLoading} />
+                    :
+                    <RoundsPicker
+                        rounds={rounds || []}
+                        handleRoundSwap={swapRoundMatchResults}
+                        activeRoundId={activeRoundId}
+                        isResultsTab={true}
+                    />
             }
 
             <SaveChanges
                 visible={modalVisible}
                 savePredictions={savePredictions}
-                onClose={() => setModalVisible(false)}
-                isLoading={isSavePredLoading}
-                nextRoundId={nextRoundId}
-                nextRoundSlug={nextRoundSlug}
-                handleRoundSwap={swapRoundMatchResults}
+                onClose={() => {
+                    setModalVisible(false);
+                    setPendingRoundSwap(null);
+                }}
+                isLoading={isSaving}
+                nextRoundId={pendingRoundSwap?.id || 0}
+                nextRoundSlug={pendingRoundSwap?.slug || ''}
+                handleRoundSwap={(id, slug) => {
+                    setActiveRoundId(id);
+                    setPendingRoundSwap(null);
+                    setModalVisible(false);
+                }}
             />
 
             {
-                isRoundLoading
+                isMatchesLoading
                 ?
                     <ActivityIndicator style={{paddingBottom: 250}} size='large' color='#fff' />
                 :
@@ -190,12 +163,12 @@ function Results({}) {
                         ]} 
                         showsVerticalScrollIndicator={true}
                     >
-                        {matchResults.map((matchResult) => (
-                            <MatchResult 
+                        {localMatchResults.map((matchResult) => (
+                            <MatchResult
                                 key={matchResult.id}
                                 currentMatchResult={matchResult} 
-                                matchResults={matchResults} 
-                                setMatchResults={setMatchResults} 
+                                matchResults={localMatchResults}
+                                setMatchResults={setLocalMatchResults}
                             />
                         ))}
                     </ScrollView>
@@ -203,12 +176,10 @@ function Results({}) {
 
             <Pressable
                 style={styles.saveBtn}
-                onPress={
-                    () => !isSavePredLoading ? savePredictions() : {}
-                }
+                onPress={() => !isSaving ? savePredictions() : {}}
             >
                 {
-                    isSavePredLoading
+                    isSaving
                     ?
                     <ActivityIndicator color='#fff' size='small' />
                     :

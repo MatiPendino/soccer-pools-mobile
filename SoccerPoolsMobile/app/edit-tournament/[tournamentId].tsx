@@ -1,69 +1,50 @@
-import { useEffect, useState } from 'react';
-import TournamentForm from '../../components/TournamentForm';
+import { useEffect } from 'react';
 import { Router, useLocalSearchParams, useRouter } from 'expo-router';
-import { ToastType, useToast } from 'react-native-toast-notifications';
-import { getToken } from '../../utils/storeToken';
-import handleError from '../../utils/handleError';
-import { editTournament, retrieveTournament } from '../../services/tournamentService';
-import { TournamentProps } from '../../types';
 import { useTranslation } from 'react-i18next';
+import { ToastType, useToast } from 'react-native-toast-notifications';
+import handleError from '../../utils/handleError';
+import { useTournament, useEditTournament } from '../../hooks/useTournaments';
+import TournamentForm from '../../components/TournamentForm';
 
-export default function EditTournament () {
+export default function EditTournament() {
     const { t } = useTranslation();
     const { tournamentId } = useLocalSearchParams();
-    const [tournament, setTournament] = useState<TournamentProps>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
     const router: Router = useRouter();
     const toast: ToastType = useToast();
 
-    if (!tournamentId || isNaN(Number(tournamentId))) {
-        toast.show(t('wrong-tournament-id'), {type: 'danger'});
-        router.replace('/home');
-    }
+    const { data: tournament, isLoading: isTournamentLoading } = useTournament(Number(tournamentId));
+    const { mutate: editTournamentMutate, isPending: isEditing } = useEditTournament();
 
     useEffect(() => {
-        const getTournament = async () => {
-            try {
-                const token = await getToken();
-                if (!token) {
-                    router.replace('/login');
-                    return;
+        if (!tournamentId || isNaN(Number(tournamentId))) {
+            toast.show(t('wrong-tournament-id'), { type: 'danger' });
+            router.replace('/home');
+        }
+    }, [tournamentId]);
+
+    const handleEdit = (data) => {
+        editTournamentMutate({
+            name: data.name,
+            description: data.description,
+            logo: data.logo,
+            tournamentId: Number(tournamentId)
+        }, {
+            onSuccess: (updatedTournament) => {
+                if (updatedTournament) {
+                    toast.show(t('tournament-updated-successfully'));
+                    router.push(`my-tournament/${tournamentId}`);
                 }
-                const tournament = await retrieveTournament(token, Number(tournamentId));
-                setTournament(tournament)  
-            } catch (error) {
-                toast.show('There is been an error loading the tournament details', {type: 'danger'});
-            } finally {
-                setIsLoading(false);
+            },
+            onError: (error) => {
+                toast.show(handleError(error.message), { type: 'danger' });
             }
-        }
-
-        getTournament();
-    }, [])
-
-    const handleEdit = async (data) => {
-        setIsLoading(true);
-        try {
-            const token = await getToken();
-            const leagueId = tournament.league.id;
-            const updatedTournament = await editTournament(
-                token, data.name, data.description, data.logo, tournament.id
-            );
-            if (updatedTournament) {
-                toast.show(t('tournament-updated-successfully'));
-                router.push(`my-tournament/${tournament.id}`)   ; 
-            }
-        } catch (error) {
-            toast.show(handleError(error), {type: 'danger'});
-        } finally {
-            setIsLoading(false);
-        }
+        })
     }
 
     return (
         <TournamentForm 
             initialData={tournament} 
-            isLoading={isLoading}
+            isLoading={isTournamentLoading || isEditing}
             onSubmit={handleEdit} 
             buttonLabel={t('edit-tournament')}
             isCreationMode={false}

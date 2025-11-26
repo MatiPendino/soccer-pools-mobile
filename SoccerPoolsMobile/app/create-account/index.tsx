@@ -7,17 +7,17 @@ import * as WebBrowser from 'expo-web-browser';
 import handleError from '../../utils/handleError';
 import CustomInputSign from '../../components/CustomInputSign';
 import CustomButton from '../../components/CustomButton';
-import { register } from '../../services/authService';
 import styles from './styles';
 import { Email } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { removeToken } from 'services/api';
-import { getToken } from 'utils/storeToken';
 import GoogleAuthButton from 'components/GoogleAuthButton';
-import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
 import TopBar from 'components/TopBar';
 import Footer from 'components/footer/Footer';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { useRegister } from '../../hooks/useUser';
+import { getToken } from 'utils/storeToken';
+import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
 
 // This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
@@ -25,24 +25,29 @@ if (Platform.OS === 'web') {
 }
 
 export default function CreateAccount({}) {
-    const { t, i18n } = useTranslation()
+    const { t } = useTranslation()
     const [firstName, setFirstName] = useState<string>('')
     const [lastName, setLastName] = useState<string>('')
     const [email, setEmail] = useState<Email>('')
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-    const [isLoading, setIsLoading] = useState<boolean>(false)
     const toast = useToast()
     const router = useRouter()
     const { isLG } = useBreakpoint();
     const { referralCode } = useLocalSearchParams();
+
+    const { mutate: registerUser, isPending: isRegistering } = useRegister();
 
     useEffect(() => {
         const checkUserLeagueStatus = async (token): Promise<void> => {
             try {
                router.replace(await getUserLeagueRoute(token));
             } catch (error) {
-                Alert.alert('Error', handleError(error), [{ text: 'OK', onPress: () => {}}], {cancelable: false});
+                Alert.alert(
+                    'Error', 
+                    handleError(error), 
+                    [{ text: 'OK', onPress: () => {}}], {cancelable: false}
+                );
                 await removeToken()
             }
         }
@@ -57,30 +62,31 @@ export default function CreateAccount({}) {
         checkAuth();
     }, []);
 
-    const createAccount = async (): Promise<void> => {
-        setIsLoading(true)
-        try {
-            const registerStatus = await register(
-                firstName.trim(), 
-                lastName.trim(), 
-                username.trim(), 
-                email.trim(), 
-                password.trim(),
-                referralCode ? referralCode : ''
-            );
-            if (registerStatus === 201) {
-                toast.show(t('check-email'), {type: 'success'})
-                setEmail('')
-                setFirstName('')
-                setLastName('')
-                setUsername('')
-                setPassword('')
+    const createAccount = () => {
+        registerUser({
+            name: firstName.trim(),
+            last_name: lastName.trim(),
+            username: username.trim(),
+            email: email.trim(),
+            password: password.trim(),
+            referralCode: (
+                referralCode ? (Array.isArray(referralCode) ? referralCode[0] : referralCode) : ''
+            )
+        }, {
+            onSuccess: (status) => {
+                if (status === 201) {
+                    toast.show(t('check-email'), { type: 'success' })
+                    setEmail('')
+                    setFirstName('')
+                    setLastName('')
+                    setUsername('')
+                    setPassword('')
+                }
+            },
+            onError: (error) => {
+                toast.show(handleError(error.message), { type: 'danger' })
             }
-        } catch (error) {
-            toast.show(handleError(error), {type: 'danger'})
-        } finally {
-            setIsLoading(false)
-        }
+        });
     }
 
     return (
@@ -93,9 +99,13 @@ export default function CreateAccount({}) {
                 url={`/?referralCode=${referralCode ? referralCode : ''}`} 
                 text={t('create-your-account')} 
             />
-                
-            <GoogleAuthButton 
-                referralCode={referralCode ? referralCode : ''}  
+
+            <GoogleAuthButton
+                referralCode={
+                    referralCode ? 
+                    (Array.isArray(referralCode) ? referralCode[0] : referralCode) : 
+                    ''
+                }
                 callingRoute='login' 
             />
 
@@ -143,11 +153,15 @@ export default function CreateAccount({}) {
             
 
             {
-                isLoading
+                isRegistering
                 ?
                 <ActivityIndicator size='large' color='#0000ff' />
                 :
-                <CustomButton callable={createAccount} btnText={t('create-account')} btnColor='#2F2766' />
+                <CustomButton 
+                    callable={createAccount} 
+                    btnText={t('create-account')} 
+                    btnColor='#2F2766' 
+                />
             }
 
             <Link 

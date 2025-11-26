@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   View, Text, StyleSheet, FlatList, SafeAreaView, ActivityIndicator, Platform
 } from 'react-native';
@@ -6,16 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { Entypo } from '@expo/vector-icons';
 import { Link, Router, useRouter } from 'expo-router';
-import * as Sentry from '@sentry/react-native';
-import { getToken } from '../../utils/storeToken';
-import { LeagueProps, UserCoinsProps } from '../../types';
-import { leagueList } from '../../services/leagueService';
 import LeagueCard from './components/LeagueCard';
 import Continents from './components/Continents';
 import { MAIN_COLOR } from '../../constants';
 import CoinsDisplay from '../../components/CoinsDisplay';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { userCoinsRetrieve } from '../../services/userService';
+import { useLeagues } from '../../hooks/useLeagues';
+import { useUserCoins } from '../../hooks/useUser';
 
 interface ContinentProps {
     id: number;
@@ -24,7 +21,6 @@ interface ContinentProps {
 
 const LeagueSelectionScreen = () => {
     const { t } = useTranslation();
-    const toast: ToastType = useToast();
     const CONTINENTS_DATA: ContinentProps[] = [
         { id: 6, name: t('all') },
         { id: 5, name: t('tournaments') },
@@ -35,54 +31,16 @@ const LeagueSelectionScreen = () => {
         { id: 4, name: t('oceania') },
     ];
 
-    const [leagues, setLeagues] = useState<LeagueProps[]>([]);
-    const [selectedContinent, setSelectedContinent] = useState<ContinentProps>(CONTINENTS_DATA[0]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [userCoins, setUserCoins] = useState<number>(0);
-    const [isLoadingCoins, setIsLoadingCoins] = useState<boolean>(true);
-    const router: Router = useRouter();
-    const { isLG } = useBreakpoint();
+  const [selectedContinent, setSelectedContinent] = useState<ContinentProps>(CONTINENTS_DATA[0]);
+  const { isLG } = useBreakpoint();
 
-    useEffect(() => {
-        const getLeagueList = async (): Promise<void> => {
-            try {
-                const token = await getToken();
-                if (!token) {
-                    router.replace('/login');
-                    return;
-                }
-                const leagues: LeagueProps[] = await leagueList(token, selectedContinent.id);
-                setLeagues(leagues);
-            } catch (error) {
-                toast.show('Error authenticating user', {type: 'danger'});
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        
-        getLeagueList();
-    }, [selectedContinent]);
-
-  useEffect(() => {
-    const getUserCoins = async (): Promise<void> => {
-      try {
-        const token = await getToken();
-        const user: UserCoinsProps = await userCoinsRetrieve(token);
-        setUserCoins(user.coins);
-      } catch (error) {
-        Sentry.captureException(error);
-      } finally {
-        setIsLoadingCoins(false);
-      }
-    }
-    
-    getUserCoins();
-  }, []);
+  const { data: leagues, isLoading: isLeaguesLoading } = useLeagues(selectedContinent.id);
+  const { data: userCoins, isLoading: isCoinsLoading } = useUserCoins();
 
   const renderHomeLink = () => {
     // If the user is not loading and has joined at least one league, show the home link
     // Otherwise return an empty view
-    if (!isLoading && leagues.some(league => league.is_user_joined)) {
+    if (!isLeaguesLoading && leagues && leagues.some(league => league.is_user_joined)) {
       return (
         <Link href='/home'>
           <Entypo name='chevron-left' color='white' size={30} />
@@ -99,7 +57,7 @@ const LeagueSelectionScreen = () => {
         {renderHomeLink()}
 
         <View style={{marginEnd: 10}}>
-          <CoinsDisplay setCoins={setUserCoins} coins={isLoadingCoins ? '...' : (userCoins || 0)} />
+          <CoinsDisplay coins={isCoinsLoading ? '...' : (userCoins?.coins || 0)} />
         </View>
       </View>
       
@@ -128,7 +86,7 @@ const LeagueSelectionScreen = () => {
         </View>
 
         {
-            isLoading
+          isLeaguesLoading
             ?
             <ActivityIndicator size='large' color='white' />
             :
@@ -137,7 +95,6 @@ const LeagueSelectionScreen = () => {
                 renderItem={({ item }) => (
                     <LeagueCard
                         item={item}
-                        setIsLoading={setIsLoading}
                     />
                 )}
                 keyExtractor={item => item.id.toString()}

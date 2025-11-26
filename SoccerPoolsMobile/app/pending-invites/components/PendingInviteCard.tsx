@@ -1,42 +1,35 @@
-import { SetStateAction, useState } from 'react';
 import { StyleSheet, View, Text, Image, Pressable, ActivityIndicator } from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
-import { updateStateTournamentUser } from '../../../services/tournamentService';
-import { TournamentUserProps } from '../../../types';
-import handleError from '../../../utils/handleError';
 import { useTranslation } from 'react-i18next';
+import handleError from '../../../utils/handleError';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
+import { useUpdateStateTournamentUser } from '../../../hooks/useTournaments';
 
 interface PendingInviteCardProps {
     id: number;
-    token: string;
     username: string;
     userLogoUrl: string;
-    setPendingTournamentUsers: React.Dispatch<SetStateAction<TournamentUserProps[]>>;
-    pendingTournamentUsers: TournamentUserProps[];
 }
 
 export default function PendingInviteCard({
-    id, token, username, userLogoUrl, setPendingTournamentUsers, pendingTournamentUsers
+    id, username, userLogoUrl
 }: PendingInviteCardProps) {
     const { t } = useTranslation();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const toast: ToastType = useToast();
     const { isLG } = useBreakpoint();
 
-    const handlePendingInvite = async (isAccept: boolean) => {
-        setIsLoading(true);
-        try {
-            const tournamentState = isAccept ? 2 : 3;
-            await updateStateTournamentUser(token, id, tournamentState);
-            setPendingTournamentUsers(
-                pendingTournamentUsers.filter((tntUser) => tntUser.id != id)
-            );
-        } catch (error) {
-            toast.show(handleError(error), {type: 'danger'});
-        } finally {
-            setIsLoading(false);
-        }
+    const { mutate: updateState, isPending: isLoading } = useUpdateStateTournamentUser();
+
+    const handlePendingInvite = (isAccept: boolean) => {
+        const tournamentState = isAccept ? 2 : 3;
+        updateState({ tournamentUserId: id, tournamentState }, {
+            onSuccess: () => {
+                toast.show(t('success'), {type: 'success'});
+            },
+            onError: (error) => {
+                toast.show(handleError(error.message), { type: 'danger' });
+            }
+        });
     }
 
     return (
