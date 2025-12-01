@@ -28,7 +28,7 @@ function Results({}) {
     const Wrapper = getWrapper();
 
     const { data: league, isLoading: isLeagueLoading } = useUserLeague();
-    const { data: rounds, isLoading: isRoundsLoading } = useRounds(league?.id);
+    const { data: rounds, isLoading: isRoundsLoading } = useRounds(league?.id, true);
 
     const [activeRoundId, setActiveRoundId] = useState<number | null>(null);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
