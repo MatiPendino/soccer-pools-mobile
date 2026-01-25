@@ -3,12 +3,15 @@ import { Platform } from 'react-native';
 import { Stack } from 'expo-router';
 import { ToastProvider } from 'react-native-toast-notifications';
 import { StatusBar } from 'expo-status-bar';
+import { PaperProvider } from 'react-native-paper';
 import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import initializeMobileAds from 'utils/initialize_mobile_ads/initializeMobileAds';
 import initializeAnalytics from 'utils/analytics/initializeAnalytics';
 import initializeVexo from 'utils/initialize_vexo/initializeVexo';
 import { vexoWeb } from 'utils/vexoWeb';
+import { paperTheme } from '../theme/paperTheme';
+import { colors } from '../theme';
 import '../i18'
 
 // Sentry initialization
@@ -38,14 +41,16 @@ export default function Layout () {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <ToastProvider>
-                <StatusBar style='light' backgroundColor='#1C154F' />
-                <Stack
-                    screenOptions={{
-                        headerShown: false,
-                    }}
-                />
-            </ToastProvider>
+            <PaperProvider theme={paperTheme}>
+                <ToastProvider>
+                    <StatusBar style='light' backgroundColor={colors.primaryDarker} />
+                    <Stack
+                        screenOptions={{
+                            headerShown: false,
+                        }}
+                    />
+                </ToastProvider>
+            </PaperProvider>
         </QueryClientProvider>
     )
 }

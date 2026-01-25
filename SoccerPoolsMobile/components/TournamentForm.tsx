@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
-import { 
-    View, TextInput, Text, TouchableOpacity, StyleSheet, Pressable, KeyboardAvoidingView,
-    Platform, ScrollView
+import {
+    View, TextInput, Text, Pressable, StyleSheet, KeyboardAvoidingView,
+    Platform, ScrollView, ActivityIndicator,
 } from 'react-native';
 import { type Router, useRouter } from 'expo-router';
-import { Entypo, MaterialIcons, Feather } from '@expo/vector-icons';
-import { MAIN_COLOR } from '../constants';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Banner, interstitial } from 'components/ads/Ads';
 import { useBreakpoint } from '../hooks/useBreakpoint';
-import { ActivityIndicator } from 'react-native-paper';
+import { colors, spacing, typography, borderRadius } from '../theme';
 import ImageFormComponent from './ImageFormComponent';
 
 interface TournamentFormProps {
@@ -32,7 +31,7 @@ export default function TournamentForm({
 
     const handleSubmit = () => {
         onSubmit({ name: tournamentName, description: description, logo: logo });
-    }
+    };
 
     const setInitialFormData = () => {
         if (!isCreationMode) {
@@ -42,42 +41,54 @@ export default function TournamentForm({
                 setLogo(initialData.logo);
             }
         }
-    }
+    };
 
     interstitial(process.env.CREATE_TOURNAMENT_INTERST_ID);
 
     useEffect(() => {
         if (!isLoading) {
-        setInitialFormData();
+            setInitialFormData();
         }
     }, [isLoading]);
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.container}
+        >
             <View style={styles.topBar}>
                 <Text style={styles.tntNameTxt}>
                     {initialData ? initialData.name.toString().toUpperCase() : t('create-tournament')}
                 </Text>
-                <Pressable onPress={() => router.back()} style={styles.closeButton}>
-                    <Entypo name='cross' color='white' size={24} />
+                <Pressable
+                    onPress={() => router.back()}
+                    style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
+                >
+                    <Ionicons name="close" color={colors.textPrimary} size={24} />
                 </Pressable>
             </View>
 
             <ScrollView
-                style={[styles.scrollView, {width: isLG ? '70%' : '97%',}]}
+                style={[styles.scrollView, { width: isLG ? '70%' : '100%' }]}
                 contentContainerStyle={styles.contentContainer}
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.formGroup}>
                     <Text style={styles.label}>{t('tournament-name')}</Text>
                     <View style={styles.inputContainer}>
-                        <MaterialIcons name='emoji-events' size={20} color='#8F92A1' style={styles.inputIcon} />
+                        <Ionicons
+                            name="trophy-outline"
+                            size={20}
+                            color={colors.textMuted}
+                            style={styles.inputIcon}
+                        />
                         <TextInput
                             style={styles.inputTxt}
                             placeholder={t('tournament-name')}
-                            placeholderTextColor='#8F92A1'
+                            placeholderTextColor={colors.textMuted}
                             value={tournamentName}
                             onChangeText={setTournamentName}
+                            selectionColor={colors.accent}
                         />
                     </View>
                 </View>
@@ -86,46 +97,48 @@ export default function TournamentForm({
 
                 <View style={styles.formGroup}>
                     <Text style={styles.label}>{t('description')}</Text>
-
                     <View style={[styles.inputContainer, styles.textAreaContainer]}>
                         <TextInput
                             style={[styles.inputTxt, styles.textArea]}
                             placeholder={t('add-tournament-description')}
-                            placeholderTextColor='#8F92A1'
+                            placeholderTextColor={colors.textMuted}
                             value={description}
                             onChangeText={setDescription}
                             multiline
-                            textAlignVertical='top'
+                            textAlignVertical="top"
+                            selectionColor={colors.accent}
                         />
                     </View>
                 </View>
 
-                <TouchableOpacity
+                <Pressable
                     onPress={() => (!isLoading ? handleSubmit() : {})}
-                    style={[styles.button, (tournamentName.trim() === '' || isLoading) && styles.buttonDisabled]}
+                    style={({ pressed }) => [
+                        styles.button,
+                        (tournamentName.trim() === '' || isLoading) && styles.buttonDisabled,
+                        pressed && !isLoading && tournamentName.trim() !== '' && styles.buttonPressed,
+                    ]}
                     disabled={tournamentName.trim() === '' || isLoading}
                 >
-                    {
-                        isLoading 
-                        ? 
-                        <ActivityIndicator color='#fff' size='small' />
-                        : 
-                        <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                    {isLoading ? (
+                        <ActivityIndicator color={colors.background} size="small" />
+                    ) : (
+                        <View style={styles.buttonContent}>
                             <Text style={styles.buttonText}>{buttonLabel}</Text>
-                            <Feather name='arrow-right' size={20} color='white' style={styles.buttonIcon} />
+                            <Ionicons name="arrow-forward" size={20} color={colors.background} />
                         </View>
-                    }
-                </TouchableOpacity>
+                    )}
+                </Pressable>
             </ScrollView>
 
             <Banner bannerId={process.env.CREATE_TOURNAMENT_BANNER_ID} />
         </KeyboardAvoidingView>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: MAIN_COLOR,
+        backgroundColor: colors.background,
         flex: 1,
     },
     scrollView: {
@@ -133,61 +146,64 @@ const styles = StyleSheet.create({
         marginHorizontal: 'auto',
     },
     topBar: {
-        backgroundColor: '#2F2766',
+        backgroundColor: colors.backgroundElevated,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 16,
-        paddingHorizontal: 16,
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.md,
         marginTop: Platform.OS === 'web' ? 0 : 20,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.1)',
+        borderBottomColor: colors.surfaceBorder,
     },
     closeButton: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: 'rgba(255,255,255,0.1)',
+        width: 40,
+        height: 40,
+        borderRadius: borderRadius.full,
+        backgroundColor: colors.surfaceLight,
         justifyContent: 'center',
         alignItems: 'center',
     },
+    closeButtonPressed: {
+        backgroundColor: colors.backgroundCard,
+    },
     contentContainer: {
-        paddingHorizontal: 20,
-        paddingTop: 24,
-        paddingBottom: 40,
+        paddingHorizontal: spacing.lg,
+        paddingTop: spacing.lg,
+        paddingBottom: spacing.xxxl,
     },
     tntNameTxt: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: '600',
+        color: colors.textPrimary,
+        fontSize: typography.fontSize.titleMedium,
+        fontWeight: typography.fontWeight.semibold,
     },
     formGroup: {
-        marginBottom: 24,
+        marginBottom: spacing.lg,
     },
     label: {
-        color: 'white',
-        fontSize: 14,
-        fontWeight: '500',
-        marginBottom: 8,
-        opacity: 0.9,
+        color: colors.textSecondary,
+        fontSize: typography.fontSize.labelMedium,
+        fontWeight: typography.fontWeight.medium,
+        marginBottom: spacing.sm,
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.2)',
-        borderRadius: 12,
-        backgroundColor: 'rgba(255,255,255,0.05)',
+        borderWidth: 1.5,
+        borderColor: colors.surfaceBorder,
+        borderRadius: borderRadius.md,
+        backgroundColor: colors.backgroundInput,
         overflow: 'hidden',
     },
     inputIcon: {
-        marginLeft: 16,
+        marginLeft: spacing.md,
     },
     inputTxt: {
         flex: 1,
-        padding: 16,
-        color: 'white',
-        fontSize: 16,
+        padding: spacing.md,
+        color: colors.textPrimary,
+        fontSize: typography.fontSize.bodyMedium,
+        ...(Platform.OS === 'web' && { outlineStyle: 'none' }),
     },
     textAreaContainer: {
         height: 120,
@@ -197,33 +213,28 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     button: {
-        backgroundColor: '#2F2766',
-        padding: 16,
-        borderRadius: 12,
+        backgroundColor: colors.accent,
+        padding: spacing.md,
+        borderRadius: borderRadius.md,
         alignItems: 'center',
-        marginTop: 12,
+        marginTop: spacing.md,
         flexDirection: 'row',
         justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-        width: 0,
-        height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
     },
     buttonDisabled: {
-        backgroundColor: 'rgba(47, 39, 102, 0.5)',
-        elevation: 0,
+        backgroundColor: colors.surfaceLight,
+    },
+    buttonPressed: {
+        opacity: 0.8,
+    },
+    buttonContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.sm,
     },
     buttonText: {
-        color: 'white',
-        fontWeight: '600',
-        fontSize: 16,
+        color: colors.background,
+        fontWeight: typography.fontWeight.semibold,
+        fontSize: typography.fontSize.bodyMedium,
     },
-    buttonIcon: {
-        marginLeft: 8,
-    },
-})
-
+});

@@ -1,15 +1,17 @@
 import {
-    StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator
+    StyleSheet, View, Text, TextInput, Pressable, ScrollView, ActivityIndicator
 } from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import Clipboard from '@react-native-clipboard/clipboard';
-import Feather from '@expo/vector-icons/Feather';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { MAIN_COLOR, PURPLE_COLOR, SILVER_COLOR, WEBSITE_URL } from '../../constants';
-import MemberCard from './components/MemberCard';
+import { WEBSITE_URL } from '../../constants';
 import { useReferrals } from '../../hooks/useReferrals';
+import { PageHeader } from '../../components/ui';
+import { colors, spacing, typography, borderRadius } from '../../theme';
+import MemberCard from './components/MemberCard';
 
 export default function Referrals() {
     const { t } = useTranslation();
@@ -27,167 +29,183 @@ export default function Referrals() {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Text style={[styles.headerTitle, isLG && styles.headerTitleLG]}>
-                    {t('start-winning-today')}!
-                </Text>
+                <PageHeader
+                    badgeIcon="gift-outline"
+                    badgeText={t('referrals')}
+                    title={`${t('start-winning-today')}!`}
+                />
             </View>
 
-            <View style={[styles.section, styles.inviteContainer]}>
-                <Text style={styles.inviteTxt}>{t('invite-new-members')}</Text>
+            {/* Invite Section */}
+            <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                    <Ionicons name="share-social-outline" size={20} color={colors.accent} />
+                    <Text style={styles.sectionTitle}>{t('invite-new-members')}</Text>
+                </View>
 
                 <Text style={styles.methodsTxt}>{t('your-invitation-methods')}</Text>
+
                 <View style={styles.inputContainer}>
                     <TextInput
                         value={`${WEBSITE_URL}?referralCode=${referralCode}`}
                         editable={false}
-                        style={[styles.input, {fontSize: isLG ? 16 : 12}]}
+                        style={[styles.input, { fontSize: isLG ? 14 : 12 }]}
+                        selectTextOnFocus
                     />
-                    <TouchableOpacity 
+                    <Pressable
                         onPress={copyToClipboard}
-                        style={styles.copyButton}
+                        style={({ pressed }) => [
+                            styles.copyButton,
+                            pressed && styles.copyButtonPressed
+                        ]}
                     >
-                        <Feather name='copy' size={isLG ? 24 : 20} color='white' />
-                    </TouchableOpacity>
+                        <Ionicons name="copy-outline" size={20} color={colors.accent} />
+                    </Pressable>
                 </View>
             </View>
 
-            <View style={[styles.section, styles.membersContainer]}>
-                <Text style={styles.membersTxt}>{t('members')}</Text>
-
-                {
-                    isLoading 
-                    ?
-                    <ActivityIndicator size="small" color="white" />
-                    : (
-                        members?.length > 0
-                        ?
-                        members.map(member => (
-                            <MemberCard key={member.username}
-                                username={member.username}
-                                profile_image={member.profile_image}
-                                created_at={member.created_at}
-                            />
-                        ))
-                        :
-                        <View style={styles.emptyContainer}>
-                            <Feather name='users' size={40} color={SILVER_COLOR} />
-                            <Text style={styles.emptyText}>{t('no-members-yet')}</Text>
-                            <Text style={styles.emptySubtext}>{t('share-referral-link')}</Text>
+            {/* Members Section */}
+            <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                    <Ionicons name="people-outline" size={20} color={colors.accent} />
+                    <Text style={styles.sectionTitle}>{t('members')}</Text>
+                    {members && members.length > 0 && (
+                        <View style={styles.countBadge}>
+                            <Text style={styles.countText}>{members.length}</Text>
                         </View>
-                    )
-                }
-            </View>
+                    )}
+                </View>
 
+                {isLoading ? (
+                    <View style={styles.loaderContainer}>
+                        <ActivityIndicator size="small" color={colors.accent} />
+                    </View>
+                ) : members?.length > 0 ? (
+                    members.map(member => (
+                        <MemberCard
+                            key={member.username}
+                            username={member.username}
+                            profile_image={member.profile_image}
+                            created_at={member.created_at}
+                        />
+                    ))
+                ) : (
+                    <View style={styles.emptyContainer}>
+                        <View style={styles.emptyIconContainer}>
+                            <Ionicons name="people-outline" size={40} color={colors.textMuted} />
+                        </View>
+                        <Text style={styles.emptyText}>{t('no-members-yet')}</Text>
+                        <Text style={styles.emptySubtext}>{t('share-referral-link')}</Text>
+                    </View>
+                )}
+            </View>
         </ScrollView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: MAIN_COLOR,
-        paddingVertical: 16,
+        backgroundColor: colors.background,
     },
     header: {
-        alignItems: 'center',
-        paddingHorizontal: 16,
-        paddingBottom: 16,
+        paddingHorizontal: spacing.md,
+        paddingTop: spacing.lg,
+        paddingBottom: spacing.lg,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.1)',
-    },
-    headerTitle: {
-        fontSize: 28,
-        fontWeight: '800',
-        color: 'white',
-        textShadowColor: 'rgba(0,0,0,0.3)',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-    },
-    headerTitleLG: {
-        fontSize: 36,
+        borderBottomColor: colors.surfaceBorder,
     },
     section: {
-        backgroundColor: PURPLE_COLOR,
-        borderRadius: 20,
-        marginTop: 20,
-        padding: 20,
-        marginHorizontal: 16,
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    inviteContainer: {
+        backgroundColor: colors.backgroundCard,
+        borderRadius: borderRadius.lg,
+        marginTop: spacing.lg,
+        marginHorizontal: spacing.md,
+        padding: spacing.lg,
         borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.1)',
+        borderColor: colors.surfaceBorder,
     },
-    inviteTxt: {
-        fontSize: 16,
-        color: 'white',
-        fontWeight: '500',
-        lineHeight: 24,
-        textAlign: 'center',
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.sm,
+        marginBottom: spacing.md,
+    },
+    sectionTitle: {
+        fontSize: typography.fontSize.titleMedium,
+        fontWeight: typography.fontWeight.semibold,
+        color: colors.textPrimary,
+        flex: 1,
+    },
+    countBadge: {
+        backgroundColor: colors.accent,
+        paddingHorizontal: spacing.sm,
+        paddingVertical: 2,
+        borderRadius: borderRadius.full,
+    },
+    countText: {
+        color: colors.background,
+        fontSize: typography.fontSize.labelSmall,
+        fontWeight: typography.fontWeight.bold,
     },
     methodsTxt: {
-        color: SILVER_COLOR,
-        fontSize: 14,
-        fontWeight: '600',
-        marginTop: 20,
-        marginBottom: 10,
+        color: colors.textMuted,
+        fontSize: typography.fontSize.labelMedium,
+        fontWeight: typography.fontWeight.medium,
+        marginBottom: spacing.sm,
         textTransform: 'uppercase',
+        letterSpacing: 0.5,
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        position: 'relative',
+        backgroundColor: colors.backgroundInput,
+        borderRadius: borderRadius.md,
+        borderWidth: 1,
+        borderColor: colors.surfaceBorder,
+        overflow: 'hidden',
     },
     input: {
         flex: 1,
-        borderColor: 'rgba(255,255,255,0.3)',
-        borderWidth: 1,
-        borderRadius: 8,
-        backgroundColor: 'rgba(255,255,255,0.1)',
-        color: 'white',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        paddingRight: 50, 
-        //fontSize: 16,
-        fontWeight: '500',
+        color: colors.textSecondary,
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.md,
+        fontWeight: typography.fontWeight.medium,
     },
     copyButton: {
-        position: 'absolute',
-        right: 12,
-        padding: 8,
+        padding: spacing.md,
+        backgroundColor: colors.accentMuted,
     },
-    membersContainer: {
-        marginTop: 24,
+    copyButtonPressed: {
+        backgroundColor: colors.accent,
     },
-    membersTxt: {
-        fontSize: 18,
-        fontWeight: '700',
-        color: 'white',
-        marginBottom: 16,
-    },
-    listStyle: {
-        paddingVertical: 8,
+    loaderContainer: {
+        paddingVertical: spacing.xl,
+        alignItems: 'center',
     },
     emptyContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 32,
+        paddingVertical: spacing.xl,
+    },
+    emptyIconContainer: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: colors.surfaceLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: spacing.md,
     },
     emptyText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '600',
-        marginTop: 16,
+        color: colors.textPrimary,
+        fontSize: typography.fontSize.titleMedium,
+        fontWeight: typography.fontWeight.semibold,
     },
     emptySubtext: {
-        color: SILVER_COLOR,
-        fontSize: 14,
+        color: colors.textMuted,
+        fontSize: typography.fontSize.bodyMedium,
         textAlign: 'center',
-        marginTop: 8,
-        paddingHorizontal: 32,
+        marginTop: spacing.xs,
+        paddingHorizontal: spacing.lg,
     },
 });

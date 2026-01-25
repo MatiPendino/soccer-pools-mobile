@@ -1,5 +1,5 @@
 import { View, Image, Text, StyleSheet } from 'react-native';
-import { SILVER_COLOR } from '../../../constants';
+import { colors, spacing, typography } from '../../../theme';
 
 interface Props {
     username: string;
@@ -7,12 +7,11 @@ interface Props {
     created_at: string;
 }
 
-export default function MemberCard ({username, profile_image, created_at}: Props) {
-
+export default function MemberCard({ username, profile_image, created_at }: Props) {
     return (
         <View style={styles.memberItem}>
-            <Image 
-                source={{ uri: profile_image }} 
+            <Image
+                source={{ uri: profile_image }}
                 style={styles.avatar}
             />
             <View style={styles.memberInfo}>
@@ -22,36 +21,38 @@ export default function MemberCard ({username, profile_image, created_at}: Props
                 </Text>
             </View>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     memberItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 12,
+        paddingVertical: spacing.md,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.1)',
+        borderBottomColor: colors.surfaceBorder,
     },
     avatar: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        marginRight: 12,
-        backgroundColor: 'rgba(255,255,255,0.1)',
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        marginRight: spacing.md,
+        backgroundColor: colors.surfaceLight,
+        borderWidth: 2,
+        borderColor: colors.accent,
     },
     memberInfo: {
         flex: 1,
         justifyContent: 'center',
     },
     memberUsername: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '500',
+        color: colors.textPrimary,
+        fontSize: typography.fontSize.bodyMedium,
+        fontWeight: typography.fontWeight.semibold,
     },
     memberDate: {
-        color: SILVER_COLOR,
-        fontSize: 12,
+        color: colors.textMuted,
+        fontSize: typography.fontSize.labelMedium,
         marginTop: 2,
     },
-})
+});

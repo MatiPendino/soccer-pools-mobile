@@ -1,6 +1,8 @@
 import { Modal, Text, Pressable, View, StyleSheet, FlatList, Platform } from 'react-native';
-import { RoundProps } from '../../types';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { RoundProps } from '../../types';
+import { colors, spacing, typography, borderRadius } from '../../theme';
 
 interface Props {
     setOpen: (open: boolean) => void;
@@ -10,7 +12,7 @@ interface Props {
     currentIndex: number;
 }
 
-export default function RoundListModal({ 
+export default function RoundListModal({
     setOpen, onChangeRound, open, visibleRounds, currentIndex
 }: Props) {
     const { t } = useTranslation();
@@ -24,10 +26,23 @@ export default function RoundListModal({
         >
             <Pressable style={styles.backdrop} onPress={() => setOpen(false)} />
             <View style={styles.sheet}>
-                <Text style={styles.sheetTitle}>{t('select-round')}</Text>
+                <View style={styles.header}>
+                    <Text style={styles.sheetTitle}>{t('select-round')}</Text>
+                    <Pressable
+                        onPress={() => setOpen(false)}
+                        style={({ pressed }) => [
+                            styles.closeButton,
+                            pressed && styles.closeButtonPressed
+                        ]}
+                    >
+                        <Ionicons name="close" size={20} color={colors.textPrimary} />
+                    </Pressable>
+                </View>
+
                 <FlatList
                     data={visibleRounds}
                     keyExtractor={item => item.slug}
+                    showsVerticalScrollIndicator={false}
                     renderItem={({ item, index }) => {
                         const isActive = index === currentIndex;
                         return (
@@ -36,7 +51,11 @@ export default function RoundListModal({
                                     onChangeRound(index);
                                     setOpen(false);
                                 }}
-                                style={[styles.item, isActive && styles.itemActive]}
+                                style={({ pressed }) => [
+                                    styles.item,
+                                    isActive && styles.itemActive,
+                                    pressed && !isActive && styles.itemPressed
+                                ]}
                             >
                                 <Text
                                     numberOfLines={1}
@@ -44,56 +63,88 @@ export default function RoundListModal({
                                 >
                                     {item.name}
                                 </Text>
+                                {isActive && (
+                                    <Ionicons 
+                                        name="checkmark-circle" 
+                                        size={20} 
+                                        color={colors.accent} 
+                                    />
+                                )}
                             </Pressable>
-                        )
+                        );
                     }}
                     ItemSeparatorComponent={() => <View style={styles.sep} />}
                 />
             </View>
         </Modal>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     backdrop: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0,0,0,0.35)',
+        backgroundColor: colors.overlay,
     },
     sheet: {
         position: 'absolute',
-        left: 14,
-        right: 14,
+        left: spacing.md,
+        right: spacing.md,
         top: '18%',
         bottom: '18%',
-        backgroundColor: 'white',
-        borderRadius: 16,
-        padding: 14,
-        elevation: 5,
-        shadowColor: 'black',
-        shadowOpacity: 0.2,
-        shadowRadius: 12,
-        shadowOffset: { width: 0, height: 4 },
+        backgroundColor: colors.backgroundCard,
+        borderRadius: borderRadius.xl,
+        padding: spacing.md,
+        borderWidth: 1,
+        borderColor: colors.surfaceBorder,
     },
-    sheetTitle: { 
-        fontSize: 16, 
-        fontWeight: '700', 
-        marginBottom: 8 
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: spacing.md,
+        paddingBottom: spacing.sm,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.surfaceBorder,
+    },
+    sheetTitle: {
+        fontSize: typography.fontSize.titleMedium,
+        fontWeight: typography.fontWeight.bold,
+        color: colors.textPrimary,
+    },
+    closeButton: {
+        width: 32,
+        height: 32,
+        borderRadius: borderRadius.full,
+        backgroundColor: colors.surfaceLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    closeButtonPressed: {
+        backgroundColor: colors.accent,
     },
     item: {
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderRadius: 8,
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.md,
+        borderRadius: borderRadius.md,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     itemActive: {
-        backgroundColor: '#f0f3ff',
+        backgroundColor: colors.accentMuted,
     },
-    itemTxt: { 
-        fontSize: 15 
+    itemPressed: {
+        backgroundColor: colors.surfaceLight,
     },
-    itemTxtActive: { 
-        fontWeight: '700' 
+    itemTxt: {
+        fontSize: typography.fontSize.bodyMedium,
+        color: colors.textSecondary,
     },
-    sep: { 
-        height: 6 
-    }
+    itemTxtActive: {
+        fontWeight: typography.fontWeight.semibold,
+        color: colors.accent,
+    },
+    sep: {
+        height: spacing.xs,
+    },
 });

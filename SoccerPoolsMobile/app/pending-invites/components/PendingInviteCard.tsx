@@ -2,6 +2,7 @@ import { StyleSheet, View, Text, Image, Pressable, ActivityIndicator } from 'rea
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { useTranslation } from 'react-i18next';
 import handleError from '../../../utils/handleError';
+import { colors } from '../../../theme';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 import { useUpdateStateTournamentUser } from '../../../hooks/useTournaments';
 
@@ -45,7 +46,7 @@ export default function PendingInviteCard({
             {
                 isLoading
                 ?
-                    <ActivityIndicator size='large' color='#0000ff' />
+                    <ActivityIndicator size='large' color={colors.primary} />
                 :
                     <View style={styles.btnsContainer}>
                         <Pressable 

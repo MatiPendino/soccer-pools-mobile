@@ -1,46 +1,54 @@
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, Pressable, StyleSheet } from 'react-native';
+import { colors, spacing, typography, borderRadius } from '../../../theme';
 
-export default function Continents ({item, selectedContinent, setSelectedContinent}) {
+interface Props {
+    item: { id: number; name: string };
+    selectedContinent: { id: number; name: string };
+    setSelectedContinent: (continent: { id: number; name: string }) => void;
+}
+
+export default function Continents({ item, selectedContinent, setSelectedContinent }: Props) {
     const isSelected: boolean = selectedContinent.id === item.id;
 
     return (
-        <TouchableOpacity
-        style={[
-            styles.continentTab,
-            isSelected && styles.selectedContinentTab
-        ]}
-        onPress={() => setSelectedContinent(item)}
-        activeOpacity={0.7}
-        >
-        <Text 
-            style={[
-                styles.continentTabText,
-                isSelected && styles.selectedContinentTabText
+        <Pressable
+            style={({ pressed }) => [
+                styles.tab,
+                isSelected && styles.tabSelected,
+                pressed && !isSelected && styles.tabPressed,
             ]}
+            onPress={() => setSelectedContinent(item)}
         >
-            {item.name}
-        </Text>
-        </TouchableOpacity>
+            <Text style={[styles.tabText, isSelected && styles.tabTextSelected]}>
+                {item.name}
+            </Text>
+        </Pressable>
     );
-}
+};
 
 const styles = StyleSheet.create({
-    continentTab: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        marginRight: 8,
-        borderRadius: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    tab: {
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
+        borderRadius: borderRadius.full,
+        backgroundColor: colors.backgroundCard,
+        borderWidth: 1,
+        borderColor: colors.surfaceBorder,
     },
-    selectedContinentTab: {
-        backgroundColor: 'white',
+    tabSelected: {
+        backgroundColor: colors.accent,
+        borderColor: colors.accent,
     },
-    continentTabText: {
-        color: 'white',
-        fontWeight: '600',
-        fontSize: 14,
+    tabPressed: {
+        backgroundColor: colors.surfaceLight,
     },
-    selectedContinentTabText: {
-        color: '#5e48b8',
+    tabText: {
+        color: colors.textSecondary,
+        fontWeight: typography.fontWeight.medium,
+        fontSize: typography.fontSize.labelMedium,
     },
-})
+    tabTextSelected: {
+        color: colors.background,
+        fontWeight: typography.fontWeight.semibold,
+    },
+});

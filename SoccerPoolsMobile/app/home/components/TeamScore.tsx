@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
-import { useResultsContext } from '../contexts/ResultsContext';
-import { MAIN_COLOR } from '../../../constants';
+import { colors } from 'theme';
 import { MatchResultProps } from '../../../types';
+import { useBreakpoint } from '../../../hooks/useBreakpoint';
+import { useResultsContext } from '../contexts/ResultsContext';
 
 interface TeamScoreProps {
     currentMatchResult: MatchResultProps;
@@ -15,6 +16,8 @@ export default function TeamScore({
     currentMatchResult, teamNum, matchResults, setMatchResults
 }: TeamScoreProps) {
     const { arePredictionsSaved, setArePredictionsSaved } = useResultsContext();
+    const { isSM, isMD } = useBreakpoint();
+    const isMobile = isSM || isMD;
     
     const [teamGoals, setTeamGoals] = useState<number>(
         teamNum === 1 ? currentMatchResult.goals_team_1 : currentMatchResult.goals_team_2
@@ -79,28 +82,46 @@ export default function TeamScore({
     }
 
     return (
-        <View style={styles.scoreContainer}>
-            <Pressable 
+        <View style={[
+            styles.scoreContainer,
+            isMobile && styles.scoreContainerMobile
+        ]}>
+            <Pressable
                 onPress={() => handleTeamGoals(true)}
-                style={styles.goalsBtn}
+                style={[
+                    styles.goalsBtn,
+                    isMobile && styles.goalsBtnMobile
+                ]}
                 accessibilityRole='button'
             >
-                <Text style={styles.goalsTxt}>+</Text>
+                <Text style={[
+                    styles.goalsTxt,
+                    isMobile && styles.goalsTxtMobile
+                ]}>+</Text>
             </Pressable>
-            <Text style={styles.scoreTxt}>
+            <Text style={[
+                styles.scoreTxt,
+                isMobile && styles.scoreTxtMobile
+            ]}>
                 {
                     teamGoals !== null
                     ?
                     teamGoals
-                    : 
+                    :
                     '-'
                 }
             </Text>
-            <Pressable 
+            <Pressable
                 onPress={() => handleTeamGoals(false)}
-                style={styles.goalsBtn}
+                style={[
+                    styles.goalsBtn,
+                    isMobile && styles.goalsBtnMobile
+                ]}
             >
-                <Text style={styles.goalsTxt}>-</Text>
+                <Text style={[
+                    styles.goalsTxt,
+                    isMobile && styles.goalsTxtMobile
+                ]}>-</Text>
             </Pressable>
         </View>
     )
@@ -111,11 +132,18 @@ const styles = StyleSheet.create({
         marginVertical: 'auto',
         marginHorizontal: 2
     },
+    scoreContainerMobile: {
+        marginHorizontal: 1,
+    },
     goalsBtn: {
-        backgroundColor: MAIN_COLOR,
+        backgroundColor: colors.accentDark,
         borderRadius: 30,
         width: 47,
         paddingVertical: 1,
+    },
+    goalsBtnMobile: {
+        width: 42,
+        paddingVertical: 0,
     },
     goalsTxt: {
         fontSize: 18,
@@ -123,10 +151,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'white',
     },
+    goalsTxtMobile: {
+        fontSize: 16,
+    },
     scoreTxt: {
         fontSize: 19,
         fontWeight: '600',
         marginVertical: 5,
-        textAlign: 'center'
+        textAlign: 'center',
+        color: 'white'
+    },
+    scoreTxtMobile: {
+        fontSize: 17,
+        marginVertical: 4,
     }
 })

@@ -1,26 +1,26 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View, Pressable, Platform } from 'react-native';
+import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import { ToastType, useToast } from 'react-native-toast-notifications';
-import { Slug } from '../../types';
 import { Router, useLocalSearchParams } from 'expo-router';
-import Entypo from '@expo/vector-icons/Entypo';
+import { Ionicons } from '@expo/vector-icons';
 import { PaperProvider } from 'react-native-paper';
 import { useRouter } from 'expo-router';
-import { MAIN_COLOR } from '../../constants';
-import RankedPlayersFlatList from '../../components/RankedPlayersFlatList';
-import handleShare from '../../utils/handleShare';
-import { useTranslation } from 'react-i18next';
 import RoundsPicker from 'components/RoundPicker';
 import { Banner } from 'components/ads/Ads';
-import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
+import RankedPlayersFlatList from '../../components/RankedPlayersFlatList';
+import handleShare from '../../utils/handleShare';
 import LoadingCards from '../../components/LoadingCards';
 import { getWrapper } from '../../utils/getWrapper';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import MenuWeb from './components/MenuWeb';
-import MenuMobile from './components/MenuMobile';
 import { useTournament } from '../../hooks/useTournaments';
 import { useRounds } from '../../hooks/useLeagues';
 import { useBetLeaders } from '../../hooks/useResults';
+import { colors, spacing, typography, borderRadius } from '../../theme';
+import { Slug } from '../../types';
+import MenuWeb from './components/MenuWeb';
+import MenuMobile from './components/MenuMobile';
 
 export default function MyTournament({ }) {
     const { t } = useTranslation();
@@ -29,11 +29,10 @@ export default function MyTournament({ }) {
     const [activeRoundId, setActiveRoundId] = useState<number | null>(null);
 
     const { isXL } = useBreakpoint();
-    const toast: ToastType = useToast();
     const router: Router = useRouter();
 
-    const { 
-        data: tournament, isLoading: isTournamentLoading 
+    const {
+        data: tournament, isLoading: isTournamentLoading
     } = useTournament(Number(tournamentId));
     const { data: rounds, isLoading: isRoundsLoading } = useRounds(tournament?.league.id);
 
@@ -72,11 +71,11 @@ export default function MyTournament({ }) {
         if (hasNextPage && !isFetchingNextPage) {
             fetchNextPage();
         }
-    }
+    };
 
     const handleTournamentClick = (pathname: string) => {
         router.push(`${pathname}/${tournamentId}/`);
-    }
+    };
 
     const Wrapper = getWrapper();
     const isLoading = isTournamentLoading || isRoundsLoading || (isBetsLoading && !isRefetching);
@@ -84,132 +83,135 @@ export default function MyTournament({ }) {
     return (
         <PaperProvider>
             <Wrapper style={styles.container}>
+                {/* Header */}
                 <View style={styles.topBar}>
-                    <View style={styles.arrowNameContainer}>
-                        <Pressable onPress={() => router.replace('/home')}>
-                            <Entypo name='chevron-left' color='white' size={30} />   
+                    <View style={styles.leftSection}>
+                        <Pressable
+                            onPress={() => router.replace('/home')}
+                            style={({ pressed }) => [
+                                styles.backButton,
+                                pressed && styles.backButtonPressed
+                            ]}
+                        >
+                            <Ionicons name="chevron-back" color={colors.textPrimary} size={24} />
                         </Pressable>
 
-                        <Text style={styles.tntNameTxt}>
+                        <Text style={styles.tntNameTxt} numberOfLines={1}>
                             {tournament ? tournament.name.toUpperCase() : '...'}
                         </Text>
                     </View>
-                    
-                    {tournament &&
-                        !isXL
-                        ?
-                        <MenuMobile
-                            tournament={tournament}
-                            t={t}
-                            handleTournamentClick={handleTournamentClick}
-                            isMenuVisible={isMenuVisible}
-                            setIsMenuVisible={setIsMenuVisible}
-                            handleShare={handleShare}
-                        />
-                        :
-                        <MenuWeb
-                            tournament={tournament}
-                            t={t}
-                            handleTournamentClick={handleTournamentClick}
-                            handleShare={handleShare}
-                        />
-                    }
+
+                    {tournament && (
+                        !isXL ? (
+                            <MenuMobile
+                                tournament={tournament}
+                                t={t}
+                                handleTournamentClick={handleTournamentClick}
+                                isMenuVisible={isMenuVisible}
+                                setIsMenuVisible={setIsMenuVisible}
+                                handleShare={handleShare}
+                            />
+                        ) : (
+                            <MenuWeb
+                                tournament={tournament}
+                                t={t}
+                                handleTournamentClick={handleTournamentClick}
+                                handleShare={handleShare}
+                            />
+                        )
+                    )}
                 </View>
 
-                {
-                    (isTournamentLoading || isRoundsLoading)
-                    ?
+                {/* Rounds Picker */}
+                {(isTournamentLoading || isRoundsLoading) ? (
                     <ShimmerPlaceholder style={styles.roundsListLoading} />
-                    :
+                ) : (
                     <RoundsPicker
                         rounds={rounds || []}
                         handleRoundSwap={handleRoundSwap}
                         activeRoundId={activeRoundId}
                     />
-                }
-                
-                {
-                    isLoading
-                    ?
-                    <LoadingCards cardHeight={80} nCards={5} cardColor='#d9d9d9' />
-                    :
-                        bets.length > 0
-                        ?
-                        <RankedPlayersFlatList
-                            bets={bets}
-                            onEnd={loadMore}
-                            loadingMore={isFetchingNextPage}
-                            refreshing={isRefetching}
-                            onRefresh={refetchBets}
-                        />
-                        :
-                        <View><Text style={styles.noBetsTxt}>{t('no-bets')}</Text></View>
-                }
+                )}
+
+                {/* Content */}
+                {isLoading ? (
+                    <LoadingCards cardHeight={80} nCards={5} cardColor={colors.backgroundCard} />
+                ) : bets.length > 0 ? (
+                    <RankedPlayersFlatList
+                        bets={bets}
+                        onEnd={loadMore}
+                        loadingMore={isFetchingNextPage}
+                        refreshing={isRefetching}
+                        onRefresh={refetchBets}
+                    />
+                ) : (
+                    <View style={styles.emptyContainer}>
+                        <Ionicons name="people-outline" size={64} color={colors.textMuted} />
+                        <Text style={styles.noBetsTxt}>{t('no-bets')}</Text>
+                    </View>
+                )}
 
                 <Banner bannerId={process.env.MY_TOURNAMENT_BANNER_ID} />
             </Wrapper>
         </PaperProvider>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: MAIN_COLOR,
-        flex: 1
-    },
-    roundsListLoading: { 
-        width: '100%', 
-        height: 50, 
-        marginBottom: 30 
+        backgroundColor: colors.background,
+        flex: 1,
     },
     topBar: {
-        backgroundColor: '#2F2766',
-        display: 'flex',
+        backgroundColor: colors.backgroundElevated,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 15,
+        alignItems: 'center',
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.md,
         marginTop: Platform.OS === 'web' ? 0 : 20,
-        paddingHorizontal: 5
+        borderBottomWidth: 1,
+        borderBottomColor: colors.surfaceBorder,
     },
-    arrowNameContainer: {
-        display: 'flex',
+    leftSection: {
         flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    backButton: {
+        width: 40,
+        height: 40,
+        borderRadius: borderRadius.full,
+        backgroundColor: colors.surfaceLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    backButtonPressed: {
+        backgroundColor: colors.accent,
     },
     tntNameTxt: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: '500',
-        marginStart: 5
+        color: colors.textPrimary,
+        fontSize: typography.fontSize.titleMedium,
+        fontWeight: typography.fontWeight.semibold,
+        marginLeft: spacing.md,
+        flex: 1,
+    },
+    roundsListLoading: {
+        width: '100%',
+        height: 50,
+        marginBottom: spacing.lg,
+    },
+    emptyContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingBottom: 100,
     },
     noBetsTxt: {
-        fontSize: 27,
+        fontSize: typography.fontSize.titleLarge,
         textAlign: 'center',
-        color: 'white',
-        fontWeight: '500',
-        marginBottom: 250
+        color: colors.textSecondary,
+        fontWeight: typography.fontWeight.medium,
+        marginTop: spacing.md,
     },
-    leaguesContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingTop: 7,
-        backgroundColor: '#d9d9d9',
-        height: 40,
-        marginBottom: 15
-    },
-    roundBtn: {
-        marginHorizontal: 15,
-        marginVertical: 0,
-    },
-    roundTxt: {
-        fontWeight: '700',
-        fontSize: 17
-    },
-    activeRoundBtn: {
-    },
-    activeRoundTxt: {
-        color: MAIN_COLOR,
-        borderBottomColor: MAIN_COLOR,
-        borderBottomWidth: 5,
-    },
-})
+});

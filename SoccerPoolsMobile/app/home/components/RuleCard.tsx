@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
+import { colors, spacing, typography, borderRadius } from '../../../theme';
 
 interface Props {
     ruleId: number;
@@ -9,50 +10,54 @@ interface Props {
     ruleIcon: string;
 }
 
-export default function RuleCard ({ruleId, ruleText, ruleIcon}: Props) {
+export default function RuleCard({ ruleId, ruleText, ruleIcon }: Props) {
     const { t } = useTranslation();
     const { isLG } = useBreakpoint();
 
     return (
-        <View key={ruleId} style={[styles.card, isLG && styles.cardLG]}>
+        <View style={[styles.card, isLG && styles.cardLG]}>
+            {/* Icon Badge */}
             <View style={styles.iconBadge}>
-                <MaterialIcons name={ruleIcon as any} size={22} />
+                <Ionicons name={ruleIcon as any} size={24} color={colors.accent} />
             </View>
+
+            {/* Content */}
             <View style={styles.textWrap}>
                 <View style={styles.ruleHeader}>
-                <View style={styles.numberBadge}>
-                    <Text style={styles.numberText}>{ruleId}</Text>
-                </View>
-                <Text style={styles.ruleTitle}>
-                    {t('how-to-play')} #{ruleId}
-                </Text>
+                    <View style={styles.numberBadge}>
+                        <Text style={styles.numberText}>{ruleId}</Text>
+                    </View>
+                    <Text style={styles.ruleTitle}>
+                        {t('how-to-play')} #{ruleId}
+                    </Text>
                 </View>
                 <Text style={styles.ruleText}>{ruleText}</Text>
             </View>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
         alignItems: 'flex-start',
-        backgroundColor: 'white',
-        borderRadius: 14,
-        padding: 14,
-        elevation: 2,
+        backgroundColor: colors.backgroundCard,
+        borderRadius: borderRadius.lg,
+        padding: spacing.md,
+        borderWidth: 1,
+        borderColor: colors.surfaceBorder,
     },
     cardLG: {
-        padding: 16,
+        padding: spacing.lg,
     },
     iconBadge: {
-        width: 40,
-        height: 40,
-        borderRadius: 10,
-        backgroundColor: '#EEF1F4',
+        width: 48,
+        height: 48,
+        borderRadius: borderRadius.md,
+        backgroundColor: colors.accentMuted,
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 12,
+        marginRight: spacing.md,
     },
     textWrap: {
         flex: 1,
@@ -60,30 +65,28 @@ const styles = StyleSheet.create({
     ruleHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 6,
+        marginBottom: spacing.sm,
     },
     numberBadge: {
-        backgroundColor: '#EDF6FF',
-        borderColor: '#D6E9FF',
-        borderWidth: 1,
-        paddingHorizontal: 8,
+        backgroundColor: colors.accent,
+        paddingHorizontal: spacing.sm,
         paddingVertical: 2,
-        borderRadius: 999,
-        marginRight: 8,
+        borderRadius: borderRadius.full,
+        marginRight: spacing.sm,
     },
     numberText: {
-        color: '#1C64F2',
-        fontWeight: '700',
-        fontSize: 12,
+        color: colors.background,
+        fontWeight: typography.fontWeight.bold,
+        fontSize: typography.fontSize.labelSmall,
     },
     ruleTitle: {
-        color: 'rgba(16,20,24,0.65)',
-        fontSize: 12,
-        fontWeight: '600',
+        color: colors.textMuted,
+        fontSize: typography.fontSize.labelMedium,
+        fontWeight: typography.fontWeight.medium,
     },
     ruleText: {
-        color: '#222',
-        fontSize: 15,
+        color: colors.textPrimary,
+        fontSize: typography.fontSize.bodyMedium,
         lineHeight: 22,
     },
-})
+});

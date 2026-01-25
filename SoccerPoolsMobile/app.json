@@ -5,14 +5,14 @@
     "scheme": "com.soccer-pools-mobile.soccer-pools-mobile",
     "version": "1.8.2",
     "orientation": "portrait",
-    "icon": "./assets/icon.jpg",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
     "jsEngine": "hermes",
     "splash": {
       "image": "./assets/icon-no-bg.png",
       "resizeMode": "cover",
-      "backgroundColor": "#6860A1"
+      "backgroundColor": "#00A88A"
     },
     "ios": {
       "supportsTablet": true,
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.jpg",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [

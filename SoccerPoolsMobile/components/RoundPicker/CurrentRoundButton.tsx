@@ -1,48 +1,47 @@
 import { Pressable, Text, StyleSheet } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
-import { MAIN_COLOR } from '../../constants';
+import { colors, spacing, typography, borderRadius } from '../../theme';
 
 interface Props {
     setOpen: (open: boolean) => void;
     currentName: string;
 }
 
-export default function CurrentRoundButton({setOpen, currentName}: Props) {
-
+export default function CurrentRoundButton({ setOpen, currentName }: Props) {
     return (
         <Pressable
             onPress={() => setOpen(true)}
-            style={styles.currentBtn}
+            style={({ pressed }) => [styles.currentBtn, pressed && styles.currentBtnPressed]}
         >
-            <Text
-                numberOfLines={1}
-                style={styles.currentTxt}
-            >
+            <Text numberOfLines={1} style={styles.currentTxt}>
                 {currentName.toUpperCase()}
             </Text>
-            <Entypo name='chevron-down' color='white' size={17} />
+            <Entypo name="chevron-down" color={colors.textPrimary} size={17} />
         </Pressable>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     currentBtn: {
         flexShrink: 1,
-        width: '70%',
-        paddingHorizontal: 14,
+        flex: 1,
+        paddingHorizontal: spacing.md,
         height: 40,
-        borderRadius: 20,
-        backgroundColor: MAIN_COLOR,
+        borderRadius: borderRadius.full,
+        backgroundColor: colors.backgroundCard,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 8,
+        gap: spacing.sm,
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: '#d9d9d9',
+        borderColor: colors.surfaceBorder,
     },
-    currentTxt: { 
-        fontSize: 15, 
-        fontWeight: '700', 
-        color: 'white'
+    currentBtnPressed: {
+        backgroundColor: colors.surfaceLight,
+    },
+    currentTxt: {
+        fontSize: typography.fontSize.labelLarge,
+        fontWeight: typography.fontWeight.semibold,
+        color: colors.textPrimary,
     },
 });

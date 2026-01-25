@@ -1,32 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import {
-    View, Image, StyleSheet, Text, TouchableOpacity, Platform, ScrollView, 
-    Alert, ActivityIndicator
+    View, Image, StyleSheet, Text, Pressable, Platform, ScrollView, Alert, KeyboardAvoidingView
 } from 'react-native';
 import { Link, Router, useLocalSearchParams, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import CustomInputSign from 'components/CustomInputSign';
-import CustomButton from 'components/CustomButton';
-import TopBar from 'components/TopBar';
 import Footer from 'components/footer/Footer';
 import GoogleAuthButton from 'components/GoogleAuthButton';
 import { removeToken } from 'services/api';
 import handleError from 'utils/handleError';
 import { getToken } from 'utils/storeToken';
 import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
+import { ThemedInput, ThemedButton, ThemedLoader } from '../../components/ui';
+import { Navbar, BackgroundDecoration } from '../../components/landing';
 import ForgotPasswordModal from '../../modals/ForgotPasswordModal';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { useLogin, useUser } from '../../hooks/useUser';
-import { MAIN_COLOR } from '../../constants';
+import { useLogin } from '../../hooks/useUser';
+import { colors, spacing, typography, borderRadius } from '../../theme';
 
-// This is crucial for web OAuth to work properly
 if (Platform.OS === 'web') {
     WebBrowser.maybeCompleteAuthSession();
 }
 
-export default function Login({}) {
+export default function Login() {
     const { t } = useTranslation();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -39,26 +37,17 @@ export default function Login({}) {
     const { mutate: loginUser, isPending: isLoggingIn } = useLogin();
 
     useEffect(() => {
-        const checkUserLeagueStatus = async (token): Promise<void> => {
-            try {
-               router.replace(await getUserLeagueRoute(token));
-            } catch (error) {
-                Alert.alert(
-                    'Error', 
-                    handleError(error), 
-                    [{ text: 'OK', onPress: () => {}}], {cancelable: false}
-                );
-                await removeToken();
+        const checkAuth = async () => {
+            const token = await getToken();
+            if (token) {
+                try {
+                    router.replace(await getUserLeagueRoute(token));
+                } catch (error) {
+                    Alert.alert('Error', handleError(error), [{ text: 'OK' }]);
+                    await removeToken();
+                }
             }
         };
-    
-        const checkAuth = async (): Promise<void> => {
-            const token = await getToken();
-            if (!!token) {
-                checkUserLeagueStatus(token);
-            }
-        }
-        
         checkAuth();
     }, []);
 
@@ -75,132 +64,312 @@ export default function Login({}) {
     };
 
     return (
-        <ScrollView 
-            style={styles.container}
-            contentContainerStyle={styles.contentContainer}
-            showsVerticalScrollIndicator={true}
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardView}
         >
-            <TopBar 
-                url={`/?referralCode=${referralCode ? referralCode : ''}`} 
-                text={t('log-in')} 
-            />
+            {Platform.OS === 'web' && (
+                <Navbar variant="login" referralCode={referralCode} />
+            )}
 
-            <Image 
-                source={require('../../assets/icon-no-bg.png')}
-                style={styles.image}
-            />
-    
-            <View style={{width: isLG ? '60%' : '95%'}}>
-                <CustomInputSign
-                    value={username}
-                    setValue={setUsername}
-                    placeholder={t('username')}
+            <ScrollView
+                style={styles.container}
+                contentContainerStyle={[styles.contentContainer, { paddingTop: isLG ? 80 : 40 }]}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
+                <BackgroundDecoration variant="login" />
+
+                <View style={[styles.mainContent, isLG && styles.mainContentLG]}>
+                    {/* Left Side (Desktop only) */}
+                    {isLG && (
+                        <View style={styles.decorativeSection}>
+                            <View style={styles.decorativeCard}>
+                                <View style={styles.decorativeIconWrap}>
+                                    <Ionicons name="football" size={48} color={colors.accent} />
+                                </View>
+                                <Text style={styles.decorativeTitle}>
+                                    {t('hero-title-1')} {t('hero-title-2')}
+                                </Text>
+                                <Text style={styles.decorativeSubtitle}>{t('hero-subtitle')}</Text>
+
+                                <View style={styles.statsRow}>
+                                    <View style={styles.statItem}>
+                                        <Text style={styles.statNumber}>10K+</Text>
+                                        <Text style={styles.statLabel}>{t('users')}</Text>
+                                    </View>
+                                    <View style={styles.statItem}>
+                                        <Text style={styles.statNumber}>500+</Text>
+                                        <Text style={styles.statLabel}>{t('tournaments')}</Text>
+                                    </View>
+                                    <View style={styles.statItem}>
+                                        <Text style={styles.statNumber}>10+</Text>
+                                        <Text style={styles.statLabel}>{t('leagues')}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    )}
+
+                    {/* Right Side */}
+                    <View style={[styles.formSection, isLG && styles.formSectionLG]}>
+                        <View style={styles.formCard}>
+                            {/* Logo Section */}
+                            <View style={styles.logoSection}>
+                                {!isLG && (
+                                    <Image
+                                        source={require('../../assets/icon-no-bg.png')}
+                                        style={styles.logo}
+                                        resizeMode="contain"
+                                    />
+                                )}
+                                <Text style={styles.welcomeText}>{t('log-in')}</Text>
+                                <Text style={styles.subtitleText}>{t('enter-your-credentials')}</Text>
+                            </View>
+
+                            {/* Form Fields */}
+                            <View style={styles.formFields}>
+                                <ThemedInput
+                                    value={username}
+                                    setValue={setUsername}
+                                    placeholder="Enter your username"
+                                    label={t('username')}
+                                />
+
+                                <ThemedInput
+                                    value={password}
+                                    setValue={setPassword}
+                                    placeholder="Enter your password"
+                                    label={t('password')}
+                                    isSecureTextEntry
+                                />
+
+                                <Pressable 
+                                    onPress={() => setModalVisible(true)} 
+                                    style={styles.forgotButton}
+                                >
+                                    <Text style={styles.forgotText}>{t('forgot-password')}</Text>
+                                </Pressable>
+
+                                {isLoggingIn ? (
+                                    <ThemedLoader />
+                                ) : (
+                                    <ThemedButton
+                                        onPress={logIn}
+                                        label={t('log-in')}
+                                        variant="primary"
+                                        size="lg"
+                                        fullWidth
+                                    />
+                                )}
+
+                                {/* Divider */}
+                                <View style={styles.divider}>
+                                    <View style={styles.dividerLine} />
+                                    <Text style={styles.dividerText}>or</Text>
+                                    <View style={styles.dividerLine} />
+                                </View>
+
+                                {/* Google Auth */}
+                                <GoogleAuthButton
+                                    callingRoute="login"
+                                    referralCode={referralCode ? (
+                                        Array.isArray(referralCode) ? referralCode[0] : referralCode
+                                    ) : ''}
+                                />
+
+                                {/* Create Account Link */}
+                                <View style={styles.createAccountSection}>
+                                    <Text style={styles.noAccountText}>
+                                        {t('dont-have-account')}
+                                    </Text>
+                                    <Link
+                                        href={`/create-account?referralCode=${referralCode || ''}`}
+                                        style={styles.createAccountLink}
+                                    >
+                                        {t('create-account')}
+                                    </Link>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+
+                <ForgotPasswordModal
+                    visible={modalVisible}
+                    onClose={() => setModalVisible(false)}
                 />
 
-                <CustomInputSign
-                    value={password}
-                    setValue={setPassword}
-                    placeholder={t('password')}
-                    isSecureTextEntry={true}
-                />    
-            </View>
-
-            {
-                isLoggingIn
-                    ?
-                    <ActivityIndicator size='large' color='#0000ff' />
-                    :
-                    <CustomButton callable={logIn} btnText={t('log-in')} btnColor='#2F2766' />
-            }
-
-            <ForgotPasswordModal
-                visible={modalVisible}
-                onClose={() => setModalVisible(false)}
-            />
-
-            <View 
-                style={[styles.forgotCreateContainer, {
-                    flexDirection: isLG ? 'row' : 'column',
-                    width: isLG ? '40%' : '50%'
-                }]}
-            >
-                <TouchableOpacity onPress={() => setModalVisible(true)}>
-                    <Text style={styles.forgotCreateText}>{t('forgot-password')}</Text>
-                </TouchableOpacity>
-
-                <Link 
-                    href={`/create-account?referralCode=${referralCode ? referralCode : ''}`} 
-                    style={styles.forgotCreateText}
-                >
-                    {t('create-account')}
-                </Link>
-            </View>
-
-            <GoogleAuthButton 
-                callingRoute='login' 
-                referralCode={
-                    referralCode 
-                    ? 
-                    (Array.isArray(referralCode) ? referralCode[0] : referralCode) 
-                    : 
-                    ''
-                }
-            />
-
-            
-            {Platform.OS === 'web' && 
-                <View style={{marginTop: 50, width: '100%'}}>
-                    <Footer />
-                </View>
-            }    
-        </ScrollView>   
-    )
+                {Platform.OS === 'web' && (
+                    <View style={styles.footerSection}>
+                        <Footer />
+                    </View>
+                )}
+            </ScrollView>
+        </KeyboardAvoidingView>
+    );
 }
 
 const styles = StyleSheet.create({
+    keyboardView: {
+        flex: 1,
+        backgroundColor: colors.background,
+    },
     container: {
         flex: 1,
-        backgroundColor: MAIN_COLOR,
+        backgroundColor: colors.background,
     },
     contentContainer: {
+        flexGrow: 1,
+    },
+
+    // Main Content
+    mainContent: {
+        flex: 1,
+        paddingHorizontal: spacing.lg,
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: 600,
+    },
+    mainContentLG: {
+        flexDirection: 'row',
+        maxWidth: 1000,
+        marginHorizontal: 'auto',
+        gap: spacing.xxl,
+    },
+
+    // Decorative Section
+    decorativeSection: {
+        flex: 1,
+        justifyContent: 'center',
+        paddingRight: spacing.xl,
+    },
+    decorativeCard: {
+        backgroundColor: 'rgba(0, 212, 170, 0.05)',
+        borderRadius: borderRadius.xl,
+        padding: spacing.xl,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 212, 170, 0.2)',
+    },
+    decorativeIconWrap: {
+        width: 80,
+        height: 80,
+        borderRadius: borderRadius.lg,
+        backgroundColor: colors.accentMuted,
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: spacing.lg,
     },
-    image: {
-        width: 240,
-        height: 240
+    decorativeTitle: {
+        fontSize: typography.fontSize.headlineLarge,
+        fontWeight: typography.fontWeight.bold,
+        color: colors.textPrimary,
+        marginBottom: spacing.sm,
     },
-    forgotCreateContainer: { 
-        textAlign: 'center',
+    decorativeSubtitle: {
+        fontSize: typography.fontSize.bodyMedium,
+        color: colors.textSecondary,
+        lineHeight: 24,
+        marginBottom: spacing.xl,
+    },
+    statsRow: {
+        flexDirection: 'row',
+        gap: spacing.xl,
+    },
+    statItem: {
         alignItems: 'center',
-        justifyContent: 'space-around'
     },
-    forgotCreateText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 14,
-        marginBottom: 13
+    statNumber: {
+        fontSize: typography.fontSize.titleLarge,
+        fontWeight: typography.fontWeight.bold,
+        color: colors.accent,
     },
-    googleImg: {
-        width: 67,
-        height: 67,
-        marginVertical: 10
+    statLabel: {
+        fontSize: typography.fontSize.labelSmall,
+        color: colors.textMuted,
     },
-    googleContainer: {
+
+    // Form Section
+    formSection: {
+        width: '100%',
+        maxWidth: 420,
+    },
+    formSectionLG: {
+        flex: 1,
+        maxWidth: 420,
+    },
+    formCard: {
+        backgroundColor: colors.backgroundCard,
+        borderRadius: borderRadius.xl,
+        padding: spacing.xl,
+        borderWidth: 1,
+        borderColor: colors.surfaceBorder,
+    },
+    logoSection: {
         alignItems: 'center',
+        marginBottom: spacing.lg,
+    },
+    logo: {
+        width: 80,
+        height: 80,
+        marginBottom: spacing.md,
+    },
+    welcomeText: {
+        color: colors.textPrimary,
+        fontSize: typography.fontSize.headlineMedium,
+        fontWeight: typography.fontWeight.bold,
+        marginBottom: spacing.xs,
+    },
+    subtitleText: {
+        color: colors.textSecondary,
+        fontSize: typography.fontSize.bodyMedium,
+    },
+    formFields: {
+        width: '100%',
+    },
+    forgotButton: {
+        alignSelf: 'flex-end',
+        marginBottom: spacing.lg,
+        marginTop: -spacing.sm,
+    },
+    forgotText: {
+        color: colors.accent,
+        fontSize: typography.fontSize.labelMedium,
+        fontWeight: typography.fontWeight.medium,
+    },
+    divider: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: spacing.lg,
+    },
+    dividerLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: colors.surfaceBorder,
+    },
+    dividerText: {
+        color: colors.textMuted,
+        fontSize: typography.fontSize.labelMedium,
+        marginHorizontal: spacing.md,
+    },
+    createAccountSection: {
+        flexDirection: 'row',
         justifyContent: 'center',
-        marginVertical: 10,
+        alignItems: 'center',
+        marginTop: spacing.lg,
+        gap: spacing.xs,
     },
-    googleContainerDisabled: {
-        opacity: 0.5,
+    noAccountText: {
+        color: colors.textSecondary,
+        fontSize: typography.fontSize.bodyMedium,
     },
-    googleImgDisabled: {
-        opacity: 0.5,
+    createAccountLink: {
+        color: colors.accent,
+        fontSize: typography.fontSize.bodyMedium,
+        fontWeight: typography.fontWeight.semibold,
     },
-    loadingText: {
-        color: '#fff',
-        fontSize: 12,
-        marginTop: 8,
-        fontWeight: 'bold',
+    footerSection: {
+        marginTop: spacing.xxl,
+        width: '100%',
     },
-})
+});

@@ -1,44 +1,42 @@
-import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import { colors, spacing, typography, borderRadius } from '../../../../theme';
 
 type Props = {
-  text: string;
-  style?: ViewStyle;
+    text: string;
+    style?: ViewStyle;
 };
 
 export default function CoinPill({ text, style }: Props) {
-
-  return (
-    <LinearGradient
-      colors={['#0ea5e9', '#6366f1']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={[styles.wrap, style]}
-    >
-      <View style={[styles.inner, { height: 30, paddingHorizontal: 12 }]}>
-        <MaterialIcons name='monetization-on' size={16} color='#0B1220' />
-        <Text style={[styles.text, { fontSize: 14, fontWeight: '800' }]}>
-          {text}
-        </Text>
-      </View>
-    </LinearGradient>
-  );
+    return (
+        <View style={[styles.wrap, style]}>
+            <View style={styles.inner}>
+                <MaterialIcons name='monetization-on' size={16} color={colors.coins} />
+                <Text style={styles.text}>{text}</Text>
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    borderRadius: 999,
-    padding: 2,
-    alignSelf: 'flex-start',
-  },
-  inner: {
-    borderRadius: 999,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  text: { color: '#0B1220' },
+    wrap: {
+        borderRadius: borderRadius.full,
+        padding: 2,
+        alignSelf: 'flex-start',
+        backgroundColor: colors.accent,
+    },
+    inner: {
+        borderRadius: borderRadius.full,
+        backgroundColor: colors.background,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.xs,
+        height: 30,
+        paddingHorizontal: spacing.md,
+    },
+    text: {
+        color: colors.coins,
+        fontSize: typography.fontSize.labelMedium,
+        fontWeight: typography.fontWeight.bold,
+    },
 });

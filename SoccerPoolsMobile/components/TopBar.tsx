@@ -1,38 +1,59 @@
-import { Entypo } from '@expo/vector-icons';
-import { View, StyleSheet, Text, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { View, StyleSheet, Text, Platform, Pressable } from 'react-native';
 import { Link } from 'expo-router';
+import { colors, spacing, typography, borderRadius } from '../theme';
 
 interface Props {
     text: string;
     url: string;
 }
 
-export default function TopBar ({text, url}: Props) {
-
+export default function TopBar({ text, url }: Props) {
     return (
         <View style={styles.topBar}>
-            <Link href={url}>
-                <Entypo name='chevron-left' color='white' size={30} />
+            <Link href={url} asChild>
+                <Pressable style={({ pressed }) => [
+                    styles.backButton,
+                    pressed && styles.backButtonPressed
+                ]}>
+                    <Ionicons name="chevron-back" color={colors.textPrimary} size={24} />
+                </Pressable>
             </Link>
-            <Text style={styles.topBarTxt}>{text}</Text>
+            <Text style={styles.topBarTxt} numberOfLines={1}>{text}</Text>
+            <View style={{ width: 40 }} />
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     topBar: {
-        backgroundColor: '#2F2766',
+        backgroundColor: colors.backgroundElevated,
         flexDirection: 'row',
-        paddingVertical: 15,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.md,
         marginTop: Platform.OS === 'web' ? 0 : 20,
-        marginBottom: 10,
-        paddingHorizontal: 5,
-        width: '100%'
+        borderBottomWidth: 1,
+        borderBottomColor: colors.surfaceBorder,
+    },
+    backButton: {
+        width: 40,
+        height: 40,
+        borderRadius: borderRadius.full,
+        backgroundColor: colors.surfaceLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    backButtonPressed: {
+        backgroundColor: colors.accent,
     },
     topBarTxt: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: '500',
-        marginStart: 5
+        color: colors.textPrimary,
+        fontSize: typography.fontSize.titleMedium,
+        fontWeight: typography.fontWeight.semibold,
+        flex: 1,
+        textAlign: 'center',
+        marginHorizontal: spacing.md,
     },
 });

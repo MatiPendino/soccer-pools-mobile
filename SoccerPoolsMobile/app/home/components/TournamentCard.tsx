@@ -2,10 +2,10 @@ import { View, StyleSheet, Text, Image, ActivityIndicator, Pressable } from 'rea
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { Router, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { MAIN_COLOR } from '../../../constants';
+import { Ionicons } from '@expo/vector-icons';
 import { useTournamentUser, useUpdateStateTournamentUser } from '../../../hooks/useTournaments';
 import { Email } from '../../../types';
+import { colors, spacing, typography, borderRadius } from '../../../theme';
 
 interface TournamentCardProps {
     name: string;
@@ -28,36 +28,53 @@ export default function TournamentCard({
 
     const getStateInfo = () => {
         if (!tournamentUser) {
-            return { 
-                color: '#0C9A24', text: t('apply'), icon: 'add-circle-outline' 
+            return {
+                color: colors.success,
+                bgColor: colors.successBg,
+                text: t('apply'),
+                icon: 'add-circle-outline'
             };
         }
 
         switch (tournamentUser.tournament_user_state) {
             case 0:
-                return { color: '#0C9A24', text: t('apply'), icon: 'add-circle-outline' }
+                return { 
+                    color: colors.success, bgColor: colors.successBg, 
+                    text: t('apply'), icon: 'add-circle-outline' 
+                };
             case 1:
-                return { color: '#F9A826', text: t('pending'), icon: 'hourglass-empty' }
+                return { 
+                    color: colors.warning, bgColor: colors.warningBg, 
+                    text: t('pending'), icon: 'hourglass-outline' 
+                };
             case 2:
-                return { color: '#2E7DFF', text: t('joined'), icon: 'check-circle-outline' }
+                return { 
+                    color: colors.accent, bgColor: colors.accentMuted,
+                    text: t('joined'), icon: 'checkmark-circle-outline' 
+                };
             case 3:
-                return { color: '#E63946', text: t('rejected'), icon: 'cancel-outline' }
+                return { 
+                    color: colors.error, bgColor: colors.errorBg, 
+                    text: t('rejected'), icon: 'close-circle-outline' 
+                };
             default:
-                return { color: '#0C9A24', text: t('apply'), icon: 'add-circle-outline' }
+                return { 
+                    color: colors.success, bgColor: colors.successBg, 
+                    text: t('apply'), icon: 'add-circle-outline' 
+                };
         }
-    }
+    };
 
-    const tournamentStateConversion = (): React.JSX.Element => {
+    const tournamentStateConversion = () => {
         const stateInfo = getStateInfo();
-        
+
         return (
-            <View style={[styles.stateContainer, { backgroundColor: `${stateInfo.color}20` }]}>
-                {/* @ts-ignore */}
-                <MaterialIcons name={stateInfo.icon} size={16} color={stateInfo.color} />
+            <View style={[styles.stateContainer, { backgroundColor: stateInfo.bgColor }]}>
+                <Ionicons name={stateInfo.icon as any} size={16} color={stateInfo.color} />
                 <Text style={[styles.stateTxt, { color: stateInfo.color }]}>{stateInfo.text}</Text>
             </View>
         );
-    }
+    };
 
     const joinTournament = () => {
         if (!tournamentUser) return;
@@ -69,100 +86,98 @@ export default function TournamentCard({
                 toast.show('There is been an error sending the join request', { type: 'error' });
             }
         });
-    }
+    };
 
     const handleCard = () => {
         if (!tournamentUser) return;
-        
+
         switch (tournamentUser.tournament_user_state) {
             case 0:
-                joinTournament()
-                break
+                joinTournament();
+                break;
             case 1:
-                toast.show(t('already-request-sent'), {type: 'warning'})
-                break
+                toast.show(t('already-request-sent'), { type: 'warning' });
+                break;
             case 2:
-                router.push(`my-tournament/${tournamentId}`)
-                break
+                router.push(`my-tournament/${tournamentId}`);
+                break;
             case 3:
-                toast.show(t('request-rejected'), {type: 'error'})
-                break
+                toast.show(t('request-rejected'), { type: 'error' });
+                break;
         }
-    }
+    };
 
     return (
-        <Pressable 
+        <Pressable
             style={({ pressed }) => [
                 styles.container,
                 pressed && styles.pressed
-            ]} 
+            ]}
             onPress={handleCard}
         >
             <View style={styles.contentContainer}>
+                {/* Logo */}
                 <View style={styles.logoContainer}>
-                    {
-                        logoUrl 
-                        ? 
-                        <Image source={{ uri: `${logoUrl}` }} style={styles.logoImg} /> 
-                        : 
+                    {logoUrl ? (
+                        <Image source={{ uri: `${logoUrl}` }} style={styles.logoImg} />
+                    ) : (
                         <View style={styles.placeholderLogo}>
                             <Text style={styles.placeholderText}>{name.charAt(0)}</Text>
                         </View>
-                    }
+                    )}
                 </View>
-                
+
+                {/* Info */}
                 <View style={styles.textsContainer}>
                     <Text style={styles.tournamentNameTxt} numberOfLines={1} ellipsizeMode='tail'>
                         {name}
                     </Text>
-                    
-                    <View style={styles.adminContainer}>
-                        <MaterialIcons name='person' size={14} color='#555' style={styles.adminIcon} />
-                        <Text style={styles.adminTxt} numberOfLines={1} ellipsizeMode='tail'>
-                            {adminUsername}
-                        </Text>
-                    </View>
-                    
-                    <View style={styles.participantsContainer}>
-                        <MaterialIcons name='people' size={14} color='#555' style={styles.participantsIcon} />
-                        <Text style={styles.participantsTxt}>
-                            {nParticipants} {nParticipants === 1 ? 'participant' : 'participants'}
-                        </Text>
+
+                    <View style={styles.metaRow}>
+                        <View style={styles.metaItem}>
+                            <Ionicons name='person-outline' size={14} color='#DDDDDD' />
+                            <Text style={styles.metaTxt} numberOfLines={1} ellipsizeMode='tail'>
+                                {adminUsername}
+                            </Text>
+                        </View>
+
+                        <View style={styles.metaItem}>
+                            <Ionicons name='people-outline' size={14} color='#DDDDDD' />
+                            <Text style={styles.metaTxt}>
+                                {nParticipants}
+                            </Text>
+                        </View>
                     </View>
                 </View>
             </View>
-        
+
+            {/* State Badge */}
             <View style={styles.stateWrapper}>
-                {
-                    (!isUserLoading && !isUpdating)
-                    ? 
+                {(!isUserLoading && !isUpdating) ? (
                     tournamentStateConversion()
-                    : 
-                    <ActivityIndicator size='small' color={MAIN_COLOR} />
-                }
+                ) : (
+                    <ActivityIndicator size='small' color={colors.accent} />
+                )}
             </View>
         </Pressable>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: 'white',
+        backgroundColor: colors.backgroundCard,
         alignItems: 'center',
-        padding: 16,
-        borderRadius: 12,
-        marginBottom: 12,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
+        padding: spacing.md,
+        borderRadius: borderRadius.lg,
+        marginBottom: spacing.md,
+        borderWidth: 1,
+        borderColor: colors.surfaceBorder,
     },
     pressed: {
-        opacity: 0.9,
-        backgroundColor: '#f8f8f8',
+        backgroundColor: colors.surfaceLight,
+        transform: [{ scale: 0.98 }],
     },
     contentContainer: {
         flexDirection: 'row',
@@ -170,64 +185,53 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     logoContainer: {
-        marginRight: 12,
+        marginRight: spacing.md,
     },
     logoImg: {
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        backgroundColor: '#f0f0f0',
+        width: 52,
+        height: 52,
+        borderRadius: 26,
+        backgroundColor: colors.white,
     },
     placeholderLogo: {
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        backgroundColor: '#e0e0e0',
+        width: 52,
+        height: 52,
+        borderRadius: 26,
+        backgroundColor: colors.surfaceLight,
         justifyContent: 'center',
         alignItems: 'center',
     },
     placeholderText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#888',
+        fontSize: typography.fontSize.titleLarge,
+        fontWeight: typography.fontWeight.bold,
+        color: colors.textMuted,
     },
     textsContainer: {
         flex: 1,
         justifyContent: 'center',
     },
     tournamentNameTxt: {
-        fontSize: 18,
-        fontWeight: '700',
-        color: '#222',
-        marginBottom: 4,
+        fontSize: typography.fontSize.titleSmall,
+        fontWeight: typography.fontWeight.semibold,
+        color: colors.textPrimary,
+        marginBottom: spacing.xs,
     },
-    adminContainer: {
+    metaRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 2,
+        gap: spacing.md,
     },
-    adminIcon: {
-        marginRight: 4,
-    },
-    adminTxt: {
-        color: '#555',
-        fontSize: 14,
-        fontWeight: '500',
-    },
-    participantsContainer: {
+    metaItem: {
         flexDirection: 'row',
         alignItems: 'center',
+        gap: spacing.xs,
     },
-    participantsIcon: {
-        marginRight: 4,
-    },
-    participantsTxt: {
-        fontSize: 14,
-        color: '#555',
-        fontWeight: '400',
+    metaTxt: {
+        color: '#DDDDDD',
+        fontSize: typography.fontSize.labelMedium,
     },
     stateWrapper: {
-        marginLeft: 12,
+        marginLeft: spacing.md,
         justifyContent: 'center',
         alignItems: 'center',
         minWidth: 80,
@@ -235,14 +239,14 @@ const styles = StyleSheet.create({
     stateContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 16,
+        paddingHorizontal: spacing.sm,
+        paddingVertical: spacing.xs,
+        borderRadius: borderRadius.full,
         justifyContent: 'center',
+        gap: spacing.xs,
     },
     stateTxt: {
-        fontSize: 14,
-        fontWeight: '600',
-        marginLeft: 4,
+        fontSize: typography.fontSize.labelSmall,
+        fontWeight: typography.fontWeight.semibold,
     },
-})
+});

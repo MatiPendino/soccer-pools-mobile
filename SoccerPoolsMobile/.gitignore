@@ -24,6 +24,9 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 
+# IDE
+.claude/
+
 # macOS
 .DS_Store
 *.pem

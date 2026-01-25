@@ -1,13 +1,14 @@
 import {
-    View, Text, TouchableOpacity, Image, StyleSheet, ActivityIndicator 
+    View, Text, Pressable, Image, StyleSheet, ActivityIndicator
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 import { Router, useRouter } from 'expo-router';
 import handleError from 'utils/handleError';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 import { useJoinLeague } from '../../../hooks/useLeagues';
+import { colors, spacing, typography, borderRadius } from '../../../theme';
 
 export default function LeagueCard({ item }) {
     const { t } = useTranslation();
@@ -17,14 +18,14 @@ export default function LeagueCard({ item }) {
 
     const { mutateAsync: joinLeagueAsync, isPending: isLoading } = useJoinLeague();
 
-    const cardWidth = isLG ? width*0.23 : width*0.44;
+    const cardWidth: number = isLG ? width * 0.22 : width * 0.44;
 
     const selectLeague = async () => {
         try {
             const response = await joinLeagueAsync(item.slug);
             if (response.status === 201) {
                 toast.show(
-                    t('joined-league-successfully', {leagueTitle: item.name}), 
+                    t('joined-league-successfully', { leagueTitle: item.name }),
                     { type: 'success' }
                 );
             }
@@ -35,212 +36,153 @@ export default function LeagueCard({ item }) {
     };
 
     return (
-        <TouchableOpacity
-            style={[styles.cardContainer, {
-                height: isLG ? cardWidth*1.1 : cardWidth*1.3,
-                width: cardWidth,
-            }]}
-            onPress={() => selectLeague()}
-            activeOpacity={0.7}
+        <Pressable
+            style={({ pressed }) => [
+                styles.card,
+                { width: cardWidth },
+                pressed && styles.cardPressed,
+            ]}
+            onPress={selectLeague}
             disabled={isLoading}
         >
-            <View style={[
-                styles.card,
-                { backgroundColor: item.is_user_joined ? '#e6f7ef' : '#f0f0f0' }
-            ]}>
-                <View style={styles.prizeRibbon}>
-                    <View style={styles.ribbonContainer}>
-                        <FontAwesome5 name='coins' size={16} color='white' />
-                        <Text style={styles.prizeText}>
-                            {item.coins_prizes.coins_prize_first}
-                        </Text>
-                    </View>
-                    <View style={styles.ribbonTail} />
-                </View>
-                
-                <View style={[
-                    styles.cardHeader,
-                    { backgroundColor: item.is_user_joined ? '#22c55e' : '#d1d5db' }
-                ]} />
-                
-                <View style={styles.logoContainer}>
-                    <Image
-                        source={{ uri: item.logo }}
-                        style={styles.logo}
-                        resizeMode='contain'
-                    />
-                </View>
-                
-                <Text style={[
-                    styles.leagueName, 
-                    { color: item.is_user_joined ? '#166534' : '#4a5568' }
-                ]}>
-                    {item.name}
+            {/* Prize Ribbon */}
+            <View style={styles.ribbon}>
+                <Ionicons name="trophy" size={12} color={colors.background} />
+                <Text style={styles.ribbonText}>
+                    {item.coins_prizes.coins_prize_first}
                 </Text>
-                
-                {
-                isLoading ?
-                    <ActivityIndicator size="small" color="#0000ff" />
-                : 
-                    item.is_user_joined
-                    ? 
-                    <View style={styles.memberBadge}>
-                        <Text style={styles.memberText}>{t('joined')}</Text>
-                    </View>
-                    :
-                    <View style={styles.costContainer}>
-                        <View style={styles.costBadge}>
-                            <Text style={styles.costText}>
-                                {t('cost')}: {item.coins_cost || 0}
-                            </Text>
-                            <FontAwesome5 
-                                name='coins' size={14} 
-                                color='#f59e0b' style={styles.costIcon} 
-                            />
-                        </View>
-                        <Text style={styles.joinText}>{t('tap-to-join')}</Text>
-                    </View>
-                }
             </View>
-        </TouchableOpacity>
-    )
-}
+
+            {/* Status Indicator */}
+            {item.is_user_joined && (
+                <View style={styles.joinedBadge}>
+                    <Ionicons name="checkmark-circle" size={16} color={colors.success} />
+                </View>
+            )}
+
+            {/* Logo */}
+            <View style={styles.logoContainer}>
+                <Image
+                    source={{ uri: item.logo }}
+                    style={styles.logo}
+                    resizeMode="contain"
+                />
+            </View>
+
+            <Text style={styles.name} numberOfLines={2}>
+                {item.name}
+            </Text>
+
+            {/* Action Area */}
+            {isLoading ? (
+                <ActivityIndicator size="small" color={colors.accent} />
+            ) : item.is_user_joined ? (
+                <View style={styles.statusBadge}>
+                    <Text style={styles.statusText}>{t('joined')}</Text>
+                </View>
+            ) : (
+                <View style={styles.costContainer}>
+                    <View style={styles.costBadge}>
+                        <Text style={styles.costText}>{item.coins_cost || 0}</Text>
+                        <Ionicons name="flash" size={12} color={colors.coins} />
+                    </View>
+                    <Text style={styles.tapText}>{t('tap-to-join')}</Text>
+                </View>
+            )}
+        </Pressable>
+    );
+};
 
 const styles = StyleSheet.create({
     card: {
-        flex: 1,
-        borderRadius: 16,
-        overflow: 'hidden',
+        backgroundColor: colors.backgroundCard,
+        borderRadius: borderRadius.lg,
+        padding: spacing.md,
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingBottom: 16, 
+        borderWidth: 1,
+        borderColor: colors.surfaceBorder,
+        position: 'relative',
+        minHeight: 180,
     },
-    cardHeader: {
-        height: 8,
-        width: '100%',
+    cardPressed: {
+        backgroundColor: colors.surfaceLight,
+        transform: [{ scale: 0.98 }],
     },
-    cardContainer: {
-        borderRadius: 16,
-        overflow: 'hidden',
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
+    ribbon: {
+        position: 'absolute',
+        top: spacing.sm,
+        right: spacing.sm,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        backgroundColor: colors.coins,
+        paddingHorizontal: spacing.sm,
+        paddingVertical: 4,
+        borderRadius: borderRadius.sm,
+    },
+    ribbonText: {
+        color: colors.background,
+        fontSize: typography.fontSize.labelSmall,
+        fontWeight: typography.fontWeight.bold,
+    },
+    joinedBadge: {
+        position: 'absolute',
+        top: spacing.sm,
+        left: spacing.sm,
     },
     logoContainer: {
-        width: '80%',
-        height: '50%',
-        justifyContent: 'center',
+        width: 80,
+        height: 80,
+        borderRadius: borderRadius.md,
+        backgroundColor: colors.white,
         alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: 12,
-        padding: 10,
-        marginTop: 16,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
+        justifyContent: 'center',
+        marginTop: spacing.lg,
+        marginBottom: spacing.sm,
+        padding: spacing.sm,
     },
     logo: {
         width: '100%',
         height: '100%',
     },
-    leagueName: {
-        fontSize: 16,
-        fontWeight: 'bold',
+    name: {
+        fontSize: typography.fontSize.titleSmall,
+        fontWeight: typography.fontWeight.semibold,
+        color: colors.textPrimary,
         textAlign: 'center',
-        paddingHorizontal: 8,
-        marginTop: 8,
-        marginBottom: 8,
+        marginBottom: spacing.sm,
     },
-    memberBadge: {
-        paddingHorizontal: 16,
-        paddingVertical: 6,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        marginBottom: 12, 
+    statusBadge: {
+        backgroundColor: colors.successBg,
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.xs,
+        borderRadius: borderRadius.full,
     },
-    memberText: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: '#22c55e',
+    statusText: {
+        color: colors.success,
+        fontSize: typography.fontSize.labelSmall,
+        fontWeight: typography.fontWeight.semibold,
     },
     costContainer: {
         alignItems: 'center',
-        marginBottom: 12,
     },
     costBadge: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-    },
-    costIcon: {
-        marginLeft: 4,
+        gap: 4,
+        backgroundColor: colors.coinsBg,
+        paddingHorizontal: spacing.sm,
+        paddingVertical: spacing.xs,
+        borderRadius: borderRadius.full,
     },
     costText: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: '#f59e0b',
+        color: colors.coins,
+        fontSize: typography.fontSize.labelSmall,
+        fontWeight: typography.fontWeight.bold,
     },
-    joinText: {
-        fontSize: 10,
-        color: '#6b7280',
-        marginTop: 4,
+    tapText: {
+        color: colors.textMuted,
+        fontSize: typography.fontSize.labelSmall,
+        marginTop: spacing.xs,
     },
-    prizeRibbon: {
-        position: 'absolute',
-        top: 12,
-        right: 0,
-        zIndex: 10,
-    },
-    ribbonContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#f59e0b',
-        paddingVertical: 4,
-        paddingHorizontal: 8,
-        paddingRight: 12,
-        borderTopLeftRadius: 8,
-        borderBottomLeftRadius: 8,
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-    },
-    ribbonTail: {
-        position: 'absolute',
-        right: 0,
-        bottom: -6,
-        width: 0,
-        height: 0,
-        backgroundColor: 'transparent',
-        borderStyle: 'solid',
-        borderRightWidth: 6,
-        borderTopWidth: 6,
-        borderRightColor: 'transparent',
-        borderTopColor: '#d97706',
-        transform: [{ rotate: '180deg' }],
-    },
-    prizeText: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: 'white',
-        marginLeft: 4,
-    },
-})
+});

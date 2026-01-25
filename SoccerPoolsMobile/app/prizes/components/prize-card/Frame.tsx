@@ -1,25 +1,21 @@
 import { PropsWithChildren } from 'react';
-import { StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, StyleSheet } from 'react-native';
+import { colors, borderRadius } from '../../../../theme';
 
 type Props = PropsWithChildren<{ style?: any }>;
 
 export default function Frame({ style, children }: Props) {
-  return (
-    <LinearGradient
-      colors={['#f7fafc', '#eef2f7']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={[styles.frame, style]}
-    >
-      {children}
-    </LinearGradient>
-  );
+    return (
+        <View style={[styles.frame, style]}>
+            {children}
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  frame: {
-    borderRadius: 22,
-    padding: 2,
-  },
+    frame: {
+        borderRadius: borderRadius.lg,
+        padding: 2,
+        backgroundColor: colors.surfaceBorder,
+    },
 });

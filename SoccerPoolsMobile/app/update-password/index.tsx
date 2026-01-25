@@ -1,20 +1,21 @@
 import { useState } from 'react';
-import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
-import { MAIN_COLOR } from '../../constants';
-import CustomButton from '../../components/CustomButton';
-import CustomInputSign from '../../components/CustomInputSign';
+import { useTranslation } from 'react-i18next';
+import { Banner } from 'components/ads/Ads';
+import { useBreakpoint } from 'hooks/useBreakpoint';
+import { ThemedInput, ThemedButton, ThemedLoader } from '../../components/ui';
+import { colors, spacing, typography } from '../../theme';
 import { getToken } from '../../utils/storeToken';
 import handleError from '../../utils/handleError';
 import { editPassword } from '../../services/authService';
-import { useTranslation } from 'react-i18next';
-import { Banner } from 'components/ads/Ads';
 
 export default function UpdatePassword({}) {
     const { t } = useTranslation();
     const [oldPassword, setOldPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { isLG } = useBreakpoint();
     const toast: ToastType = useToast();
 
     const updatePassword = async () => {
@@ -38,26 +39,36 @@ export default function UpdatePassword({}) {
                 {t('update-your-password')}
             </Text>
 
-            <CustomInputSign
-                placeholder={t('current-password')}
-                value={oldPassword}
-                setValue={setOldPassword}
-                isSecureTextEntry={true}
-            />
+            <View style={{width: isLG ? '60%' : '85%', marginHorizontal: 'auto' }}>
+                <ThemedInput
+                    placeholder={t('current-password')}
+                    label={t('current-password')}
+                    value={oldPassword}
+                    setValue={setOldPassword}
+                    isSecureTextEntry={true}
+                />
 
-            <CustomInputSign
-                placeholder={t('new-password')}
-                value={newPassword}
-                setValue={setNewPassword}
-                isSecureTextEntry={true}
-            />
-
+                <ThemedInput
+                    placeholder={t('new-password')}
+                    label={t('new-password')}
+                    value={newPassword}
+                    setValue={setNewPassword}
+                    isSecureTextEntry={true}
+                />    
+            </View>
+            
             {
                 isLoading
                 ?
-                <ActivityIndicator size='large' color='#0000ff' />
+                <ThemedLoader />
                 :
-                <CustomButton callable={updatePassword} btnText={t('update-password')} btnColor='#2F2766' />
+                <View style={{ width: isLG ? '60%' : '85%', marginHorizontal: 'auto' }}>
+                    <ThemedButton 
+                        onPress={updatePassword} 
+                        label={t('update-password')} 
+                        variant="secondary" 
+                    />    
+                </View>
             }
 
             <Banner bannerId={process.env.UPDATE_PASSWORD_BANNER_ID} />
@@ -67,22 +78,22 @@ export default function UpdatePassword({}) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: MAIN_COLOR,
+        backgroundColor: colors.primaryDarker,
         height: '100%',
         width: '100%',
         flex: 1,
         marginHorizontal: 'auto',
-        paddingTop: 50,
-        paddingHorizontal: 10,
+        paddingTop: spacing.xxxl,
+        paddingHorizontal: spacing.sm,
         paddingVertical: 0,
         borderRadius: 6
     },
     editTxt: {
-        color: '#fff',
-        fontSize: 26,
-        fontWeight: 'bold',
-        marginHorizontal: 20,
+        color: colors.white,
+        fontSize: typography.fontSize.displaySmall,
+        fontWeight: typography.fontWeight.bold,
+        marginHorizontal: spacing.xl,
         textAlign: 'center',
-        marginBottom: 40
+        marginBottom: spacing.xxxl
     }
-})
+});

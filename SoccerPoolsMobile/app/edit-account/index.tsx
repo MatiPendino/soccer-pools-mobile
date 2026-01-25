@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Link, Router } from 'expo-router';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { useRouter } from 'expo-router';
-import { MAIN_COLOR } from '../../constants';
-import CustomInputSign from '../../components/CustomInputSign';
-import CustomButton from '../../components/CustomButton';
+import { Banner } from 'components/ads/Ads';
+import { useBreakpoint } from 'hooks/useBreakpoint';
+import { ThemedInput, ThemedButton, ThemedLoader } from '../../components/ui';
+import { colors, spacing, typography } from '../../theme';
 import { UserEditableProps } from '../../types';
 import handleError from '../../utils/handleError';
-import { useTranslation } from 'react-i18next';
-import { Banner } from 'components/ads/Ads';
 import ImageFormComponent from '../../components/ImageFormComponent';
 import TopBar from '../../components/TopBar';
 import { useUser, useUpdateUser, useDeleteUser } from '../../hooks/useUser';
 
 export default function EditAccount({}) {
     const { t } = useTranslation();
+    const { isLG } = useBreakpoint();
     const toast: ToastType = useToast();
     const router: Router = useRouter();
 
@@ -66,8 +67,6 @@ export default function EditAccount({}) {
         });
     }
 
-    //const isLoading = isUserLoading;
-
     return (
         <ScrollView style={styles.container}>
             <TopBar text={t('edit-your-account')} url='/home' />
@@ -79,63 +78,71 @@ export default function EditAccount({}) {
             }
 
             {userInfo && (
-                <>
-                    <CustomInputSign
+                <View style={{width: isLG ? '60%' : '85%', marginHorizontal: 'auto' }}>
+                    <ThemedInput
                         placeholder={t('username')}
+                        label={t('username')}
                         value={isLoading ? '...' : userInfo.username}
                         setValue={(text) => setUserInfo(prev => ({ ...prev, username: text }))}
                         isCapitalized={true}
                     />
 
-                    <CustomInputSign
+                    <ThemedInput
                         placeholder={t('first-name')}
+                        label={t('first-name')}
                         value={isLoading ? '...' : userInfo.name}
                         setValue={(text) => setUserInfo(prev => ({ ...prev, name: text }))}
                         isCapitalized={true}
                     />
 
-                    <CustomInputSign
+                    <ThemedInput
                         placeholder={t('last-name')}
+                        label={t('last-name')}
                         value={isLoading ? '...' : userInfo.last_name}
                         setValue={(text) => setUserInfo(prev => ({ ...prev, last_name: text }))}
                         isCapitalized={true}
                     />
 
-                    <CustomInputSign
+                    <ThemedInput
                         placeholder={t('email')}
+                        label={t('email')}
                         value={isLoading ? '...' : userInfo.email}
                         setValue={(text) => setUserInfo(prev => ({ ...prev, email: text }))}
                         inputMode='email'
                     />
 
-                    <CustomInputSign
+                    <ThemedInput
                         placeholder={t('instagram-username-optional')}
+                        label={t('instagram-username-optional')}
                         value={isLoading ? '...' : userInfo.instagram_username}
                         setValue={
                             (text) => setUserInfo(prev => ({ ...prev, instagram_username: text }))
                         }
                     />
 
-                    <CustomInputSign
+                    <ThemedInput
                         placeholder={t('twitter-username-optional')}
+                        label={t('twitter-username-optional')}
                         value={isLoading ? '...' : userInfo.twitter_username}
                         setValue={
                             (text) => setUserInfo(prev => ({ ...prev, twitter_username: text }))
                         }
                     />
-                </>
+                </View>
             )}
 
             {
                 (isLoading || isUpdating)
                 ?
-                <ActivityIndicator size='large' color='#0000ff' />
+                <ThemedLoader />
                 :
-                <CustomButton 
-                    callable={editAccount} 
-                    btnText={t('update-account')} 
-                    btnColor='#2F2766' 
-                />
+                <View style={{ width: isLG ? '60%' : '85%', marginHorizontal: 'auto' }}>
+                    <ThemedButton
+                        onPress={editAccount}
+                        label={t('update-account')}
+                        variant="secondary"
+                    />    
+                </View>
             }
 
             <Link href='update-password' style={styles.updatePasswordTxt}>
@@ -145,13 +152,15 @@ export default function EditAccount({}) {
             {
                 (isLoading || isDeleting)
                 ?
-                <ActivityIndicator size='large' color='#0000ff' />
+                <ThemedLoader />
                 :
-                <CustomButton 
-                    callable={removeAccount} 
-                    btnText={t('remove-account')} 
-                    btnColor='#C52424' 
-                />
+                <View style={{width: isLG ? '60%' : '85%', marginHorizontal: 'auto' }}>
+                    <ThemedButton
+                        onPress={removeAccount}
+                        label={t('remove-account')}
+                        variant="danger"
+                    />
+                </View>
             }
 
             <Banner bannerId={process.env.UPDATE_ACCOUNT_BANNER_ID} />
@@ -161,7 +170,7 @@ export default function EditAccount({}) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: MAIN_COLOR,
+        backgroundColor: colors.primaryDarker,
         height: '100%',
         width: '100%',
         flex: 1,
@@ -169,22 +178,22 @@ const styles = StyleSheet.create({
         paddingVertical: 0,
     },
     editTxt: {
-        color: '#fff',
-        fontSize: 26,
-        fontWeight: 'bold',
-        marginHorizontal: 50,
+        color: colors.white,
+        fontSize: typography.fontSize.displaySmall,
+        fontWeight: typography.fontWeight.bold,
+        marginHorizontal: spacing.xxxl,
         textAlign: 'center',
-        marginBottom: 40
+        marginBottom: spacing.xxxl
     },
     updatePasswordTxt: {
-        color: '#fff',
-        fontSize: 15,
-        fontWeight: '500',
+        color: colors.white,
+        fontSize: typography.fontSize.bodyLarge,
+        fontWeight: typography.fontWeight.medium,
         textAlign: 'center',
-        marginBottom: 70
+        marginBottom: 70,
     },
     imageContainer: {
         marginHorizontal: 'auto',
-        marginTop: 15
+        marginTop: spacing.lg
     },
 });

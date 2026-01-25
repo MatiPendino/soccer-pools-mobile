@@ -1,27 +1,28 @@
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView, View } from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { showOpenAppAd } from 'components/ads/Ads';
+import RoundsPicker from 'components/RoundPicker';
 import SaveChanges from '../../../modals/SaveChanges';
-import { MAIN_COLOR } from '../../../constants';
+import { colors, spacing, typography, borderRadius } from '../../../theme';
 import { getToken } from '../../../utils/storeToken';
-import MatchResult from '../components/MatchResult';
-import { ResultsProvider, useResultsContext } from '../contexts/ResultsContext';
 import { MatchResultProps, Slug } from '../../../types';
 import { getNextRoundId } from '../../../utils/getNextRound';
 import handleError from '../../../utils/handleError';
 import { registerPush, getFCMToken } from '../../../services/pushNotificationService';
 import { getWrapper } from '../../../utils/getWrapper';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
-import RoundsPicker from 'components/RoundPicker';
 import { useUserLeague, useRounds } from '../../../hooks/useLeagues';
 import { useMatchResults, useUpdateMatchResults } from '../../../hooks/useResults';
+import MatchResult from '../components/MatchResult';
+import { ResultsProvider, useResultsContext } from '../contexts/ResultsContext';
 
-function Results({}) {
+function Results() {
     const { t } = useTranslation();
     const { isXL } = useBreakpoint();
     const toast: ToastType = useToast();
@@ -32,7 +33,7 @@ function Results({}) {
 
     const [activeRoundId, setActiveRoundId] = useState<number | null>(null);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const [pendingRoundSwap, setPendingRoundSwap] = useState<{ id: number, slug: Slug } | null>(null);
+    const [pendingRoundSwap, setPendingRoundSwap] = useState<{ id: number; slug: Slug } | null>(null);
 
     const { arePredictionsSaved, setArePredictionsSaved } = useResultsContext();
 
@@ -67,7 +68,7 @@ function Results({}) {
             },
             onError: (error) => {
                 toast.show(handleError(error.message), { type: 'danger' });
-            }
+            },
         });
     };
 
@@ -114,23 +115,25 @@ function Results({}) {
     const isLoading = isLeagueLoading || isRoundsLoading;
 
     if (isLoading) {
-        return <ActivityIndicator size='large' color='#0000ff' />
-    };
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={colors.accent} />
+            </View>
+        );
+    }
 
     return (
         <Wrapper style={styles.container}>
-            {
-                isLoading
-                    ?
-                    <ShimmerPlaceholder style={styles.roundsListLoading} />
-                    :
-                    <RoundsPicker
-                        rounds={rounds || []}
-                        handleRoundSwap={swapRoundMatchResults}
-                        activeRoundId={activeRoundId}
-                        isResultsTab={true}
-                    />
-            }
+            {isLoading ? (
+                <ShimmerPlaceholder style={styles.roundsListLoading} />
+            ) : (
+                <RoundsPicker
+                    rounds={rounds || []}
+                    handleRoundSwap={swapRoundMatchResults}
+                    activeRoundId={activeRoundId}
+                    isResultsTab={true}
+                />
+            )}
 
             <SaveChanges
                 visible={modalVisible}
@@ -149,106 +152,102 @@ function Results({}) {
                 }}
             />
 
-            {
-                isMatchesLoading
-                ?
-                    <ActivityIndicator style={{paddingBottom: 250}} size='large' color='#fff' />
-                :
-                    <ScrollView 
-                        contentContainerStyle={[
-                            styles.matchResultsContainer, {
-                                marginTop: isXL ? 20 : 0,
-                                width: isXL ? '50%' : '100%'
-                            }
-                        ]} 
-                        showsVerticalScrollIndicator={true}
-                    >
-                        {localMatchResults.map((matchResult) => (
-                            <MatchResult
-                                key={matchResult.id}
-                                currentMatchResult={matchResult} 
-                                matchResults={localMatchResults}
-                                setMatchResults={setLocalMatchResults}
-                            />
-                        ))}
-                    </ScrollView>
-            }
+            {isMatchesLoading ? (
+                <View style={styles.matchesLoading}>
+                    <ActivityIndicator size="large" color={colors.accent} />
+                </View>
+            ) : (
+                <ScrollView
+                    contentContainerStyle={[
+                        styles.matchResultsContainer,
+                        { width: isXL ? '60%' : '100%' },
+                    ]}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {localMatchResults.map((matchResult) => (
+                        <MatchResult
+                            key={matchResult.id}
+                            currentMatchResult={matchResult}
+                            matchResults={localMatchResults}
+                            setMatchResults={setLocalMatchResults}
+                        />
+                    ))}
+                </ScrollView>
+            )}
 
+            {/* Floating Save Button */}
             <Pressable
-                style={styles.saveBtn}
-                onPress={() => !isSaving ? savePredictions() : {}}
+                style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
+                onPress={() => !isSaving && savePredictions()}
             >
-                {
-                    isSaving
-                    ?
-                    <ActivityIndicator color='#fff' size='small' />
-                    :
-                    <Text style={styles.saveTxt}>{t('save-predictions')}</Text>
-                }
+                {isSaving ? (
+                    <ActivityIndicator color={colors.background} size="small" />
+                ) : (
+                    <>
+                        <Ionicons name="checkmark-circle" size={20} color={colors.background} />
+                        <Text style={styles.saveButtonText}>{t('save-predictions')}</Text>
+                    </>
+                )}
             </Pressable>
         </Wrapper>
-    )
+    );
 }
 
-export default function ResultsContextWrapper({}) {
+export default function ResultsContextWrapper() {
     return (
         <ResultsProvider>
             <Results />
         </ResultsProvider>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: MAIN_COLOR,
-        flex: 1
+        backgroundColor: colors.background,
+        flex: 1,
     },
-    roundsListLoading: { 
-        width: '100%', 
-        height: 50, 
-        marginBottom: 30 
+    loadingContainer: {
+        flex: 1,
+        backgroundColor: colors.background,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    leaguesContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingTop: 7,
-        backgroundColor: '#d9d9d9',
+    roundsListLoading: {
+        width: '100%',
         height: 50,
-        marginBottom: 15
+        marginBottom: spacing.lg,
     },
-    roundBtn: {
-        marginHorizontal: 15,
-        marginVertical: 0
-    },
-    roundTxt: {
-        fontWeight: '700',
-        fontSize: 17
-    },
-    activeRoundBtn: {
-        borderBottomColor: MAIN_COLOR,
-        borderBottomWidth: 5,
-    },
-    activeRoundTxt: {
-        color: MAIN_COLOR
+    matchesLoading: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingBottom: 100,
     },
     matchResultsContainer: {
-        paddingBottom: 70,
+        paddingBottom: 100,
+        paddingHorizontal: spacing.md,
         marginHorizontal: 'auto',
-        flexGrow: 1
+        flexGrow: 1,
     },
-    saveBtn: {
-        width: '100%',
-        backgroundColor: '#2F2766',
-        paddingVertical: 20,
+    saveButton: {
         position: 'absolute',
-        left: 0,
-        bottom: 0
+        bottom: spacing.lg,
+        left: spacing.lg,
+        right: spacing.lg,
+        backgroundColor: colors.accent,
+        paddingVertical: spacing.md,
+        borderRadius: borderRadius.md,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: spacing.sm,
     },
-    saveTxt: {
-        textAlign: 'center',
-        fontWeight: '600',
-        color: 'white',
-        fontSize: 18
-    }
-})
+    saveButtonPressed: {
+        opacity: 0.8,
+    },
+    saveButtonText: {
+        color: colors.background,
+        fontSize: typography.fontSize.bodyMedium,
+        fontWeight: typography.fontWeight.semibold,
+    },
+});

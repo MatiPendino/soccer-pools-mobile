@@ -126,3 +126,8 @@ export interface PrizeProps {
     description?: string;
     coins_cost: number;
 };
+
+export interface ContinentProps {
+    id: number;
+    name: string;
+};

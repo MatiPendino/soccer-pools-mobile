@@ -1,15 +1,15 @@
 import { Router, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View, Text, Pressable, Platform, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Entypo } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { ActivityIndicator } from 'react-native-paper';
-import { MAIN_COLOR } from '../../constants';
-import PendingInviteCard from './components/PendingInviteCard';
-import { useTranslation } from 'react-i18next';
+import { Banner } from 'components/ads/Ads';
+import { colors } from '../../theme';
 import { getWrapper } from '../../utils/getWrapper';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { Banner } from 'components/ads/Ads';
 import { usePendingTournamentUsers } from '../../hooks/useTournaments';
+import PendingInviteCard from './components/PendingInviteCard';
 
 export default function PendingInvites() {
     const { t } = useTranslation();
@@ -35,7 +35,7 @@ export default function PendingInvites() {
             {
                 isLoading
                 ?
-                    <ActivityIndicator size='large' color='#0000ff' />
+                    <ActivityIndicator size='large' color={colors.primary} />
                 :
                     pendingTournamentUsers && pendingTournamentUsers.length > 0
                     ?
@@ -69,11 +69,11 @@ export default function PendingInvites() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: MAIN_COLOR,
+        backgroundColor: colors.primaryDarker,
         flex: 1,
     },
     topBar: {
-        backgroundColor: '#2F2766',
+        backgroundColor: colors.primaryDark,
         flexDirection: 'row',
         paddingVertical: 15,
         marginTop: Platform.OS === 'web' ? 0 : 20,
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5
     },
     topBarTxt: {
-        color: 'white',
+        color: colors.white,
         fontSize: 20,
         fontWeight: '500',
         marginStart: 5
@@ -94,9 +94,9 @@ const styles = StyleSheet.create({
         marginVertical: 'auto'
     },
     noPendingInvitesTxt: {
-        color: 'white',
+        color: colors.white,
         fontSize: 23,
         fontWeight: '600',
         textAlign: 'center'
     }
-})
+});
