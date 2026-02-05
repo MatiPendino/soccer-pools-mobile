@@ -42,10 +42,12 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     },
     resultTxt: {
-        fontSize: 16
+        fontSize: 16,
+        color: 'white',
     },
     resultNumbersTxt: {
-        fontSize: 16
+        fontSize: 16,
+        color: 'white',
     },
     forecastContainer: {
         backgroundColor: '#D9D9D9',
