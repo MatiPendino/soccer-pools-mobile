@@ -131,3 +131,90 @@ export interface ContinentProps {
     id: number;
     name: string;
 };
+
+export type PaymentStatus = 'pending' | 'approved' | 'rejected' | 'cancelled' | 'refunded';
+
+export type PaymentType = 'round' | 'league';
+
+export interface PaidLeagueConfigProps {
+    id: number;
+    league: {
+        id: number;
+        name: string;
+        slug: Slug;
+        logo: string;
+    };
+    is_paid_mode_enabled: boolean;
+    round_price_ars: string;
+    league_price_ars: string;
+    start_round_number: number;
+};
+
+export interface PaymentProps {
+    id: number;
+    payment_type: PaymentType;
+    status: PaymentStatus;
+    gross_amount_ars: string;
+    league_name: string;
+    round_name: string | null;
+    external_reference: string;
+    creation_date: ISO8601DateString;
+};
+
+export interface PaymentPreferenceProps {
+    payment_id: number;
+    external_reference: string;
+    init_point: string;
+    sandbox_init_point?: string;
+    amount: string;
+    rounds_count?: number;
+};
+
+export interface PaidMatchResultProps {
+    id: number;
+    match_id: number;
+    team_1_name: string;
+    team_2_name: string;
+    team_1_badge_url: string;
+    team_2_badge_url: string;
+    goals_team_1: number | null;
+    goals_team_2: number | null;
+    points: number;
+    is_exact: boolean;
+    match_start_date: ISO8601DateString;
+};
+
+export interface PaidBetRoundProps {
+    id: number;
+    username: string;
+    profile_image: string;
+    points: number;
+    exact_results: number;
+    round_id: number;
+    round_name: string;
+    winner_first: boolean;
+    winner_second: boolean;
+    winner_third: boolean;
+    paid_match_results?: PaidMatchResultProps[];
+};
+
+export interface PaidPrizePoolProps {
+    id: number;
+    league_name: string;
+    round_name: string | null;
+    is_league_pool: boolean;
+    total_pool_ars: string;
+    distributed: boolean;
+    participants_count?: number;
+};
+
+export interface PaidLeaderboardEntryProps {
+    rank: number;
+    username: string;
+    profile_image: string | null;
+    points: number;
+    exact_results: number;
+    winner_first: boolean;
+    winner_second: boolean;
+    winner_third: boolean;
+};

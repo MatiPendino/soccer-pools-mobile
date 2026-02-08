@@ -11,9 +11,11 @@ import { toCapitalCase } from 'utils/helper';
 import { FACEBOOK_URL, INSTAGRAM_URL, TWITTER_URL } from '../../constants';
 import CoinsDisplay from '../../components/CoinsDisplay';
 import RateAppModal from '../../components/RateAppModal';
+import ModeSwitcher from '../../components/ModeSwitcher';
 import handleShare from '../../utils/handleShare';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { useFullUser } from '../../hooks/useUser';
+import { useGameMode } from '../../contexts/GameModeContext';
 import { colors, spacing, typography, borderRadius } from '../../theme';
 
 interface NavItemProps {
@@ -44,6 +46,7 @@ export default function HomeLayout() {
     const { t } = useTranslation();
     const toast = useToast();
     const router = useRouter();
+    const { isRealMode, isFreeMode, clearPaidState } = useGameMode();
 
     const { data: user, isLoading } = useFullUser();
 
@@ -51,6 +54,7 @@ export default function HomeLayout() {
         try {
             await removeToken();
             await AsyncStorage.removeItem('FCMToken');
+            clearPaidState();
             toast.show(t('session-finished'), { type: 'success' });
             router.replace('/');
         } catch {
@@ -84,7 +88,9 @@ export default function HomeLayout() {
                 headerLeft: isLG ? () => null : undefined,
                 headerRight: () => (
                     <View style={styles.headerRight}>
-                        <CoinsDisplay coins={isLoading ? '...' : (user?.coins || 0)} />
+                        {!isRealMode && (
+                            <CoinsDisplay coins={isLoading ? '...' : (user?.coins || 0)} />
+                        )}
                         <RateAppModal />
                     </View>
                 ),
@@ -107,40 +113,48 @@ export default function HomeLayout() {
                         </Link>
                     </View>
 
+                    {/* Game Mode Switcher (Web Only) */}
+                    <ModeSwitcher />
+
                     {/* Navigation Items */}
                     <View style={styles.navSection}>
-                        <NavItem 
-                            icon="home-outline" 
-                            label={t('home')} 
-                            onPress={() => router.push('/home')} 
+                        <NavItem
+                            icon="home-outline"
+                            label={t('home')}
+                            onPress={() => router.push('/home')}
                         />
-                        <NavItem 
-                            icon="game-controller-outline" 
-                            label={t('leagues')} 
-                            onPress={() => router.push('/select-league')} 
+                        <NavItem
+                            icon="game-controller-outline"
+                            label={t('leagues')}
+                            onPress={() => isRealMode
+                                ? router.push('/select-paid-league')
+                                : router.push('/select-league')
+                            }
                         />
-                        {Platform.OS === 'web' && (
-                            <NavItem 
-                                icon="gift-outline" 
-                                label={toCapitalCase(t('prizes'))} 
-                                onPress={() => router.push('/prizes?backto=home')} 
+                        {Platform.OS === 'web' && isFreeMode && (
+                            <NavItem
+                                icon="gift-outline"
+                                label={toCapitalCase(t('prizes'))}
+                                onPress={() => router.push('/prizes?backto=home')}
                             />
                         )}
-                        <NavItem 
-                            icon="person-add-outline" 
-                            label={t('referrals')} 
-                            onPress={() => router.push(`/home/referrals?referralCode=${user?.referral_code}`)} 
-                        />
-                        <NavItem 
-                            icon="help-circle-outline" 
-                            label={t('how-to-play')} 
-                            onPress={() => router.push('/home/how-to-play')} 
+                        {isFreeMode && (
+                            <NavItem
+                                icon="person-add-outline"
+                                label={t('referrals')}
+                                onPress={() => router.push(`/home/referrals?referralCode=${user?.referral_code}`)}
+                            />
+                        )}
+                        <NavItem
+                            icon="help-circle-outline"
+                            label={t('how-to-play')}
+                            onPress={() => router.push('/home/how-to-play')}
                         />
                         {Platform.OS === 'android' && (
-                            <NavItem 
-                                icon="share-social-outline" 
-                                label={t('share')} 
-                                onPress={() => handleShare()} 
+                            <NavItem
+                                icon="share-social-outline"
+                                label={t('share')}
+                                onPress={() => handleShare()}
                             />
                         )}
                     </View>
