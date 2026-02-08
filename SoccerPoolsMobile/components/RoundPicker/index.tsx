@@ -12,10 +12,13 @@ interface Props {
     handleRoundSwap: (roundId: number, roundSlug: Slug) => void;
     activeRoundId: number | null;
     isResultsTab?: boolean;
+    isRealMode?: boolean;
+    roundPriceArs?: string | null;
 }
 
 export default function RoundsPicker({
     rounds, handleRoundSwap, activeRoundId, isResultsTab = false,
+    isRealMode = false, roundPriceArs = null,
 }: Props) {
     const [open, setOpen] = useState<boolean>(false);
 
@@ -49,7 +52,12 @@ export default function RoundsPicker({
     return (
         <View style={styles.wrapper}>
             <ArrowButton onPress={onPrev} direction="left" disabled={atStart} />
-            <CurrentRoundButton setOpen={setOpen} currentName={current.name} />
+            <CurrentRoundButton
+                setOpen={setOpen}
+                currentName={current.name}
+                isRealMode={isRealMode}
+                roundPriceArs={roundPriceArs}
+            />
             <ArrowButton onPress={onNext} direction="right" disabled={atEnd} />
             <RoundListModal
                 setOpen={setOpen}
@@ -57,6 +65,8 @@ export default function RoundsPicker({
                 open={open}
                 visibleRounds={visibleRounds}
                 currentIndex={currentIndex}
+                isRealMode={isRealMode}
+                roundPriceArs={roundPriceArs}
             />
         </View>
     );

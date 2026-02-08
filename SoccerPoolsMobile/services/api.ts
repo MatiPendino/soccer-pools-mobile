@@ -64,17 +64,17 @@ api.interceptors.response.use(
                 await AsyncStorage.setItem('n_retries', nRetries.toString());
 
                 if (nRetries > 3) {
-                    console.log('Max retries reached');
+                    if (__DEV__) console.log('Max retries reached');
                     await AsyncStorage.removeItem('accessToken');
                     await AsyncStorage.removeItem('refreshToken');
                     await AsyncStorage.removeItem('n_retries');
                     return Promise.reject(error);
                 }
                 const newAccessToken = await refreshToken();
-                axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+                await AsyncStorage.setItem('n_retries', '0');
                 return api(originalRequest);
             } catch (refreshError) {
-                console.log('Token refresh failed', refreshError);
+                if (__DEV__) console.log('Token refresh failed', refreshError);
                 await AsyncStorage.removeItem('accessToken');
                 await AsyncStorage.removeItem('refreshToken');
                 return Promise.reject(refreshError);

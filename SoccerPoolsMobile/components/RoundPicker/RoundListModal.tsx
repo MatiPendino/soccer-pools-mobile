@@ -1,4 +1,6 @@
-import { Modal, Text, Pressable, View, StyleSheet, FlatList, Platform } from 'react-native';
+import { 
+    Modal, Text, Pressable, View, StyleSheet, FlatList, Platform
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { RoundProps } from '../../types';
@@ -10,10 +12,12 @@ interface Props {
     open: boolean;
     visibleRounds: RoundProps[];
     currentIndex: number;
+    isRealMode?: boolean;
+    roundPriceArs?: string | null;
 }
 
 export default function RoundListModal({
-    setOpen, onChangeRound, open, visibleRounds, currentIndex
+    setOpen, onChangeRound, open, visibleRounds, currentIndex, isRealMode=false,
 }: Props) {
     const { t } = useTranslation();
 
@@ -54,20 +58,23 @@ export default function RoundListModal({
                                 style={({ pressed }) => [
                                     styles.item,
                                     isActive && styles.itemActive,
+                                    isRealMode && isActive && styles.itemActiveReal,
                                     pressed && !isActive && styles.itemPressed
                                 ]}
                             >
-                                <Text
-                                    numberOfLines={1}
-                                    style={[styles.itemTxt, isActive && styles.itemTxtActive]}
-                                >
-                                    {item.name}
-                                </Text>
+                                <View style={styles.itemTextContainer}>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={[styles.itemTxt, isActive && styles.itemTxtActive]}
+                                    >
+                                        {item.name}
+                                    </Text>
+                                </View>
                                 {isActive && (
-                                    <Ionicons 
-                                        name="checkmark-circle" 
-                                        size={20} 
-                                        color={colors.accent} 
+                                    <Ionicons
+                                        name="checkmark-circle"
+                                        size={20}
+                                        color={isRealMode ? colors.coins : colors.accent}
                                     />
                                 )}
                             </Pressable>
@@ -133,8 +140,17 @@ const styles = StyleSheet.create({
     itemActive: {
         backgroundColor: colors.accentMuted,
     },
+    itemActiveReal: {
+        backgroundColor: colors.coinsBg,
+    },
     itemPressed: {
         backgroundColor: colors.surfaceLight,
+    },
+    itemTextContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.xs,
+        flex: 1,
     },
     itemTxt: {
         fontSize: typography.fontSize.bodyMedium,
@@ -143,6 +159,11 @@ const styles = StyleSheet.create({
     itemTxtActive: {
         fontWeight: typography.fontWeight.semibold,
         color: colors.accent,
+    },
+    itemPriceTxt: {
+        fontSize: typography.fontSize.labelSmall,
+        color: colors.coins,
+        fontWeight: typography.fontWeight.semibold,
     },
     sep: {
         height: spacing.xs,

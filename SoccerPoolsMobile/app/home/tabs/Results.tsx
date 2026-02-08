@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import * as Sentry from '@sentry/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView, View } from 'react-native';
@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { showOpenAppAd } from 'components/ads/Ads';
 import RoundsPicker from 'components/RoundPicker';
 import SaveChanges from '../../../modals/SaveChanges';
+import PaymentRequiredModal from '../../../components/PaymentRequiredModal';
 import { colors, spacing, typography, borderRadius } from '../../../theme';
 import { getToken } from '../../../utils/storeToken';
 import { MatchResultProps, Slug } from '../../../types';
@@ -19,6 +20,7 @@ import { getWrapper } from '../../../utils/getWrapper';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 import { useUserLeague, useRounds } from '../../../hooks/useLeagues';
 import { useMatchResults, useUpdateMatchResults } from '../../../hooks/useResults';
+import { useGameMode } from '../../../contexts/GameModeContext';
 import MatchResult from '../components/MatchResult';
 import { ResultsProvider, useResultsContext } from '../contexts/ResultsContext';
 
@@ -27,22 +29,39 @@ function Results() {
     const { isXL } = useBreakpoint();
     const toast: ToastType = useToast();
     const Wrapper = getWrapper();
+    const { isRealMode, selectedPaidLeague, hasPayedForRound, addPaidRoundId } = useGameMode();
+    const { data: freeLeague, isLoading: isFreeLeagueLoading } = useUserLeague();
 
-    const { data: league, isLoading: isLeagueLoading } = useUserLeague();
+    // Determine which league to use based on mode
+    const league = isRealMode && selectedPaidLeague ? selectedPaidLeague.league : freeLeague;
+    const isLeagueLoading = isRealMode ? false : isFreeLeagueLoading;
+
     const { data: rounds, isLoading: isRoundsLoading } = useRounds(league?.id, true);
+
+    // Filter rounds based on start_round_number in REAL mode
+    const filteredRounds = useMemo(() => {
+        if (!rounds) return [];
+        if (!isRealMode || !selectedPaidLeague) return rounds;
+
+        const startRoundNumber = selectedPaidLeague.start_round_number || 1;
+        return rounds.filter((round) =>
+            round.number_round >= startRoundNumber
+        );
+    }, [rounds, isRealMode, selectedPaidLeague]);
 
     const [activeRoundId, setActiveRoundId] = useState<number | null>(null);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [paymentModalVisible, setPaymentModalVisible] = useState<boolean>(false);
     const [pendingRoundSwap, setPendingRoundSwap] = useState<{ id: number; slug: Slug } | null>(null);
 
     const { arePredictionsSaved, setArePredictionsSaved } = useResultsContext();
 
     useEffect(() => {
-        if (rounds && rounds.length > 0 && activeRoundId === null) {
-            const nextId = getNextRoundId(rounds);
+        if (filteredRounds && filteredRounds.length > 0 && activeRoundId === null) {
+            const nextId = getNextRoundId(filteredRounds);
             setActiveRoundId(nextId);
         }
-    }, [rounds]);
+    }, [filteredRounds]);
 
     const { data: serverMatchResults, isLoading: isMatchesLoading } = useMatchResults(activeRoundId);
     const { mutate: savePredictionsMutate, isPending: isSaving } = useUpdateMatchResults();
@@ -56,6 +75,12 @@ function Results() {
     }, [serverMatchResults]);
 
     const savePredictions = () => {
+        // In REAL mode, check if user has paid for this round
+        if (isRealMode && activeRoundId && !hasPayedForRound(activeRoundId)) {
+            setPaymentModalVisible(true);
+            return;
+        }
+
         savePredictionsMutate(localMatchResults, {
             onSuccess: () => {
                 toast.show(t('matches-saved-successfully'), { type: 'success' });
@@ -128,10 +153,12 @@ function Results() {
                 <ShimmerPlaceholder style={styles.roundsListLoading} />
             ) : (
                 <RoundsPicker
-                    rounds={rounds || []}
+                    rounds={filteredRounds}
                     handleRoundSwap={swapRoundMatchResults}
                     activeRoundId={activeRoundId}
                     isResultsTab={true}
+                    isRealMode={isRealMode}
+                    roundPriceArs={selectedPaidLeague?.round_price_ars}
                 />
             )}
 
@@ -151,6 +178,22 @@ function Results() {
                     setModalVisible(false);
                 }}
             />
+
+            {isRealMode && activeRoundId && (
+                <PaymentRequiredModal
+                    visible={paymentModalVisible}
+                    onClose={() => setPaymentModalVisible(false)}
+                    roundId={activeRoundId}
+                    roundName={filteredRounds?.find(r => r.id === activeRoundId)?.name}
+                />
+            )}
+
+            {isRealMode && activeRoundId && !hasPayedForRound(activeRoundId) && (
+                <View style={styles.warningCard}>
+                    <Ionicons name="alert-circle" size={20} color={colors.warning} />
+                    <Text style={styles.warningText}>{t('unpaid-round-warning')}</Text>
+                </View>
+            )}
 
             {isMatchesLoading ? (
                 <View style={styles.matchesLoading}>
@@ -177,15 +220,28 @@ function Results() {
 
             {/* Floating Save Button */}
             <Pressable
-                style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
+                style={({ pressed }) => [
+                    styles.saveButton,
+                    isRealMode && styles.saveButtonReal,
+                    pressed && styles.saveButtonPressed,
+                ]}
                 onPress={() => !isSaving && savePredictions()}
             >
                 {isSaving ? (
                     <ActivityIndicator color={colors.background} size="small" />
                 ) : (
                     <>
-                        <Ionicons name="checkmark-circle" size={20} color={colors.background} />
-                        <Text style={styles.saveButtonText}>{t('save-predictions')}</Text>
+                        <Ionicons
+                            name={isRealMode ? 'cash' : 'checkmark-circle'}
+                            size={20}
+                            color={colors.background}
+                        />
+                        <Text style={styles.saveButtonText}>
+                            {isRealMode && activeRoundId && !hasPayedForRound(activeRoundId)
+                                ? `${t('pay-to-play')}${selectedPaidLeague?.round_price_ars ? ` ($${selectedPaidLeague.round_price_ars} ARS)` : ''}`
+                                : t('save-predictions')
+                            }
+                        </Text>
                     </>
                 )}
             </Pressable>
@@ -242,8 +298,28 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         gap: spacing.sm,
     },
+    saveButtonReal: {
+        backgroundColor: colors.coins,
+    },
     saveButtonPressed: {
         opacity: 0.8,
+    },
+    warningCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.sm,
+        marginHorizontal: spacing.md,
+        marginBottom: spacing.sm,
+        padding: spacing.md,
+        backgroundColor: colors.warningBg,
+        borderLeftWidth: 4,
+        borderLeftColor: colors.warning,
+        borderRadius: borderRadius.sm,
+    },
+    warningText: {
+        color: colors.warningLight,
+        fontSize: typography.fontSize.bodySmall,
+        flex: 1,
     },
     saveButtonText: {
         color: colors.background,

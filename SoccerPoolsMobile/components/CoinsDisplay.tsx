@@ -18,7 +18,7 @@ export default function CoinsDisplay({ coins }) {
                 toast.show(t('coins-added', { coins: coins }), { type: 'success' });
             },
             onError: (error) => {
-                console.log(error);
+                if (__DEV__) console.log(error);
                 toast.show(error.message || 'Error adding coins', { type: 'danger' });
             }
         });

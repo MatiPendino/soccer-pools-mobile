@@ -10,15 +10,30 @@ interface RankedPlayerProps {
     profileImageUrl: string;
     username: string;
     points: number;
-    coinPrizes?: CoinsPrizes;
+    coinPrizes?: CoinsPrizes | null;
     exactResults: number;
+    isPaidMode?: boolean;
+    prizePoolTotal?: string | null;
 }
 
 export default function RankedPlayer({
-    index, profileImageUrl, username, points, coinPrizes, exactResults
+    index, profileImageUrl, username, points, coinPrizes, exactResults, 
+    isPaidMode=false, prizePoolTotal=null
 }: RankedPlayerProps) {
     const { isLG } = useBreakpoint();
     const { t } = useTranslation();
+
+    // Calculate actual prize amount from pool total
+    const getPrizeAmount = (position: number, poolTotal: number): number => {
+        if (position === 1) return Math.floor(poolTotal * 0.60);
+        if (position === 2) return Math.floor(poolTotal * 0.25);
+        if (position === 3) return Math.floor(poolTotal * 0.15);
+        return 0;
+    };
+
+    const prizeAmount = isPaidMode && prizePoolTotal && index <= 3
+        ? getPrizeAmount(index, parseFloat(prizePoolTotal))
+        : null;
 
     // Special styling for top 3 ranks
     const rankStyles = (() => {
@@ -103,10 +118,17 @@ export default function RankedPlayer({
                     </View>
                 </View>
 
-                {rankStyles.prize && (
+                {/* Show prize for top 3 positions */}
+                {rankStyles.showMedal && (
                     <View style={[styles.prizeContainer, { borderColor: rankStyles.prizeColor }]}>
-                        <FontAwesome5 name='coins' size={16} color='#f59e0b' />
-                        <Text style={styles.prizeTxt}>{rankStyles.prize}</Text>
+                        <FontAwesome5 name={isPaidMode ? 'dollar-sign' : 'coins'} size={16} color='#f59e0b' />
+                        {isPaidMode && prizeAmount !== null ? (
+                            <Text style={styles.prizeTxt}>
+                                {prizeAmount} ARS
+                            </Text>
+                        ) : rankStyles.prize ? (
+                            <Text style={styles.prizeTxt}>{rankStyles.prize}</Text>
+                        ) : null}
                     </View>
                 )}
             </View>

@@ -12,6 +12,7 @@ import initializeVexo from 'utils/initialize_vexo/initializeVexo';
 import { vexoWeb } from 'utils/vexoWeb';
 import { paperTheme } from '../theme/paperTheme';
 import { colors } from '../theme';
+import { GameModeProvider } from '../contexts/GameModeContext';
 import '../i18'
 
 // Sentry initialization
@@ -42,14 +43,16 @@ export default function Layout () {
     return (
         <QueryClientProvider client={queryClient}>
             <PaperProvider theme={paperTheme}>
-                <ToastProvider>
-                    <StatusBar style='light' backgroundColor={colors.primaryDarker} />
-                    <Stack
-                        screenOptions={{
-                            headerShown: false,
-                        }}
-                    />
-                </ToastProvider>
+                <GameModeProvider>
+                    <ToastProvider>
+                        <StatusBar style='light' backgroundColor={colors.primaryDarker} />
+                        <Stack
+                            screenOptions={{
+                                headerShown: false,
+                            }}
+                        />
+                    </ToastProvider>
+                </GameModeProvider>
             </PaperProvider>
         </QueryClientProvider>
     )
