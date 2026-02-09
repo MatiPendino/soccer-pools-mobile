@@ -75,11 +75,11 @@ export default function LandingScreen() {
             >
                 {/* Navigation Bar */}
                 <View style={[styles.navbar, isLG && styles.navbarLG]}>
-                    <View style={[styles.navBrand, {paddingTop: isLG ? 0 : 20}]}>
+                    <View style={styles.navBrand}>
                         <View style={styles.navLogoContainer}>
                             <Ionicons name="football" size={20} color={colors.accent} />
                         </View>
-                        <Text style={styles.navBrandText}>ProdeGol</Text>
+                        <Text style={styles.navBrandText}>ProdeApp</Text>
                     </View>
 
                     {isLG && (
@@ -89,7 +89,7 @@ export default function LandingScreen() {
                             </Link>
                             <Link href={`/create-account?referralCode=${referralCode || ''}`}>
                                 <View style={styles.navRegisterBtn}>
-                                    <Text style={styles.navRegisterText}>{t('register')}</Text>
+                                    <Text style={styles.navRegisterText}>{t('register').toUpperCase()}</Text>
                                 </View>
                             </Link>
                         </View>
@@ -137,7 +137,7 @@ export default function LandingScreen() {
                                         style={[
                                             styles.ctaButton, 
                                             styles.ctaSecondary, 
-                                            { justifyContent: 'center' }
+                                            { justifyContent: 'center', textAlign: 'center' }
                                         ]} 
                                         href={`/login?referralCode=${referralCode || ''}`}
                                     >
