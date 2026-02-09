@@ -25,9 +25,9 @@ export default function RankedPlayer({
 
     // Calculate actual prize amount from pool total
     const getPrizeAmount = (position: number, poolTotal: number): number => {
-        if (position === 1) return Math.floor(poolTotal * 0.60);
-        if (position === 2) return Math.floor(poolTotal * 0.25);
-        if (position === 3) return Math.floor(poolTotal * 0.15);
+        if (position === 1) return Math.floor(poolTotal * 0.70);
+        if (position === 2) return Math.floor(poolTotal * 0.20);
+        if (position === 3) return Math.floor(poolTotal * 0.10);
         return 0;
     };
 
