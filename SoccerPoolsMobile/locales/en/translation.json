@@ -238,5 +238,7 @@
     "switch-to-free": "Switch to FREE mode",
     "switch-to-real": "Switch to REAL mode",
     "play": "Play",
-    "unpaid-round-warning": "Your predictions will not count until you pay for this round. Once the round starts, you cannot pay to play it"
+    "unpaid-round-warning": "Your predictions will not count until you pay for this round. Once the round starts, you cannot pay to play it",
+    "choose-avatar": "Choose Avatar",
+    "choose-from-device": "Choose from device"
 }

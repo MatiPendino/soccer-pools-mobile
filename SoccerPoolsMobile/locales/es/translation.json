@@ -238,5 +238,7 @@
     "switch-to-free": "Cambiar a modo GRATIS",
     "switch-to-real": "Cambiar a modo REAL",
     "play": "Jugar",
-    "unpaid-round-warning": "Tus predicciones no serán consideradas hasta que pagues esta ronda. Una vez iniciada la ronda, no puedes pagar por jugarla"
+    "unpaid-round-warning": "Tus predicciones no serán consideradas hasta que pagues esta ronda. Una vez iniciada la ronda, no puedes pagar por jugarla",
+    "choose-avatar": "Elegir Avatar",
+    "choose-from-device": "Elegir del dispositivo"
 }

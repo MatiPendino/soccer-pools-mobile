@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Platform, StyleSheet } from 'react-native';
+import { View, Text, Image, Pressable, Platform, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
@@ -104,6 +104,18 @@ export default function HomeLayout() {
                 >
                     {/* User Profile Section */}
                     <View style={styles.profileSection}>
+                        {user?.profile_image ? (
+                            <Image 
+                                source={{ uri: user.profile_image }} 
+                                style={styles.profileImage} 
+                            />
+                        ) : (
+                            <View style={styles.avatarContainer}>
+                                <Text style={styles.avatarText}>
+                                    {user?.name?.[0]?.toUpperCase()}
+                                </Text>
+                            </View>
+                        )}
                         <Text style={styles.userName}>
                             {isLoading ? '...' : `${user?.name ?? ''} ${user?.last_name ?? ''}`}
                         </Text>
@@ -203,6 +215,12 @@ const styles = StyleSheet.create({
         paddingVertical: spacing.xl,
         borderBottomWidth: 1,
         borderBottomColor: colors.surfaceBorder,
+    },
+    profileImage: {
+        width: 64,
+        height: 64,
+        borderRadius: borderRadius.full,
+        marginBottom: spacing.md,
     },
     avatarContainer: {
         width: 64,

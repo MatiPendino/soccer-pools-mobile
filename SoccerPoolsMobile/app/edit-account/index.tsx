@@ -10,7 +10,7 @@ import { ThemedInput, ThemedButton, ThemedLoader } from '../../components/ui';
 import { colors, spacing, typography } from '../../theme';
 import { UserEditableProps } from '../../types';
 import handleError from '../../utils/handleError';
-import ImageFormComponent from '../../components/ImageFormComponent';
+import ProfileImageComponent from '../../components/ProfileImageComponent';
 import TopBar from '../../components/TopBar';
 import { useUser, useUpdateUser, useDeleteUser } from '../../hooks/useUser';
 
@@ -26,6 +26,7 @@ export default function EditAccount({}) {
 
     const [userInfo, setUserInfo] = useState<UserEditableProps | null>(null);
     const [profileImage, setProfileImage] = useState<string>('');
+    const [selectedAvatarId, setSelectedAvatarId] = useState<number | null>(null);
 
     useEffect(() => {
         if (user) {
@@ -43,7 +44,7 @@ export default function EditAccount({}) {
 
     const editAccount = () => {
         if (!userInfo) return;
-        updateUserMutate({ userData: userInfo, profileImage }, {
+        updateUserMutate({ userData: userInfo, profileImage, avatarId: selectedAvatarId }, {
             onSuccess: () => {
                 toast.show(t('user-updated-successfully'), { type: 'success' });
             },
@@ -73,7 +74,11 @@ export default function EditAccount({}) {
 
             {!isLoading && userInfo &&
                 <View style={styles.imageContainer}>
-                    <ImageFormComponent image={profileImage} setImage={setProfileImage} />  
+                    <ProfileImageComponent
+                        image={profileImage}
+                        setImage={setProfileImage}
+                        setAvatarId={setSelectedAvatarId}
+                    />
                 </View>
             }
 

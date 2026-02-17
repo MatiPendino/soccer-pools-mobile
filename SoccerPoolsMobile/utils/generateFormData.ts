@@ -61,19 +61,21 @@ export const generateTournamentFormData = (
 }
 
 export const generateUserFormData = (
-    userData: UserEditableProps, profileImage: string
+    userData: UserEditableProps, profileImage: string, avatarId?: number | null
 ): FormData => {
     const formData: FormData = new FormData();
-    if (profileImage){
-        /* 
+    if (avatarId) {
+        formData.append('avatar_id', String(avatarId));
+    } else if (profileImage){
+        /*
         If the logo is a URL, it means that it is an already created model which image has not
         been updated, so there is no need to append it to the form data
         */
         if (!profileImage.startsWith('https://')) {
-            const profileFile = createImageFile(profileImage);            
+            const profileFile = createImageFile(profileImage);
             // @ts-ignore
-            formData.append('profile_image', profileFile);  
-        } 
+            formData.append('profile_image', profileFile);
+        }
     } else {
         formData.append('profile_image', null);
     }

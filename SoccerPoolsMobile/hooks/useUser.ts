@@ -55,10 +55,12 @@ export const useUserCoins = () => {
 export const useUpdateUser = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (data: { userData: any, profileImage?: any }) => {
+        mutationFn: async (
+            data: { userData: any, profileImage?: any, avatarId?: number | null }
+        ) => {
             const token = await getToken();
             if (!token) throw new Error('No token found');
-            return updateUser(token, data.userData, data.profileImage);
+            return updateUser(token, data.userData, data.profileImage, data.avatarId);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] });

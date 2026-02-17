@@ -49,9 +49,11 @@ export const getUser = async (token) => {
     }
 };
 
-export const updateUser = async (token, userData, profileImage) => {
+export const updateUser = async (
+    token, userData, profileImage, avatarId?: number | null
+) => {
     try {
-        const formData: FormData = generateUserFormData(userData, profileImage);
+        const formData: FormData = generateUserFormData(userData, profileImage, avatarId);
         const response = await api.put('/api/user/user_editable/', 
             formData, 
             {
