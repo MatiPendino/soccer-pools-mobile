@@ -1,5 +1,5 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeGetItem, safeSetItem, safeRemoveItem } from '../utils/safeStorage';
 
 export const API_URL: string = process.env.API_URL;
 
@@ -8,14 +8,14 @@ const api = axios.create({
 });
 
 const refreshToken = async (): Promise<void> => {
-    const refrToken: string = await AsyncStorage.getItem('refreshToken');
+    const refrToken: string = await safeGetItem('refreshToken');
     if (!refrToken) throw new Error('No refresh token available');
 
     try {
         const response = await api.post('/api/jwt/refresh/', {
             refresh: refrToken
         });
-        await AsyncStorage.setItem('accessToken', response.data.access);
+        await safeSetItem('accessToken', response.data.access);
         return response.data.access;
     } catch (error) {
         throw error.response.data;
@@ -24,8 +24,8 @@ const refreshToken = async (): Promise<void> => {
 
 export const removeToken = async (): Promise<void> => {
     try {
-        await AsyncStorage.removeItem('accessToken');
-        await AsyncStorage.removeItem('refreshToken');
+        await safeRemoveItem('accessToken');
+        await safeRemoveItem('refreshToken');
     } catch (error) {
         throw error.response.data;
     }
@@ -34,7 +34,7 @@ export const removeToken = async (): Promise<void> => {
 
 api.interceptors.request.use(
     async (config) => {
-        const token: string = await AsyncStorage.getItem('accessToken');
+        const token: string = await safeGetItem('accessToken');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -57,26 +57,24 @@ api.interceptors.response.use(
         ) {
             originalRequest._retry = true;
             try {
-                const nRetriesStr: string | null = await AsyncStorage.getItem('n_retries');
+                const nRetriesStr: string | null = await safeGetItem('n_retries');
                 let nRetries: number = nRetriesStr ? parseInt(nRetriesStr) : 0;
                 // Update retries count
                 nRetries += 1;
-                await AsyncStorage.setItem('n_retries', nRetries.toString());
+                await safeSetItem('n_retries', nRetries.toString());
 
                 if (nRetries > 3) {
-                    if (__DEV__) console.log('Max retries reached');
-                    await AsyncStorage.removeItem('accessToken');
-                    await AsyncStorage.removeItem('refreshToken');
-                    await AsyncStorage.removeItem('n_retries');
+                    await safeRemoveItem('accessToken');
+                    await safeRemoveItem('refreshToken');
+                    await safeRemoveItem('n_retries');
                     return Promise.reject(error);
                 }
                 const newAccessToken = await refreshToken();
-                await AsyncStorage.setItem('n_retries', '0');
+                await safeSetItem('n_retries', '0');
                 return api(originalRequest);
             } catch (refreshError) {
-                if (__DEV__) console.log('Token refresh failed', refreshError);
-                await AsyncStorage.removeItem('accessToken');
-                await AsyncStorage.removeItem('refreshToken');
+                await safeRemoveItem('accessToken');
+                await safeRemoveItem('refreshToken');
                 return Promise.reject(refreshError);
             }
         }

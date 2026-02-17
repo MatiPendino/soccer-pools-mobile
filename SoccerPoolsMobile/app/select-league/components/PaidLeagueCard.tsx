@@ -19,9 +19,7 @@ export default function PaidLeagueCard({ item }: PaidLeagueCardProps) {
     const cardWidth: number = isLG ? width * 0.22 : width * 0.44;
 
     const selectLeague = () => {
-        // Store the selected paid league in context
         setSelectedPaidLeague(item);
-
         router.replace('/home');
     };
 

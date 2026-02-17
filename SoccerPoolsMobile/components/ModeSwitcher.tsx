@@ -35,7 +35,7 @@ export default function ModeSwitcher() {
                 // Stay on current page, just switch to paid version of same league
                 setSelectedPaidLeague(matchingPaidLeague);
             } else {
-                router.push('/select-paid-league');
+                router.push('/select-league');
             }
         }
     };

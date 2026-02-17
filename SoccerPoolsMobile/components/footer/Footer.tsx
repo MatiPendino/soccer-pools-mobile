@@ -57,10 +57,10 @@ export default function Footer() {
             </View>
 
             <Text style={styles.copy}>
-                © {year} ProdeApp. {t('all-rights-reserved')} {t('developed-by')}
+                © {year} ProdeApp. {t('all-rights-reserved')} {/*t('developed-by')}
                 <Link href={PORTFOLIO_URL} target="_blank">
                     <Text style={styles.developerLink}> Matías Pendino</Text>
-                </Link>
+                </Link>*/}
             </Text>
         </View>
     );

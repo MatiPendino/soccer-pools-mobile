@@ -126,10 +126,7 @@ export default function HomeLayout() {
                         <NavItem
                             icon="game-controller-outline"
                             label={t('leagues')}
-                            onPress={() => isRealMode
-                                ? router.push('/select-paid-league')
-                                : router.push('/select-league')
-                            }
+                            onPress={() => router.push('/select-league')}
                         />
                         {Platform.OS === 'web' && isFreeMode && (
                             <NavItem

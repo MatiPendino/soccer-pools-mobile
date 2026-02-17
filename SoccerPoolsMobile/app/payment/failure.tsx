@@ -9,7 +9,7 @@ export default function PaymentFailureScreen() {
     const router = useRouter();
 
     const handleRetry = () => {
-        router.replace('/select-paid-league');
+        router.replace('/select-league');
     };
 
     const handleGoHome = () => {

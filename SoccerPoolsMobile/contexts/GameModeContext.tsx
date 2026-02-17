@@ -3,6 +3,7 @@ import {
 } from 'react';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeSetItem, safeRemoveItem } from '../utils/safeStorage';
 import { PaidLeagueConfigProps } from '../types';
 import { getPaidBetRounds } from '../services/paymentService';
 import { getToken } from '../utils/storeToken';
@@ -49,7 +50,7 @@ export const GameModeProvider = ({ children }: GameModeProviderProps) => {
                 if (storedMode === 'real' || storedMode === 'free') {
                     setGameModeState(storedMode);
                 }
-            });
+            }).catch(() => {});
 
             // Load selected paid league
             AsyncStorage.getItem(SELECTED_PAID_LEAGUE_KEY).then((storedLeague) => {
@@ -60,7 +61,7 @@ export const GameModeProvider = ({ children }: GameModeProviderProps) => {
                         if (__DEV__) console.warn('Failed to parse stored paid league');
                     }
                 }
-            });
+            }).catch(() => {});
 
             // Load paid round IDs
             AsyncStorage.getItem(PAID_ROUND_IDS_KEY).then((storedIds) => {
@@ -71,7 +72,7 @@ export const GameModeProvider = ({ children }: GameModeProviderProps) => {
                         if (__DEV__) console.warn('Failed to parse stored paid round IDs');
                     }
                 }
-            });
+            }).catch(() => {});
         }
     }, [isRealMoneyAvailable]);
 
@@ -82,14 +83,14 @@ export const GameModeProvider = ({ children }: GameModeProviderProps) => {
         setGameModeState(mode);
 
         if (isRealMoneyAvailable) {
-            AsyncStorage.setItem(GAME_MODE_STORAGE_KEY, mode);
+            safeSetItem(GAME_MODE_STORAGE_KEY, mode);
         }
 
         // Clear paid league when switching to free mode
         if (mode === 'free') {
             setSelectedPaidLeagueState(null);
             if (isRealMoneyAvailable) {
-                AsyncStorage.removeItem(SELECTED_PAID_LEAGUE_KEY);
+                safeRemoveItem(SELECTED_PAID_LEAGUE_KEY);
             }
         }
     }, [isRealMoneyAvailable]);
@@ -99,9 +100,9 @@ export const GameModeProvider = ({ children }: GameModeProviderProps) => {
 
         if (isRealMoneyAvailable) {
             if (league) {
-                AsyncStorage.setItem(SELECTED_PAID_LEAGUE_KEY, JSON.stringify(league));
+                safeSetItem(SELECTED_PAID_LEAGUE_KEY, JSON.stringify(league));
             } else {
-                AsyncStorage.removeItem(SELECTED_PAID_LEAGUE_KEY);
+                safeRemoveItem(SELECTED_PAID_LEAGUE_KEY);
             }
         }
     }, [isRealMoneyAvailable]);
@@ -111,7 +112,7 @@ export const GameModeProvider = ({ children }: GameModeProviderProps) => {
             if (prev.includes(roundId)) return prev;
             const newIds = [...prev, roundId];
             if (isRealMoneyAvailable) {
-                AsyncStorage.setItem(PAID_ROUND_IDS_KEY, JSON.stringify(newIds));
+                safeSetItem(PAID_ROUND_IDS_KEY, JSON.stringify(newIds));
             }
             return newIds;
         });
@@ -131,7 +132,7 @@ export const GameModeProvider = ({ children }: GameModeProviderProps) => {
             const paidBetRounds = await getPaidBetRounds(token);
             const roundIds = paidBetRounds.map((br) => br.round_id).filter(Boolean);
             setPaidRoundIds(roundIds);
-            AsyncStorage.setItem(PAID_ROUND_IDS_KEY, JSON.stringify(roundIds));
+            safeSetItem(PAID_ROUND_IDS_KEY, JSON.stringify(roundIds));
         } catch (error) {
             if (__DEV__) console.warn('Failed to sync paid rounds from backend:', error);
         }
@@ -148,8 +149,8 @@ export const GameModeProvider = ({ children }: GameModeProviderProps) => {
         setSelectedPaidLeagueState(null);
         setPaidRoundIds([]);
         if (isRealMoneyAvailable) {
-            AsyncStorage.removeItem(SELECTED_PAID_LEAGUE_KEY);
-            AsyncStorage.removeItem(PAID_ROUND_IDS_KEY);
+            safeRemoveItem(SELECTED_PAID_LEAGUE_KEY);
+            safeRemoveItem(PAID_ROUND_IDS_KEY);
         }
     }, [isRealMoneyAvailable]);
 

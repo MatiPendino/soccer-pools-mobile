@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Modal, Pressable, Text, View, Platform, Linking } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeGetItem, safeSetItem } from '../utils/safeStorage';
 import { useTranslation } from 'react-i18next';
 import { ANDROID_URL, REVIEW_APP_COINS_PRIZE, REWARD_APP_REVIEW } from '../constants';
 import { useUpdateCoins } from '../hooks/useUser';
@@ -11,22 +11,22 @@ export default function RateAppModal({}) {
     const { mutate: updateCoinsMutate } = useUpdateCoins();
 
     const askForRatingIfNeeded = async () => {
-        const hasAsked = await AsyncStorage.getItem('was_asked_review');
+        const hasAsked = await safeGetItem('was_asked_review');
 
         if (!hasAsked) {
-            const nSessionsStr = await AsyncStorage.getItem('n_sessions');
+            const nSessionsStr = await safeGetItem('n_sessions');
             let nSessions = nSessionsStr ? parseInt(nSessionsStr) : 0;
         
             // Update login count
             nSessions += 1;
-            await AsyncStorage.setItem('n_sessions', nSessions.toString());
-        
+            await safeSetItem('n_sessions', nSessions.toString());
+
             if (!hasAsked && nSessions >= 2) {
                 // Wait a few seconds before showing
                 setShowRatingModal(true);
                 setTimeout(() => {
                     // Here ill trigger pop up
-                    AsyncStorage.setItem('was_asked_review', 'true');
+                    safeSetItem('was_asked_review', 'true');
                 }, 5000);
             }
         }

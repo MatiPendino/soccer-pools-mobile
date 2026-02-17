@@ -1,7 +1,9 @@
 import { useEffect, useState, useMemo } from 'react';
 import * as Sentry from '@sentry/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Text, Pressable, StyleSheet, ActivityIndicator, ScrollView, View } from 'react-native';
+import { 
+    Text, Pressable, StyleSheet, ActivityIndicator, ScrollView, View, Platform 
+} from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import { useTranslation } from 'react-i18next';
@@ -109,6 +111,8 @@ function Results() {
     };
 
     useEffect(() => {
+        if (Platform.OS === 'web') return;
+
         const sendFCMToken = async () => {
             try {
                 const existingFCMToken = await AsyncStorage.getItem('FCMToken');
