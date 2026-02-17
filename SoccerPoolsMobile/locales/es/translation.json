@@ -214,6 +214,7 @@
     "real-mode-warning": "Modo dinero real - Solo mayores de 18",
     "prize-pool": "Pozo de Premios",
     "prize-pool-ars": "Pozo: ${{amount}} ARS",
+    "current-prize-pool-ars": "Pozo Actual: ${{amount}} ARS",
     "participants": "Participantes",
     "pay-to-play": "PAGAR PARA JUGAR",
     "pay-round": "Pagar por esta ronda",

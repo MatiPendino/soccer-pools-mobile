@@ -214,6 +214,7 @@
     "real-mode-warning": "Real money mode - 18+ only",
     "prize-pool": "Prize Pool",
     "prize-pool-ars": "Prize Pool: ${{amount}} ARS",
+    "current-prize-pool-ars": "Current Prize Pool: ${{amount}} ARS",
     "participants": "Participants",
     "pay-to-play": "PAY TO PLAY",
     "pay-round": "Pay for this round",

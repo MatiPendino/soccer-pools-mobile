@@ -54,6 +54,10 @@ export default function Leaderboard() {
 
     const activeRoundSlug = activeRound?.slug;
 
+    const nextRoundId = useMemo(
+        () => filteredRounds.length > 0 ? getNextRoundId(filteredRounds) : null, [filteredRounds]
+    );
+
     // Free mode leaderboard
     const {
         data: betLeadersData, fetchNextPage, hasNextPage, isFetchingNextPage,
@@ -106,7 +110,12 @@ export default function Leaderboard() {
                 <View style={styles.prizePoolBanner}>
                     <Ionicons name="trophy" size={20} color={colors.coins} />
                     <Text style={styles.prizePoolText}>
-                        {t('prize-pool-ars', { amount: prizePool.total_pool_ars })}
+                        {
+                            t(activeRoundId === nextRoundId ? 
+                            'current-prize-pool-ars' : 
+                            'prize-pool-ars', 
+                            { amount: prizePool.total_pool_ars })
+                        }
                     </Text>
                     <Text style={styles.participantsText}>
                         {prizePool.participants_count} {t('participants')}

@@ -22,6 +22,7 @@ import { getWrapper } from '../../../utils/getWrapper';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 import { useUserLeague, useRounds } from '../../../hooks/useLeagues';
 import { useMatchResults, useUpdateMatchResults } from '../../../hooks/useResults';
+import { useRoundPrizePool } from '../../../hooks/usePayment';
 import { useGameMode } from '../../../contexts/GameModeContext';
 import MatchResult from '../components/MatchResult';
 import { ResultsProvider, useResultsContext } from '../contexts/ResultsContext';
@@ -64,6 +65,20 @@ function Results() {
             setActiveRoundId(nextId);
         }
     }, [filteredRounds]);
+
+    const activeRound = useMemo(
+        () => filteredRounds?.find((round) => round.id === activeRoundId),
+        [filteredRounds, activeRoundId]
+    );
+    const activeRoundSlug = activeRound?.slug;
+
+    const nextRoundId = useMemo(
+        () => filteredRounds.length > 0 ? getNextRoundId(filteredRounds) : null, [filteredRounds]
+    );
+
+    const { data: prizePool } = useRoundPrizePool(
+        isRealMode && activeRoundSlug ? activeRoundSlug : ''
+    );
 
     const { data: serverMatchResults, isLoading: isMatchesLoading } = useMatchResults(activeRoundId);
     const { mutate: savePredictionsMutate, isPending: isSaving } = useUpdateMatchResults();
@@ -164,6 +179,23 @@ function Results() {
                     isRealMode={isRealMode}
                     roundPriceArs={selectedPaidLeague?.round_price_ars}
                 />
+            )}
+
+            {isRealMode && prizePool && (
+                <View style={styles.prizePoolBanner}>
+                    <Ionicons name="trophy" size={20} color={colors.coins} />
+                    <Text style={styles.prizePoolText}>
+                        {
+                            t(activeRoundId === nextRoundId ? 
+                            'current-prize-pool-ars' : 
+                            'prize-pool-ars', 
+                            { amount: prizePool.total_pool_ars }
+                        )}
+                    </Text>
+                    <Text style={styles.participantsText}>
+                        {prizePool.participants_count} {t('participants')}
+                    </Text>
+                </View>
             )}
 
             <SaveChanges
@@ -329,5 +361,28 @@ const styles = StyleSheet.create({
         color: colors.background,
         fontSize: typography.fontSize.bodyMedium,
         fontWeight: typography.fontWeight.semibold,
+    },
+    prizePoolBanner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.coinsBg,
+        paddingVertical: spacing.sm,
+        paddingHorizontal: spacing.md,
+        marginHorizontal: spacing.md,
+        marginBottom: spacing.md,
+        borderRadius: borderRadius.md,
+        borderWidth: 1,
+        borderColor: colors.coins,
+        gap: spacing.sm,
+    },
+    prizePoolText: {
+        color: colors.coins,
+        fontSize: typography.fontSize.titleSmall,
+        fontWeight: typography.fontWeight.bold,
+    },
+    participantsText: {
+        color: colors.textSecondary,
+        fontSize: typography.fontSize.bodySmall,
     },
 });
