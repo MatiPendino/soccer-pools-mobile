@@ -28,7 +28,7 @@ export default function Footer() {
         <View style={styles.container}>
             <View style={[styles.row, isLG ? styles.rowWeb : styles.rowMobile]}>
                 <View style={styles.brandCol}>
-                    <Image source={require('../../assets/img/icon-no-bg2.png')} style={styles.logo} />
+                    <Image source={require('../../assets/icon-no-bg.png')} style={styles.logo} />
                     <Text style={styles.brandName}>ProdeApp</Text>
                     <Text style={[styles.tagline, { marginBottom: isSM ? 40 : 0 }]}>
                         {t('compete-predict-climb')}
@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
         maxWidth: 320,
     },
     logo: {
-        width: 50,
-        height: 50,
+        width: 80,
+        height: 80,
         marginStart: -8,
     },
     brandName: {

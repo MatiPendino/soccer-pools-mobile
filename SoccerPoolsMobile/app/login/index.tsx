@@ -86,7 +86,10 @@ export default function Login() {
                         <View style={styles.decorativeSection}>
                             <View style={styles.decorativeCard}>
                                 <View style={styles.decorativeIconWrap}>
-                                    <Ionicons name="football" size={48} color={colors.accent} />
+                                    <Image 
+                                        source={require('../../assets/icon-no-bg.png')} 
+                                        style={styles.logo} 
+                                    />
                                 </View>
                                 <Text style={styles.decorativeTitle}>
                                     {t('hero-title-1')} {t('hero-title-2')}
@@ -258,7 +261,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.accentMuted,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: spacing.lg,
+        //marginBottom: spacing.lg,
     },
     decorativeTitle: {
         fontSize: typography.fontSize.headlineLarge,
@@ -307,12 +310,12 @@ const styles = StyleSheet.create({
     },
     logoSection: {
         alignItems: 'center',
-        marginBottom: spacing.lg,
+        //marginBottom: spacing.lg,
     },
     logo: {
-        width: 80,
-        height: 80,
-        marginBottom: spacing.md,
+        width: 60,
+        height: 60,
+        //marginBottom: spacing.md,
     },
     welcomeText: {
         color: colors.textPrimary,

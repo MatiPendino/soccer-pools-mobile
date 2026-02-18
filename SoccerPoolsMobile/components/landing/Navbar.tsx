@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import { View, Text, StyleSheet, Platform, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -29,7 +29,11 @@ export default function Navbar({ variant, referralCode = '' }: NavbarProps) {
                     styles.navBrand, { paddingTop: variant === 'landing' && !isLG ? 20 : 0 }
                 ]}>
                     <View style={styles.navLogoContainer}>
-                        <Ionicons name="football" size={20} color={colors.accent} />
+                        {/*<Ionicons name="football" size={20} color={colors.accent} />*/}
+                        <Image 
+                            source={require('../../assets/icon-no-bg.png')} 
+                            style={styles.logo} 
+                        />
                     </View>
                     <Text style={styles.navBrandText}>ProdeApp</Text>
                 </View>
@@ -117,5 +121,9 @@ const styles = StyleSheet.create({
         color: colors.background,
         fontSize: typography.fontSize.bodySmall,
         fontWeight: typography.fontWeight.semibold,
+    },
+    logo: {
+        width: 24,
+        height: 24,
     },
 });

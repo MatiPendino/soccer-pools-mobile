@@ -76,9 +76,7 @@ export default function LandingScreen() {
                 {/* Navigation Bar */}
                 <View style={[styles.navbar, isLG && styles.navbarLG]}>
                     <View style={styles.navBrand}>
-                        <View style={styles.navLogoContainer}>
-                            <Ionicons name="football" size={20} color={colors.accent} />
-                        </View>
+                        <Image source={require('../assets/icon-no-bg.png')} style={styles.logo} />
                         <Text style={styles.navBrandText}>ProdeApp</Text>
                     </View>
 
@@ -347,7 +345,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: spacing.md,
-        paddingVertical: spacing.md,
+        paddingVertical: 6,
         position: Platform.OS === 'web' ? 'fixed' as any : 'absolute',
         top: 0,
         left: 0,
@@ -366,8 +364,8 @@ const styles = StyleSheet.create({
         gap: spacing.sm,
     },
     navLogoContainer: {
-        width: 36,
-        height: 36,
+        /*width: 36,
+        height: 36,*/
         borderRadius: borderRadius.md,
         backgroundColor: 'rgba(0, 212, 170, 0.15)',
         borderWidth: 1,
@@ -816,5 +814,9 @@ const styles = StyleSheet.create({
         color: colors.textMuted,
         textAlign: 'center',
         marginTop: spacing.md,
+    },
+    logo: {
+        width: 40,
+        height: 40,
     },
 });
