@@ -10,6 +10,7 @@ import initializeMobileAds from 'utils/initialize_mobile_ads/initializeMobileAds
 import initializeAnalytics from 'utils/analytics/initializeAnalytics';
 import initializeVexo from 'utils/initialize_vexo/initializeVexo';
 import { vexoWeb } from 'utils/vexoWeb';
+import { initializeGoogleAds } from 'utils/initializeGoogleAds';
 import { paperTheme } from '../theme/paperTheme';
 import { colors } from '../theme';
 import { GameModeProvider } from '../contexts/GameModeContext';
@@ -37,6 +38,7 @@ export default function Layout () {
         // Vexo Web Setup
         if (Platform.OS === 'web') {
             vexoWeb();
+            initializeGoogleAds();
         }
     }, []);
 

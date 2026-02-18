@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, Platform, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { colors, spacing, typography, borderRadius } from '../../theme';
 
