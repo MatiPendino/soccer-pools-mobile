@@ -27,6 +27,7 @@ export const useFullUser = () => {
             if (!token) throw new Error('No token found');
             return getFullUser(token);
         },
+        retry: false,
     });
 };
 

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { View, Text, Image, Pressable, Platform, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
@@ -48,7 +49,13 @@ export default function HomeLayout() {
     const router = useRouter();
     const { isRealMode, isFreeMode, clearPaidState } = useGameMode();
 
-    const { data: user, isLoading } = useFullUser();
+    const { data: user, isLoading, isError } = useFullUser();
+
+    useEffect(() => {
+        if (isError) {
+            router.replace('/login');
+        }
+    }, [isError]);
 
     const logOut = async () => {
         try {
