@@ -8,7 +8,7 @@ import { Link } from 'expo-router';
 import CoinsDisplay from '../../components/CoinsDisplay';
 import { PageHeader } from '../../components/ui';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { useLeagues } from '../../hooks/useLeagues';
+import { useLeagues, useJoinLeague } from '../../hooks/useLeagues';
 import { useUserCoins } from '../../hooks/useUser';
 import { usePaidLeagues } from '../../hooks/usePayment';
 import { useGameMode, GameMode } from '../../contexts/GameModeContext';
@@ -36,13 +36,17 @@ const LeagueSelectionScreen = () => {
     ];
 
     const [selectedContinent, setSelectedContinent] = useState<ContinentProps>(CONTINENTS_DATA[0]);
-    const [viewMode, setViewMode] = useState<GameMode>(
-        isRealMoneyAvailable && gameMode === 'real' ? 'real' : 'free'
-    );
 
     const { data: leagues, isLoading: isLeaguesLoading } = useLeagues(selectedContinent.id);
     const { data: userCoins, isLoading: isCoinsLoading } = useUserCoins();
     const { data: paidLeagues, isLoading: isPaidLeaguesLoading } = usePaidLeagues();
+    const joinLeagueMutation = useJoinLeague();
+
+    // Default to FREE mode unless user has joined leagues and was previously in real mode
+    const hasJoinedAnyLeague = leagues?.some(league => league.is_user_joined);
+    const [viewMode, setViewMode] = useState<GameMode>(
+        isRealMoneyAvailable && gameMode === 'real' && hasJoinedAnyLeague ? 'real' : 'free'
+    );
 
     const handleViewModeChange = (mode: GameMode) => {
         setViewMode(mode);
@@ -198,7 +202,7 @@ const LeagueSelectionScreen = () => {
             ) : paidLeagues && paidLeagues.length > 0 ? (
                 <FlatList
                     data={paidLeagues}
-                    renderItem={({ item }) => <PaidLeagueCard item={item} />}
+                    renderItem={({ item }) => <PaidLeagueCard item={item} joinLeagueMutation={joinLeagueMutation} />}
                     keyExtractor={item => item.id.toString()}
                     numColumns={isLG ? 4 : 2}
                     contentContainerStyle={styles.listContainer}

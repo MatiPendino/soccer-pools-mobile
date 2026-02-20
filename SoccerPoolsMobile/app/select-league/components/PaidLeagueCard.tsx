@@ -1,6 +1,8 @@
-import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import { View, Text, Pressable, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import * as Sentry from '@sentry/react-native';
 import { useRouter } from 'expo-router';
+import { UseMutationResult } from '@tanstack/react-query';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 import { useGameMode } from '../../../contexts/GameModeContext';
 import { colors, spacing, typography, borderRadius } from '../../../theme';
@@ -8,17 +10,27 @@ import { PaidLeagueConfigProps } from '../../../types';
 
 interface PaidLeagueCardProps {
     item: PaidLeagueConfigProps;
+    joinLeagueMutation: UseMutationResult<any, Error, string, unknown>;
 }
 
-export default function PaidLeagueCard({ item }: PaidLeagueCardProps) {
+export default function PaidLeagueCard({ item, joinLeagueMutation }: PaidLeagueCardProps) {
     const { t } = useTranslation();
     const { width, isLG } = useBreakpoint();
     const router = useRouter();
     const { setSelectedPaidLeague } = useGameMode();
 
+    const { mutateAsync: joinLeagueAsync, isPending: isJoining } = joinLeagueMutation;
+
     const cardWidth: number = isLG ? width * 0.22 : width * 0.44;
 
-    const selectLeague = () => {
+    const selectLeague = async () => {
+        try {
+            // Auto-join the FREE league to ensure BetLeague, BetRounds, and MatchResults exist
+            await joinLeagueAsync(item.league.slug);
+        } catch (error) {
+            // Paid mode can still work even if free join fails
+            Sentry.captureException(error);
+        }
         setSelectedPaidLeague(item);
         router.replace('/home');
     };
@@ -31,6 +43,7 @@ export default function PaidLeagueCard({ item }: PaidLeagueCardProps) {
                 pressed && styles.cardPressed,
             ]}
             onPress={selectLeague}
+            disabled={isJoining}
         >
             <View style={styles.logoContainer}>
                 <Image
@@ -44,9 +57,13 @@ export default function PaidLeagueCard({ item }: PaidLeagueCardProps) {
                 {item.league.name}
             </Text>
 
-            <Text style={styles.tapToJoin}>
-                {t('tap-to-join')}
-            </Text>
+            {isJoining ? (
+                <ActivityIndicator size="small" color={colors.coins} />
+            ) : (
+                <Text style={styles.tapToJoin}>
+                    {t('tap-to-join')}
+                </Text>
+            )}
         </Pressable>
     );
 }
