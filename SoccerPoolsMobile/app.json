@@ -3,7 +3,7 @@
     "name": "ProdeApp",
     "slug": "soccer-pools",
     "scheme": "com.soccer-pools-mobile.soccer-pools-mobile",
-    "version": "1.8.2",
+    "version": "1.9.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,7 +12,7 @@
     "splash": {
       "image": "./assets/icon-no-bg.png",
       "resizeMode": "cover",
-      "backgroundColor": "#00A88A"
+      "backgroundColor": "#012820"
     },
     "ios": {
       "supportsTablet": true,
