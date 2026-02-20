@@ -9,14 +9,14 @@ export default function InitialLoadingScreen () {
                 source={require('../assets/icon-no-bg.png')}
                 style={styles.logoImg}
             />
-            <ActivityIndicator color='#ffffff' size='large' />
+            <ActivityIndicator color='#00D4AA' size='large' />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: MAIN_COLOR,
+        backgroundColor: '#012820',
         flex: 1,
         textAlign: 'center',
         marginHorizontal: 'auto',
