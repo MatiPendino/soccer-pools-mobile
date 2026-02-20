@@ -124,7 +124,7 @@ export const editPassword = async (token, oldPassword, newPassword) => {
 
 export const googleOauth2SignIn = async (accessToken, referralCode?) => {
     try {
-        const response = await api.post('/api/user/android_google_oauth2/', {
+        const response = await api.post('/api/user/google_oauth2/', {
             accessToken: accessToken ,
             referralCode: referralCode && referralCode
         });

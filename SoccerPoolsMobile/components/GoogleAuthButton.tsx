@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 import { Platform, Pressable, Image, View, Text, StyleSheet } from 'react-native';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { useTranslation } from 'react-i18next';
+import { Router, useRouter } from 'expo-router';
 import * as Google from 'expo-auth-session/providers/google';
 import * as AuthSession from 'expo-auth-session';
 import * as Sentry from '@sentry/react-native';
 import { toCapitalCase } from 'utils/helper';
 import handleError from 'utils/handleError';
+import { getUserLeagueRoute } from 'utils/getUserLeagueRoute';
 import { useGoogleSignIn } from '../hooks/useUser';
 import { colors, spacing, typography, borderRadius } from '../theme';
 
@@ -15,9 +17,12 @@ interface GoogleAuthButtonProps {
     referralCode?: string | string[];
 }
 
-export default function GoogleAuthButton({ callingRoute, referralCode }: GoogleAuthButtonProps) {
+export default function GoogleAuthButton({ 
+    callingRoute, referralCode 
+}: GoogleAuthButtonProps) {
     const toast: ToastType = useToast();
     const { t } = useTranslation();
+    const router: Router = useRouter();
 
     const { mutate: googleSignIn, isPending: isGoogleLoading } = useGoogleSignIn();
 
@@ -26,8 +31,6 @@ export default function GoogleAuthButton({ callingRoute, referralCode }: GoogleA
         webClientId: process.env.WEB_CLIENT_ID,
         redirectUri: AuthSession.makeRedirectUri({
             scheme: Platform.OS !== 'web' ? 'com.matipendino2001.soccerpools' : undefined,
-            // @ts-ignore
-            useProxy: Platform.OS === 'web',
         }),
         responseType:
             Platform.OS === 'web' ? AuthSession.ResponseType.Token : AuthSession.ResponseType.Code,
@@ -44,6 +47,15 @@ export default function GoogleAuthButton({ callingRoute, referralCode }: GoogleA
                             referralCode && referralCode.length > 0 ? referralCode.toString() : undefined,
                     },
                     {
+                        onSuccess: async (data) => {
+                            try {
+                                const route = await getUserLeagueRoute(data.access);
+                                router.replace(route);
+                            } catch (error) {
+                                Sentry.captureException(error);
+                                router.replace('/select-league');
+                            }
+                        },
                         onError: (error) => {
                             toast.show(handleError(error.message), { type: 'danger' });
                         },
@@ -60,6 +72,8 @@ export default function GoogleAuthButton({ callingRoute, referralCode }: GoogleA
             });
         } else if (response?.type === 'cancel') {
             toast.show('Google login cancelled!', { type: 'warning' });
+        } else if (response?.type === 'dismiss') {
+            toast.show(t('google-sign-in-dismissed'), { type: 'warning' });
         }
     }, [response]);
 
@@ -73,8 +87,6 @@ export default function GoogleAuthButton({ callingRoute, referralCode }: GoogleA
 
         try {
             await promptAsync({
-                // @ts-ignore
-                useProxy: Platform.OS === 'web',
                 showInRecents: false,
             });
         } catch (error) {
