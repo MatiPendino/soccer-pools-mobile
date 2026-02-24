@@ -19,11 +19,12 @@ export default function CreateTournament () {
         try {
             const token = await getToken();
             const tournament = await createTournament(
-                token, data.name, data.description, data.logo, Number(leagueId)
+                token, data.name, data.description, data.logo,
+                Number(leagueId), data.tournamentType
             );
             if (tournament) {
                 toast.show(t('tournament-created-successfully'));
-                router.push(`my-tournament/${tournament.id}`)  ;  
+                router.push(`my-tournament/${tournament.id}`);
             }
         } catch (error) {
             toast.show(handleError(error), {type: 'danger'});

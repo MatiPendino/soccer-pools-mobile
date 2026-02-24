@@ -1,10 +1,12 @@
 import api from './api';
 import { generateTournamentFormData } from '../utils/generateFormData';
 
-export const listTournaments = async (token: string, leagueId: number, searchText: string) => {
+export const listTournaments = async (
+    token: string, leagueId: number, searchText: string, page: number = 1
+) => {
     try {
         const response = await api.get(
-                `/api/tournaments/tournament/?league_id=${leagueId}&search_text=${searchText}`,
+            `/api/tournaments/tournament/?league_id=${leagueId}&search_text=${searchText}&page=${page}`,
             {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -30,11 +32,14 @@ export const retrieveTournament = async (token: string, tournamentId: number) =>
 };
 
 export const createTournament = async (
-    token: string, name: string, description: string, logo: string, leagueId: number
+    token: string, name: string, description: string, logo: string,
+    leagueId: number, tournamentType: number = 0
 ) => {
     try {
-        const formData: FormData = generateTournamentFormData(name, description, logo, leagueId);
-        const response = await api.post('/api/tournaments/tournament/', 
+        const formData: FormData = generateTournamentFormData(
+            name, description, logo, leagueId, tournamentType
+        );
+        const response = await api.post('/api/tournaments/tournament/',
             formData,
             {
                 headers: {
@@ -50,16 +55,35 @@ export const createTournament = async (
 };
 
 export const editTournament = async (
-    token: string, name: string, description: string, logo: string, tournamentId: number
+    token: string, name: string, description: string, logo: string,
+    tournamentId: number, tournamentType?: number
 ) => {
     try {
-        const formData: FormData = generateTournamentFormData(name, description, logo);
-        const response = await api.patch(`/api/tournaments/tournament/${tournamentId}/`, 
+        const formData: FormData = generateTournamentFormData(
+            name, description, logo, undefined, tournamentType
+        );
+        const response = await api.patch(`/api/tournaments/tournament/${tournamentId}/`,
             formData,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const joinTournament = async (token: string, tournamentId: number) => {
+    try {
+        const response = await api.post(
+            `/api/tournaments/tournament/${tournamentId}/join/`, {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
             }
         );

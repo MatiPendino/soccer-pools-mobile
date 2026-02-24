@@ -1,5 +1,7 @@
-import { useEffect } from 'react';
-import { View, Text, Image, Pressable, Platform, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { 
+    View, Text, Image, Pressable, Platform, StyleSheet, ActivityIndicator 
+} from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
@@ -7,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useToast } from 'react-native-toast-notifications';
 import { useTranslation } from 'react-i18next';
+import * as ImagePicker from 'expo-image-picker';
 import { removeToken } from 'services/api';
 import { toCapitalCase } from 'utils/helper';
 import { FACEBOOK_URL, INSTAGRAM_URL, TWITTER_URL } from '../../constants';
@@ -15,9 +18,10 @@ import RateAppModal from '../../components/RateAppModal';
 import ModeSwitcher from '../../components/ModeSwitcher';
 import handleShare from '../../utils/handleShare';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
-import { useFullUser } from '../../hooks/useUser';
+import { useFullUser, useUser, useUpdateUser } from '../../hooks/useUser';
 import { useGameMode } from '../../contexts/GameModeContext';
 import { colors, spacing, typography, borderRadius } from '../../theme';
+import AvatarPickerModal from '../../modals/AvatarPickerModal';
 
 interface NavItemProps {
     icon: keyof typeof Ionicons.glyphMap;
@@ -50,12 +54,57 @@ export default function HomeLayout() {
     const { isRealMode, isFreeMode, clearPaidState } = useGameMode();
 
     const { data: user, isLoading, isError } = useFullUser();
+    const { data: editableUser } = useUser();
+    const { mutate: updateUserMutate, isPending: isUpdatingImage } = useUpdateUser();
+
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [selectedAvatarId, setSelectedAvatarId] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (user?.profile_image) {
+            setProfileImage(user.profile_image);
+        }
+    }, [user?.profile_image]);
 
     useEffect(() => {
         if (isError) {
             router.replace('/login');
         }
     }, [isError]);
+
+    const handleImageUpdate = (newImage: string, avatarId: number | null) => {
+        if (!editableUser) return;
+        updateUserMutate(
+            { userData: editableUser, profileImage: newImage, avatarId },
+            {
+                onSuccess: () => toast.show(t('user-updated-successfully'), { type: 'success' }),
+                onError: () => toast.show('Failed to update image', { type: 'danger' }),
+            }
+        );
+    };
+
+    const handleSelectAvatar = (id: number, imageUrl: string) => {
+        setProfileImage(imageUrl);
+        setSelectedAvatarId(id);
+        handleImageUpdate(imageUrl, id);
+    };
+
+    const handleSelectFromDevice = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') { alert(t('permission-media-required')); return; }
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+        });
+        if (!result.canceled) {
+            const uri = result.assets[0].uri;
+            setProfileImage(uri);
+            setSelectedAvatarId(null);
+            handleImageUpdate(uri, null);
+        }
+    };
 
     const logOut = async () => {
         try {
@@ -111,18 +160,27 @@ export default function HomeLayout() {
                 >
                     {/* User Profile Section */}
                     <View style={styles.profileSection}>
-                        {user?.profile_image ? (
-                            <Image 
-                                source={{ uri: user.profile_image }} 
-                                style={styles.profileImage} 
-                            />
-                        ) : (
-                            <View style={styles.avatarContainer}>
-                                <Text style={styles.avatarText}>
-                                    {user?.name?.[0]?.toUpperCase()}
-                                </Text>
+                        <Pressable 
+                            onPress={() => setModalVisible(true)} 
+                            style={styles.profileImageWrapper}
+                        >
+                            {profileImage ? (
+                                <Image source={{ uri: profileImage }} style={styles.profileImage} />
+                            ) : (
+                                <View style={styles.avatarContainer}>
+                                    <Text style={styles.avatarText}>
+                                        {user?.name?.[0]?.toUpperCase()}
+                                    </Text>
+                                </View>
+                            )}
+                            <View style={styles.editImageBadge}>
+                                {isUpdatingImage ? (
+                                    <ActivityIndicator size={10} color={colors.white} />
+                                ) : (
+                                    <Ionicons name="pencil-outline" size={12} color={colors.white} />
+                                )}
                             </View>
-                        )}
+                        </Pressable>
                         <Text style={styles.userName}>
                             {isLoading ? '...' : `${user?.name ?? ''} ${user?.last_name ?? ''}`}
                         </Text>
@@ -131,6 +189,13 @@ export default function HomeLayout() {
                             {t('update-account')}
                         </Link>
                     </View>
+
+                    <AvatarPickerModal
+                        visible={modalVisible}
+                        onClose={() => setModalVisible(false)}
+                        onSelectAvatar={handleSelectAvatar}
+                        onSelectFromDevice={handleSelectFromDevice}
+                    />
 
                     {/* Game Mode Switcher (Web Only) */}
                     <ModeSwitcher />
@@ -223,11 +288,27 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: colors.surfaceBorder,
     },
+    profileImageWrapper: {
+        position: 'relative',
+        marginBottom: spacing.md,
+    },
+    editImageBadge: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: colors.accent,
+        width: 22,
+        height: 22,
+        borderRadius: 11,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: colors.backgroundElevated,
+    },
     profileImage: {
         width: 64,
         height: 64,
         borderRadius: borderRadius.full,
-        marginBottom: spacing.md,
     },
     avatarContainer: {
         width: 64,
@@ -236,7 +317,6 @@ const styles = StyleSheet.create({
         backgroundColor: colors.accent,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: spacing.md,
     },
     avatarText: {
         color: colors.background,

@@ -241,5 +241,11 @@
     "play": "Play",
     "unpaid-round-warning": "Your predictions will not count until you pay for this round. Once the round starts, you cannot pay to play it",
     "choose-avatar": "Choose Avatar",
-    "choose-from-device": "Choose from device"
+    "choose-from-device": "Choose from device",
+    "public": "PUBLIC",
+    "private": "PRIVATE",
+    "tournament-type": "Tournament Type",
+    "join": "JOIN",
+    "joined-successfully": "You have joined the tournament successfully!",
+    "already-requested": "You have already requested to join this tournament"
 }

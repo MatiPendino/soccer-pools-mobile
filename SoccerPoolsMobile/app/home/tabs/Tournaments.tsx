@@ -1,37 +1,49 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
-    View, Text, StyleSheet, TextInput, Pressable, ActivityIndicator, ScrollView, Platform
+    View, Text, StyleSheet, TextInput, Pressable, ActivityIndicator, FlatList, Platform
 } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
 import { Router, useRouter } from 'expo-router';
-import { ToastType, useToast } from 'react-native-toast-notifications';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
 import { useTournaments } from '../../../hooks/useTournaments';
 import { useUserLeague } from '../../../hooks/useLeagues';
+import { TournamentProps } from '../../../types';
 import { colors, spacing, typography, borderRadius } from '../../../theme';
 import TournamentCard from '../components/TournamentCard';
 
 export default function Tournaments() {
     const { t } = useTranslation();
     const [tournamentLookup, setTournamentLookup] = useState<string>('');
-    const { isLG } = useBreakpoint();
+    const { isSM, isMD, isLG } = useBreakpoint();
     const router: Router = useRouter();
 
     const { data: league, isLoading: isLeagueLoading } = useUserLeague();
-    const { data: tournaments, isLoading: isTournamentsLoading } = useTournaments(
-        league?.id,
-        tournamentLookup
-    );
+    const {
+        data: tournamentsData,
+        isLoading: isTournamentsLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useTournaments(league?.id, tournamentLookup);
+
+    const tournaments: TournamentProps[] = useMemo(() => {
+        if (!tournamentsData?.pages) return [];
+        return tournamentsData.pages.flatMap(page => page.results);
+    }, [tournamentsData]);
 
     const isLoading: boolean = isLeagueLoading || isTournamentsLoading;
+
+    const numColumns = isSM ? 1 : isMD ? 2 : 3;
 
     const renderEmptyState = () => (
         <View style={styles.emptyStateContainer}>
             <Ionicons name="trophy-outline" size={80} color={colors.textMuted} />
             <Text style={styles.noTournamentTxt}>{t('not-tournament-yet')}</Text>
-            <Text style={styles.emptyStateSubtitle}>{t('create-tournament-tapping-button')}</Text>
+            <Text style={styles.emptyStateSubtitle}>
+                {t('create-tournament-tapping-button')}
+            </Text>
         </View>
     );
 
@@ -42,6 +54,32 @@ export default function Tournaments() {
         </View>
     );
 
+    const renderFooter = () => {
+        if (!isFetchingNextPage) return null;
+        return (
+            <View style={styles.footerLoader}>
+                <ActivityIndicator size="small" color={colors.accent} />
+            </View>
+        );
+    };
+
+    const renderItem = ({ item: tournament }: { item: TournamentProps }) => (
+        <View style={numColumns > 1 ? styles.columnItem : undefined}>
+            <TournamentCard
+                key={tournament.id}
+                name={tournament.name}
+                logoUrl={tournament.logo}
+                adminUsername={tournament.admin_tournament.username}
+                adminEmail={tournament.admin_tournament.email}
+                nParticipants={tournament.participants_count ?? tournament.n_participants}
+                tournamentId={tournament.id}
+                leagueId={tournament.league.id}
+                currentUserState={tournament.current_user_state}
+                tournamentType={tournament.tournament_type}
+            />
+        </View>
+    );
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -49,11 +87,11 @@ export default function Tournaments() {
             </View>
 
             <View style={styles.inputContainer}>
-                <Ionicons 
-                    name="search-outline" 
-                    size={20} 
-                    color={colors.textMuted} 
-                    style={styles.lookUpIcon} 
+                <Ionicons
+                    name="search-outline"
+                    size={20}
+                    color={colors.textMuted}
+                    style={styles.lookUpIcon}
                 />
                 <TextInput
                     placeholder={t('look-for-tournament')}
@@ -73,26 +111,24 @@ export default function Tournaments() {
             {isLoading ? (
                 renderLoader()
             ) : tournaments && tournaments.length > 0 ? (
-                <ScrollView
+                <FlatList
+                    data={tournaments}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    key={numColumns}
+                    numColumns={numColumns}
+                    columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : undefined}
                     contentContainerStyle={[
                         styles.tournamentsContainer,
-                        { width: isLG ? '60%' : '100%' },
+                        { maxWidth: isLG ? '80%' : '100%', marginHorizontal: 'auto' as any },
                     ]}
                     showsVerticalScrollIndicator={false}
-                >
-                    {tournaments.map((tournament) => (
-                        <TournamentCard
-                            key={tournament.id}
-                            name={tournament.name}
-                            logoUrl={tournament.logo}
-                            adminUsername={tournament.admin_tournament.username}
-                            adminEmail={tournament.admin_tournament.email}
-                            nParticipants={tournament.n_participants}
-                            tournamentId={tournament.id}
-                            leagueId={tournament.league.id}
-                        />
-                    ))}
-                </ScrollView>
+                    onEndReached={() => {
+                        if (hasNextPage) fetchNextPage();
+                    }}
+                    onEndReachedThreshold={0.5}
+                    ListFooterComponent={renderFooter}
+                />
             ) : (
                 renderEmptyState()
             )}
@@ -162,7 +198,12 @@ const styles = StyleSheet.create({
     },
     tournamentsContainer: {
         paddingBottom: 100,
-        marginHorizontal: 'auto',
+    },
+    columnWrapper: {
+        gap: spacing.md,
+    },
+    columnItem: {
+        flex: 1,
     },
     emptyStateContainer: {
         flex: 1,
@@ -196,5 +237,9 @@ const styles = StyleSheet.create({
         fontSize: typography.fontSize.bodyMedium,
         color: colors.textSecondary,
         fontWeight: typography.fontWeight.medium,
+    },
+    footerLoader: {
+        paddingVertical: spacing.lg,
+        alignItems: 'center',
     },
 });

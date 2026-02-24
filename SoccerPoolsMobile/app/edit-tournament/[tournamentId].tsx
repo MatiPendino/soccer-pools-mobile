@@ -27,7 +27,8 @@ export default function EditTournament() {
             name: data.name,
             description: data.description,
             logo: data.logo,
-            tournamentId: Number(tournamentId)
+            tournamentId: Number(tournamentId),
+            tournamentType: data.tournamentType,
         }, {
             onSuccess: (updatedTournament) => {
                 if (updatedTournament) {

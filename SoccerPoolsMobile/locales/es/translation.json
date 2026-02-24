@@ -241,5 +241,11 @@
     "play": "Jugar",
     "unpaid-round-warning": "Tus predicciones no serán consideradas hasta que pagues esta ronda. Una vez iniciada la ronda, no puedes pagar por jugarla",
     "choose-avatar": "Elegir Avatar",
-    "choose-from-device": "Elegir del dispositivo"
+    "choose-from-device": "Elegir del dispositivo",
+    "public": "PUBLICO",
+    "private": "PRIVADO",
+    "tournament-type": "Tipo de Torneo",
+    "join": "UNIRSE",
+    "joined-successfully": "Te has unido al torneo exitosamente!",
+    "already-requested": "Ya has solicitado unirte a este torneo"
 }

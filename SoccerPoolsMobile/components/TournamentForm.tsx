@@ -26,11 +26,15 @@ export default function TournamentForm({
     const [tournamentName, setTournamentName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [logo, setLogo] = useState<string>('');
+    const [tournamentType, setTournamentType] = useState<number>(0);
     const { isLG } = useBreakpoint();
     const router: Router = useRouter();
 
     const handleSubmit = () => {
-        onSubmit({ name: tournamentName, description: description, logo: logo });
+        onSubmit({ 
+            name: tournamentName, description: description, 
+            logo: logo, tournamentType: tournamentType 
+        });
     };
 
     const setInitialFormData = () => {
@@ -39,6 +43,7 @@ export default function TournamentForm({
                 setTournamentName(initialData.name);
                 setDescription(initialData.description);
                 setLogo(initialData.logo);
+                setTournamentType(initialData.tournament_type ?? 0);
             }
         }
     };
@@ -108,6 +113,50 @@ export default function TournamentForm({
                             textAlignVertical="top"
                             selectionColor={colors.accent}
                         />
+                    </View>
+                </View>
+
+                <View style={styles.formGroup}>
+                    <Text style={styles.label}>{t('tournament-type')}</Text>
+                    <View style={styles.segmentedControl}>
+                        <Pressable
+                            style={[
+                                styles.segmentOption,
+                                tournamentType === 0 && styles.segmentOptionActive,
+                            ]}
+                            onPress={() => setTournamentType(0)}
+                        >
+                            <Ionicons
+                                name="lock-open-outline"
+                                size={18}
+                                color={tournamentType === 0 ? colors.background : colors.textMuted}
+                            />
+                            <Text style={[
+                                styles.segmentText,
+                                tournamentType === 0 && styles.segmentTextActive,
+                            ]}>
+                                {t('public')}
+                            </Text>
+                        </Pressable>
+                        <Pressable
+                            style={[
+                                styles.segmentOption,
+                                tournamentType === 1 && styles.segmentOptionActive,
+                            ]}
+                            onPress={() => setTournamentType(1)}
+                        >
+                            <Ionicons
+                                name="lock-closed-outline"
+                                size={18}
+                                color={tournamentType === 1 ? colors.background : colors.textMuted}
+                            />
+                            <Text style={[
+                                styles.segmentText,
+                                tournamentType === 1 && styles.segmentTextActive,
+                            ]}>
+                                {t('private')}
+                            </Text>
+                        </Pressable>
                     </View>
                 </View>
 
@@ -211,6 +260,33 @@ const styles = StyleSheet.create({
     },
     textArea: {
         height: '100%',
+    },
+    segmentedControl: {
+        flexDirection: 'row',
+        borderWidth: 1.5,
+        borderColor: colors.surfaceBorder,
+        borderRadius: borderRadius.md,
+        overflow: 'hidden',
+    },
+    segmentOption: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: spacing.md,
+        gap: spacing.xs,
+        backgroundColor: colors.backgroundInput,
+    },
+    segmentOptionActive: {
+        backgroundColor: colors.accent,
+    },
+    segmentText: {
+        fontSize: typography.fontSize.bodyMedium,
+        fontWeight: typography.fontWeight.semibold,
+        color: colors.textMuted,
+    },
+    segmentTextActive: {
+        color: colors.background,
     },
     button: {
         backgroundColor: colors.accent,

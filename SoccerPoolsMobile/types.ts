@@ -109,7 +109,10 @@ export interface TournamentProps {
     league: LeagueProps;
     admin_tournament: UserProps;
     n_participants: number;
+    participants_count: number;
     is_current_user_admin: boolean;
+    tournament_type: 0 | 1;
+    current_user_state: 0 | 1 | 2 | 3 | null;
 };
 
 export interface TournamentUserProps {

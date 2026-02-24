@@ -3,7 +3,7 @@ import { ToastType, useToast } from 'react-native-toast-notifications';
 import { Router, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { useTournamentUser, useUpdateStateTournamentUser } from '../../../hooks/useTournaments';
+import { useJoinTournament } from '../../../hooks/useTournaments';
 import { Email } from '../../../types';
 import { colors, spacing, typography, borderRadius } from '../../../theme';
 
@@ -15,52 +15,56 @@ interface TournamentCardProps {
     adminUsername: string;
     tournamentId: number;
     leagueId: number;
+    currentUserState: 0 | 1 | 2 | 3 | null;
+    tournamentType: 0 | 1;
 }
 
 export default function TournamentCard({
-    name, logoUrl, nParticipants, adminEmail, adminUsername, tournamentId, leagueId,
+    name, logoUrl, nParticipants, adminEmail, adminUsername,
+    tournamentId, leagueId, currentUserState, tournamentType,
 }: TournamentCardProps) {
     const { t } = useTranslation();
-    const { data: tournamentUser, isLoading: isUserLoading } = useTournamentUser(tournamentId);
-    const { mutate: updateState, isPending: isUpdating } = useUpdateStateTournamentUser();
+    const { mutate: joinMutate, isPending: isJoining } = useJoinTournament();
     const toast: ToastType = useToast();
     const router: Router = useRouter();
 
+    const isPublic: boolean = tournamentType === 0;
+
     const getStateInfo = () => {
-        if (!tournamentUser) {
+        if (currentUserState === null || currentUserState === undefined) {
             return {
                 color: colors.success,
                 bgColor: colors.successBg,
-                text: t('apply'),
+                text: isPublic ? t('join') : t('apply'),
                 icon: 'add-circle-outline'
             };
         }
 
-        switch (tournamentUser.tournament_user_state) {
+        switch (currentUserState) {
             case 0:
-                return { 
-                    color: colors.success, bgColor: colors.successBg, 
-                    text: t('apply'), icon: 'add-circle-outline' 
+                return {
+                    color: colors.success, bgColor: colors.successBg,
+                    text: isPublic ? t('join') : t('apply'), icon: 'add-circle-outline'
                 };
             case 1:
-                return { 
-                    color: colors.warning, bgColor: colors.warningBg, 
-                    text: t('pending'), icon: 'hourglass-outline' 
+                return {
+                    color: colors.warning, bgColor: colors.warningBg,
+                    text: t('pending'), icon: 'hourglass-outline'
                 };
             case 2:
-                return { 
+                return {
                     color: colors.accent, bgColor: colors.accentMuted,
-                    text: t('joined'), icon: 'checkmark-circle-outline' 
+                    text: t('joined'), icon: 'checkmark-circle-outline'
                 };
             case 3:
-                return { 
-                    color: colors.error, bgColor: colors.errorBg, 
-                    text: t('rejected'), icon: 'close-circle-outline' 
+                return {
+                    color: colors.error, bgColor: colors.errorBg,
+                    text: t('rejected'), icon: 'close-circle-outline'
                 };
             default:
-                return { 
-                    color: colors.success, bgColor: colors.successBg, 
-                    text: t('apply'), icon: 'add-circle-outline' 
+                return {
+                    color: colors.success, bgColor: colors.successBg,
+                    text: isPublic ? t('join') : t('apply'), icon: 'add-circle-outline'
                 };
         }
     };
@@ -71,30 +75,38 @@ export default function TournamentCard({
         return (
             <View style={[styles.stateContainer, { backgroundColor: stateInfo.bgColor }]}>
                 <Ionicons name={stateInfo.icon as any} size={16} color={stateInfo.color} />
-                <Text style={[styles.stateTxt, { color: stateInfo.color }]}>{stateInfo.text}</Text>
+                <Text style={[styles.stateTxt, { color: stateInfo.color }]}>
+                    {stateInfo.text}
+                </Text>
             </View>
         );
     };
 
-    const joinTournament = () => {
-        if (!tournamentUser) return;
-        updateState({tournamentUserId: tournamentUser.id, tournamentState: 1}, {
+    const handleJoin = () => {
+        joinMutate(tournamentId, {
             onSuccess: () => {
-                toast.show(t('join-request-sent'), { type: 'success' });
+                if (isPublic) {
+                    toast.show(t('joined-successfully'), { type: 'success' });
+                    router.push(`my-tournament/${tournamentId}`);
+                } else {
+                    toast.show(t('join-request-sent'), { type: 'success' });
+                }
             },
             onError: () => {
-                toast.show('There is been an error sending the join request', { type: 'error' });
+                toast.show(t('already-requested'), { type: 'warning' });
             }
         });
     };
 
     const handleCard = () => {
-        if (!tournamentUser) return;
+        if (
+            currentUserState === null || currentUserState === undefined || currentUserState === 0
+        ) {
+            handleJoin();
+            return;
+        }
 
-        switch (tournamentUser.tournament_user_state) {
-            case 0:
-                joinTournament();
-                break;
+        switch (currentUserState) {
             case 1:
                 toast.show(t('already-request-sent'), { type: 'warning' });
                 break;
@@ -129,9 +141,19 @@ export default function TournamentCard({
 
                 {/* Info */}
                 <View style={styles.textsContainer}>
-                    <Text style={styles.tournamentNameTxt} numberOfLines={1} ellipsizeMode='tail'>
-                        {name}
-                    </Text>
+                    <View style={styles.nameRow}>
+                        <Ionicons
+                            name={isPublic ? 'lock-open-outline' : 'lock-closed-outline'}
+                            size={14}
+                            color={colors.textMuted}
+                        />
+                        <Text 
+                            style={styles.tournamentNameTxt} 
+                            numberOfLines={1} ellipsizeMode='tail'
+                        >
+                            {name}
+                        </Text>
+                    </View>
 
                     <View style={styles.metaRow}>
                         <View style={styles.metaItem}>
@@ -153,7 +175,7 @@ export default function TournamentCard({
 
             {/* State Badge */}
             <View style={styles.stateWrapper}>
-                {(!isUserLoading && !isUpdating) ? (
+                {!isJoining ? (
                     tournamentStateConversion()
                 ) : (
                     <ActivityIndicator size='small' color={colors.accent} />
@@ -174,6 +196,7 @@ const styles = StyleSheet.create({
         marginBottom: spacing.md,
         borderWidth: 1,
         borderColor: colors.surfaceBorder,
+        flex: 1,
     },
     pressed: {
         backgroundColor: colors.surfaceLight,
@@ -210,11 +233,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
     },
+    nameRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.xs,
+        marginBottom: spacing.xs,
+    },
     tournamentNameTxt: {
         fontSize: typography.fontSize.titleSmall,
         fontWeight: typography.fontWeight.semibold,
         color: colors.textPrimary,
-        marginBottom: spacing.xs,
+        flex: 1,
     },
     metaRow: {
         flexDirection: 'row',

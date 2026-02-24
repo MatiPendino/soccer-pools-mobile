@@ -34,7 +34,7 @@ const createImageFile = (imageUrl: string) => {
 }
 
 export const generateTournamentFormData = (
-    name: string, description: string, logo: string, leagueId?: number
+    name: string, description: string, logo: string, leagueId?: number, tournamentType?: number
 ): FormData => {
     const formData = new FormData();
 
@@ -55,6 +55,9 @@ export const generateTournamentFormData = (
     formData.append('description', description);
     if (leagueId) {
         formData.append('league', String(leagueId));
+    }
+    if (tournamentType !== undefined) {
+        formData.append('tournament_type', String(tournamentType));
     }
 
     return formData;
