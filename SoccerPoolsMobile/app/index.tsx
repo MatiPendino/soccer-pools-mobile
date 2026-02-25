@@ -317,7 +317,6 @@ export default function LandingScreen() {
                                         />
                                     </Pressable>
                                 </Link>
-                                <Text style={styles.ctaDisclaimer}>{t('cta-disclaimer')}</Text>
                             </View>
                         </View>
                     </View>
