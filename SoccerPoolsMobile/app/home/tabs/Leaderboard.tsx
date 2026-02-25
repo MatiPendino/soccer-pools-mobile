@@ -114,7 +114,7 @@ export default function Leaderboard() {
                             t(activeRoundId === nextRoundId ? 
                             'current-prize-pool-ars' : 
                             'prize-pool-ars', 
-                            { amount: prizePool.total_pool_ars })
+                            { amount: prizePool.effective_pool_ars })
                         }
                     </Text>
                     <Text style={styles.participantsText}>
@@ -139,7 +139,7 @@ export default function Leaderboard() {
                     refreshing={false}
                     onRefresh={() => {}}
                     isPaidMode={true}
-                    prizePoolTotal={prizePool?.total_pool_ars}
+                    prizePoolTotal={prizePool?.effective_pool_ars}
                 />
             ) : (
                 <RankedPlayersFlatList

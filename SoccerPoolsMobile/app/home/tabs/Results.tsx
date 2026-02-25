@@ -189,7 +189,7 @@ function Results() {
                             t(activeRoundId === nextRoundId ? 
                             'current-prize-pool-ars' : 
                             'prize-pool-ars', 
-                            { amount: prizePool.total_pool_ars }
+                            { amount: prizePool.effective_pool_ars }
                         )}
                     </Text>
                     <Text style={styles.participantsText}>

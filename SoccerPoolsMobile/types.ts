@@ -207,6 +207,8 @@ export interface PaidPrizePoolProps {
     round_name: string | null;
     is_league_pool: boolean;
     total_pool_ars: string;
+    minimum_pool_ars: string;
+    effective_pool_ars: string;
     distributed: boolean;
     participants_count?: number;
 };
