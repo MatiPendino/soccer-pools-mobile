@@ -4,6 +4,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ToastType, useToast } from 'react-native-toast-notifications';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { Router, useRouter } from 'expo-router';
 import handleError from 'utils/handleError';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
@@ -35,6 +36,8 @@ export default function LeagueCard({ item }) {
         }
     };
 
+    const entryIsFree = !item.coins_cost || item.coins_cost === 0;
+
     return (
         <Pressable
             style={({ pressed }) => [
@@ -45,14 +48,6 @@ export default function LeagueCard({ item }) {
             onPress={selectLeague}
             disabled={isLoading}
         >
-            {/* Prize Ribbon */}
-            <View style={styles.ribbon}>
-                <Ionicons name="trophy" size={12} color={colors.background} />
-                <Text style={styles.ribbonText}>
-                    {item.coins_prizes.coins_prize_first}
-                </Text>
-            </View>
-
             {/* Status Indicator */}
             {item.is_user_joined && (
                 <View style={styles.joinedBadge}>
@@ -73,21 +68,47 @@ export default function LeagueCard({ item }) {
                 {item.name}
             </Text>
 
+            {/* Info rows */}
+            <View style={styles.infoSection}>
+                <View style={styles.infoRow}>
+                    <View style={styles.infoLabelGroup}>
+                        <Ionicons name="trophy" size={12} color={colors.coins} />
+                        <Text style={styles.infoLabel}>{t('top-prize')}</Text>
+                    </View>
+                    <Text style={styles.infoValue}>
+                        {item.coins_prizes?.coins_prize_first ?? '—'}
+                        <Text style={styles.infoUnit}> coins</Text>
+                    </Text>
+                </View>
+
+                <View style={styles.divider} />
+
+                <View style={styles.infoRow}>
+                    <View style={styles.infoLabelGroup}>
+                        <FontAwesome5 name="coins" size={11} color={colors.coins} />
+                        <Text style={styles.infoLabel}>{t('entry-cost')}</Text>
+                    </View>
+
+                    {entryIsFree ? (
+                        <Text style={styles.freeValue}>{t('free')}</Text>
+                    ) : (
+                        <Text style={styles.infoValue}>
+                            {item.coins_cost}
+                            <Text style={styles.infoUnit}> coins</Text>
+                        </Text>
+                    )}
+                </View>
+            </View>
+
             {/* Action Area */}
             {isLoading ? (
-                <ActivityIndicator size="small" color={colors.accent} />
+                <ActivityIndicator size="small" color={colors.accent} style={styles.loader} />
             ) : item.is_user_joined ? (
                 <View style={styles.statusBadge}>
                     <Text style={styles.statusText}>{t('joined')}</Text>
                 </View>
             ) : (
-                <View style={styles.costContainer}>
-                    <View style={styles.costBadge}>
-                        <Text style={styles.costText}>{item.coins_cost || 0}</Text>
-                        <Ionicons name="flash" size={12} color={colors.coins} />
-                    </View>
-                    <Text style={styles.tapText}>{t('tap-to-join')}</Text>
-                </View>
+                <Text style={styles.tapText}>{t('tap-to-join')}</Text>
             )}
         </Pressable>
     );
@@ -108,31 +129,14 @@ const styles = StyleSheet.create({
         backgroundColor: colors.surfaceLight,
         transform: [{ scale: 0.98 }],
     },
-    ribbon: {
-        position: 'absolute',
-        top: spacing.sm,
-        right: spacing.sm,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 4,
-        backgroundColor: colors.coins,
-        paddingHorizontal: spacing.sm,
-        paddingVertical: 4,
-        borderRadius: borderRadius.sm,
-    },
-    ribbonText: {
-        color: colors.background,
-        fontSize: typography.fontSize.labelSmall,
-        fontWeight: typography.fontWeight.bold,
-    },
     joinedBadge: {
         position: 'absolute',
         top: spacing.sm,
         left: spacing.sm,
     },
     logoContainer: {
-        width: 80,
-        height: 80,
+        width: 72,
+        height: 72,
         borderRadius: borderRadius.md,
         backgroundColor: colors.white,
         alignItems: 'center',
@@ -152,6 +156,48 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: spacing.sm,
     },
+    infoSection: {
+        width: '100%',
+        backgroundColor: colors.surface,
+        borderRadius: borderRadius.md,
+        paddingHorizontal: spacing.sm,
+        paddingVertical: spacing.xs,
+        marginBottom: spacing.sm,
+        gap: 2,
+    },
+    infoRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 4,
+    },
+    infoLabelGroup: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+    },
+    infoLabel: {
+        fontSize: typography.fontSize.labelMedium,
+        color: 'white',
+    },
+    infoValue: {
+        fontSize: typography.fontSize.labelSmall,
+        fontWeight: typography.fontWeight.bold,
+        color: colors.textPrimary,
+    },
+    infoUnit: {
+        fontWeight: typography.fontWeight.regular,
+        color: colors.textMuted,
+    },
+    freeValue: {
+        fontSize: typography.fontSize.labelSmall,
+        fontWeight: typography.fontWeight.bold,
+        color: colors.success,
+    },
+    divider: {
+        height: 1,
+        backgroundColor: colors.surfaceBorder,
+    },
     statusBadge: {
         backgroundColor: colors.successBg,
         paddingHorizontal: spacing.md,
@@ -163,26 +209,11 @@ const styles = StyleSheet.create({
         fontSize: typography.fontSize.labelSmall,
         fontWeight: typography.fontWeight.semibold,
     },
-    costContainer: {
-        alignItems: 'center',
-    },
-    costBadge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 4,
-        backgroundColor: colors.coinsBg,
-        paddingHorizontal: spacing.sm,
-        paddingVertical: spacing.xs,
-        borderRadius: borderRadius.full,
-    },
-    costText: {
-        color: colors.coins,
-        fontSize: typography.fontSize.labelSmall,
-        fontWeight: typography.fontWeight.bold,
-    },
     tapText: {
         color: colors.textMuted,
         fontSize: typography.fontSize.labelSmall,
+    },
+    loader: {
         marginTop: spacing.xs,
     },
 });
