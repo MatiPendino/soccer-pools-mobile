@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import { colors } from 'theme';
 import { MatchResultProps } from '../../../types';
 import { useBreakpoint } from '../../../hooks/useBreakpoint';
@@ -18,8 +18,8 @@ export default function TeamScore({
     const { arePredictionsSaved, setArePredictionsSaved } = useResultsContext();
     const { isSM, isMD } = useBreakpoint();
     const isMobile = isSM || isMD;
-    
-    const [teamGoals, setTeamGoals] = useState<number>(
+
+    const [teamGoals, setTeamGoals] = useState<number | null>(
         teamNum === 1 ? currentMatchResult.goals_team_1 : currentMatchResult.goals_team_2
     );
 
@@ -27,142 +27,91 @@ export default function TeamScore({
         setTeamGoals(
             teamNum === 1 ? currentMatchResult.goals_team_1 : currentMatchResult.goals_team_2
         );
-    }, [matchResults])
+    }, [matchResults]);
 
-    const handleTeamGoals = (isAdding: boolean) => {
-        let newMatchResults = matchResults;
-        if (isAdding) {
-            if (teamGoals === null) {
-                setTeamGoals(0);
-                newMatchResults = matchResults.map((matchResult) => {
-                    if(matchResult.id === currentMatchResult.id) {
-                        if (teamNum === 1) {
-                            return {...matchResult, goals_team_1: 0};
-                        } else {
-                            return {...matchResult, goals_team_2: 0};
-                        }
+    const handleChange = (text: string) => {
+        if (text === '') {
+            setTeamGoals(null);
+            const newMatchResults = matchResults.map((matchResult) => {
+                if (matchResult.id === currentMatchResult.id) {
+                    if (teamNum === 1) {
+                        return { ...matchResult, goals_team_1: null };
+                    } else {
+                        return { ...matchResult, goals_team_2: null };
                     }
-                    return matchResult;
-                })
-            } else {
-                setTeamGoals(teamGoals + 1);
-                newMatchResults = matchResults.map((matchResult) => {
-                    if(matchResult.id === currentMatchResult.id) {
-                        if (teamNum === 1) {
-                            return {...matchResult, goals_team_1: teamGoals+1};
-                        } else {
-                            return {...matchResult, goals_team_2: teamGoals+1};
-                        }
-                    }
-                    return matchResult;
-                })
-            }
-            if (arePredictionsSaved) {
-                setArePredictionsSaved(false);
-            }
-        } else {
-            if (teamGoals > 0) {
-                newMatchResults = matchResults.map((matchResult) => {
-                    if(matchResult.id === currentMatchResult.id) {
-                        if (teamNum === 1) {
-                            return {...matchResult, goals_team_1: teamGoals-1};
-                        } else {
-                            return {...matchResult, goals_team_2: teamGoals-1};
-                        }
-                    }
-                    return matchResult;
-                })
-                setTeamGoals(teamGoals - 1);
-                if (arePredictionsSaved) {
-                    setArePredictionsSaved(false);
+                }
+                return matchResult;
+            });
+            if (arePredictionsSaved) setArePredictionsSaved(false);
+            setMatchResults(newMatchResults);
+            return;
+        }
+
+        const digit = text[text.length - 1];
+        if (!/^[0-9]$/.test(digit)) return;
+
+        const value = parseInt(digit, 10);
+        setTeamGoals(value);
+
+        const newMatchResults = matchResults.map((matchResult) => {
+            if (matchResult.id === currentMatchResult.id) {
+                if (teamNum === 1) {
+                    return { ...matchResult, goals_team_1: value };
+                } else {
+                    return { ...matchResult, goals_team_2: value };
                 }
             }
-        }
+            return matchResult;
+        });
+
+        if (arePredictionsSaved) setArePredictionsSaved(false);
         setMatchResults(newMatchResults);
-    }
+    };
 
     return (
         <View style={[
             styles.scoreContainer,
             isMobile && styles.scoreContainerMobile
         ]}>
-            <Pressable
-                onPress={() => handleTeamGoals(true)}
+            <TextInput
                 style={[
-                    styles.goalsBtn,
-                    isMobile && styles.goalsBtnMobile
+                    styles.scoreInput,
+                    isMobile && styles.scoreInputMobile
                 ]}
-                accessibilityRole='button'
-            >
-                <Text style={[
-                    styles.goalsTxt,
-                    isMobile && styles.goalsTxtMobile
-                ]}>+</Text>
-            </Pressable>
-            <Text style={[
-                styles.scoreTxt,
-                isMobile && styles.scoreTxtMobile
-            ]}>
-                {
-                    teamGoals !== null
-                    ?
-                    teamGoals
-                    :
-                    '-'
-                }
-            </Text>
-            <Pressable
-                onPress={() => handleTeamGoals(false)}
-                style={[
-                    styles.goalsBtn,
-                    isMobile && styles.goalsBtnMobile
-                ]}
-            >
-                <Text style={[
-                    styles.goalsTxt,
-                    isMobile && styles.goalsTxtMobile
-                ]}>-</Text>
-            </Pressable>
+                value={teamGoals !== null ? String(teamGoals) : ''}
+                onChangeText={handleChange}
+                keyboardType='numeric'
+                maxLength={1}
+                placeholder='-'
+                placeholderTextColor='rgba(255,255,255,0.5)'
+                textAlign='center'
+                selectTextOnFocus
+            />
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     scoreContainer: {
         marginVertical: 'auto',
-        marginHorizontal: 2
+        marginHorizontal: 2,
     },
     scoreContainerMobile: {
         marginHorizontal: 1,
     },
-    goalsBtn: {
+    scoreInput: {
         backgroundColor: colors.accentDark,
-        borderRadius: 30,
+        borderRadius: 8,
         width: 47,
-        paddingVertical: 1,
-    },
-    goalsBtnMobile: {
-        width: 42,
-        paddingVertical: 0,
-    },
-    goalsTxt: {
-        fontSize: 18,
-        fontWeight: '600',
-        textAlign: 'center',
-        color: 'white',
-    },
-    goalsTxtMobile: {
-        fontSize: 16,
-    },
-    scoreTxt: {
+        height: 47,
         fontSize: 19,
         fontWeight: '600',
-        marginVertical: 5,
+        color: 'white',
         textAlign: 'center',
-        color: 'white'
     },
-    scoreTxtMobile: {
+    scoreInputMobile: {
+        width: 42,
+        height: 42,
         fontSize: 17,
-        marginVertical: 4,
-    }
-})
+    },
+});
