@@ -5,7 +5,25 @@
     "paths": {
       "components/*": ["./components/*"],
       "utils/*": ["./utils/*"],
+      "hooks/*": ["./hooks/*"],
+      "services/*": ["./services/*"],
+      "contexts/*": ["./contexts/*"],
+      "modals/*": ["./modals/*"],
+      "theme": ["./theme/index"],
+      "theme/*": ["./theme/*"]
     }
   },
-  "include": ["types.d.ts", "components", "app", "utils"]
+  "include": [
+    "types.d.ts",
+    "types.ts",
+    "constants.ts",
+    "components",
+    "app",
+    "utils",
+    "hooks",
+    "services",
+    "contexts",
+    "modals",
+    "theme"
+  ]
 }
