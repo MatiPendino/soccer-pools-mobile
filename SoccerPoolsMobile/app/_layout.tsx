@@ -39,6 +39,10 @@ export default function Layout () {
         if (Platform.OS === 'web') {
             vexoWeb();
             initializeGoogleAds();
+
+            const style = document.createElement('style');
+            style.textContent = '[role="button"] { cursor: pointer; }';
+            document.head.appendChild(style);
         }
     }, []);
 
