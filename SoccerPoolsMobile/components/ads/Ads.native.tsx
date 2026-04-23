@@ -1,8 +1,12 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { 
-  BannerAd, TestIds, BannerAdSize, AdEventType, InterstitialAd, AppOpenAd, 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  BannerAd, TestIds, BannerAdSize, AdEventType, InterstitialAd, AppOpenAd,
   RewardedAd, RewardedAdEventType
 } from 'react-native-google-mobile-ads';
+
+const OPEN_APP_AD_LAST_SHOWN_KEY = 'openAppAdLastShown';
+const OPEN_APP_AD_COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
 
 export const Banner = ({bannerId}: {bannerId: string}) => {
     const adUnitIdBanner: string = Boolean(Number(process.env.TEST_ADS)) ? TestIds.BANNER : bannerId;
@@ -41,6 +45,11 @@ export const interstitial = (interstitialId: string) => {
 }
   
 export const showOpenAppAd = async (openAppId): Promise<void> => {
+    const lastShown = await AsyncStorage.getItem(OPEN_APP_AD_LAST_SHOWN_KEY);
+    if (lastShown && Date.now() - Number(lastShown) < OPEN_APP_AD_COOLDOWN_MS) {
+        return;
+    }
+
     const openAdUnitId: string = Boolean(Number(process.env.TEST_ADS)) ? TestIds.APP_OPEN : openAppId;
     const openApp = AppOpenAd.createForAdRequest(openAdUnitId, {
         requestNonPersonalizedAdsOnly: true,
@@ -48,12 +57,13 @@ export const showOpenAppAd = async (openAppId): Promise<void> => {
 
     return new Promise((resolve, reject) => {
         openApp.load();
-    
-        openApp.addAdEventListener(AdEventType.LOADED, () => {
+
+        openApp.addAdEventListener(AdEventType.LOADED, async () => {
+            await AsyncStorage.setItem(OPEN_APP_AD_LAST_SHOWN_KEY, String(Date.now()));
             openApp.show();
             resolve();
         });
-    
+
         openApp.addAdEventListener(AdEventType.ERROR, (error) => {
             reject(error);
         });
